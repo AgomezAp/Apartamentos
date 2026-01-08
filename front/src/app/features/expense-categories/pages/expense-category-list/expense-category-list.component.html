@@ -1,0 +1,115 @@
+<div class="container">
+  <div class="header">
+    <h1>🏷️ Gestionar Categorías de Mantenimiento</h1>
+    <button class="btn btn-primary" (click)="openForm()" *ngIf="!showForm">
+      ➕ Agregar Categoría
+    </button>
+  </div>
+
+  <!-- Mensajes -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    ✅ {{ successMessage }}
+  </div>
+  <div *ngIf="error" class="alert alert-danger">
+    ❌ {{ error }}
+  </div>
+
+  <!-- Formulario -->
+  <div *ngIf="showForm" class="form-container">
+    <h2>{{ editingId ? 'Editar Categoría' : 'Crear Nueva Categoría' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Nombre *</label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name" 
+          class="form-control"
+          placeholder="ej: Plomería, Electricidad, Pintura, etc."
+        >
+        <small *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="text-danger">
+          El nombre es requerido (mínimo 3 caracteres)
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea 
+          id="description" 
+          formControlName="description" 
+          class="form-control"
+          rows="3"
+          placeholder="Descripción de la categoría"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="is_active">
+          <input 
+            type="checkbox" 
+            id="is_active" 
+            formControlName="is_active"
+          >
+          Activo
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success" [disabled]="loading">
+          {{ loading ? '⏳ Guardando...' : '💾 Guardar' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">
+          ❌ Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista -->
+  <div *ngIf="!showForm" class="list-container">
+    <div *ngIf="loading" class="loading">
+      ⏳ Cargando categorías...
+    </div>
+
+    <div *ngIf="!loading && categories.length === 0" class="empty-state">
+      <p>No hay categorías registradas</p>
+    </div>
+
+    <div *ngIf="!loading && categories.length > 0" class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of categories">
+            <td><strong>{{ category.name }}</strong></td>
+            <td>{{ category.description || '-' }}</td>
+            <td>
+              <span *ngIf="category.is_active" class="badge badge-success">Activo</span>
+              <span *ngIf="!category.is_active" class="badge badge-danger">Inactivo</span>
+            </td>
+            <td>
+              <button 
+                class="btn btn-sm btn-primary" 
+                (click)="openForm(category)"
+                title="Editar">
+                ✏️
+              </button>
+              <button 
+                class="btn btn-sm btn-danger" 
+                (click)="deleteCategory(category.id)"
+                title="Eliminar">
+                🗑️
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

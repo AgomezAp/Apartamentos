@@ -7,7 +7,7 @@ class PaymentRepository {
    */
   async findAll(filters: any): Promise<Payment[]> {
     let query = `
-      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, 
+      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, p.payment_date,
              p.payment_status_id, p.payment_method, p.notes, p.created_at, p.updated_at,
              c.monthly_rent, c.unit_id,
              u.unit_number, b.name as building_name,
@@ -98,7 +98,7 @@ class PaymentRepository {
    */
   async findById(id: number): Promise<Payment | null> {
     const query = `
-      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, 
+      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, p.payment_date,
              p.payment_status_id, p.payment_method, p.notes, p.created_at, p.updated_at,
              c.monthly_rent, c.unit_id,
              u.unit_number, b.name as building_name,
@@ -121,7 +121,7 @@ class PaymentRepository {
    */
   async findByUnitId(unitId: number, limit: number = 12): Promise<Payment[]> {
     const query = `
-      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, 
+      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, p.payment_date,
              p.payment_status_id, p.payment_method, p.notes, p.created_at, p.updated_at,
              c.monthly_rent, c.unit_id,
              u.unit_number, b.name as building_name,
@@ -155,7 +155,7 @@ class PaymentRepository {
       payment.period_year,
       payment.amount_due,
       payment.due_date,
-      payment.payment_status_id || 3, // Default: Completado
+      payment.payment_status_id || 1, // Default: Pendiente
       payment.payment_method || null,
       payment.notes || null,
     ]);

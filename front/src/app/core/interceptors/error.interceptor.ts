@@ -54,8 +54,21 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           case 401:
             errorMessage = 'Sesión expirada. Por favor, inicia sesión nuevamente.';
             authService.logout();
-            router.navigate(['/auth/login']);
-            break;
+            
+            // Mostrar mensaje de sesión expirada
+            notificationService.showWarning(
+              'Tu sesión ha expirado. Por favor inicia sesión nuevamente.',
+              'Sesión Expirada'
+            );
+            
+            // Redirigir al login con parámetro de sesión expirada
+            router.navigate(['/auth/login'], {
+              queryParams: { 
+                sessionExpired: 'true',
+                returnUrl: router.url 
+              }
+            });
+            return throwError(() => error); // No mostrar notificación adicional
             
           case 403:
             errorMessage = 'No tienes permisos para realizar esta acción.';

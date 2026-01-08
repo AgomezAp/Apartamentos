@@ -30,6 +30,14 @@ export class TenantContractsComponent implements OnInit {
     }
   }
 
+  /**
+   * Método público para recargar contratos (útil cuando se finaliza un contrato)
+   */
+  reloadContracts(): void {
+    this.loadContracts();
+    this.loadActiveContract();
+  }
+
   private loadContracts(): void {
     this.isLoading = true;
     this.tenantsService.getTenantContracts(this.tenantId).subscribe({

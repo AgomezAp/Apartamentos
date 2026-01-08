@@ -18,7 +18,7 @@
       <button class="btn btn-success" (click)="onMarkCompleted()" *ngIf="payment.status === 'pending' || payment.status === 'overdue'">
         ✅ Marcar Completado
       </button>
-      <button class="btn btn-danger" (click)="onDelete()">
+      <button class="btn btn-danger" (click)="onDelete()" *ngIf="payment.status === 'pending'">
         🗑️ Eliminar
       </button>
     </div>

@@ -112,11 +112,6 @@
         <app-expense-trends-chart [startDate]="startDate" [endDate]="endDate"></app-expense-trends-chart>
       </div>
 
-      <!-- Pagos Recientes Tabla - Ancho completo -->
-      <div class="widget-recent-table">
-        <app-recent-payments-table [startDate]="startDate" [endDate]="endDate"></app-recent-payments-table>
-      </div>
-
       <!-- Ocupación por Edificio -->
       <div class="widget-occupancy">
         <app-occupancy-chart></app-occupancy-chart>
@@ -129,7 +124,7 @@
 
       <!-- Historial de Pagos -->
       <div class="widget-history">
-        <app-payment-history [limit]="5"></app-payment-history>
+        <app-payment-history [limit]="10"></app-payment-history>
       </div>
 
       <!-- Alertas -->

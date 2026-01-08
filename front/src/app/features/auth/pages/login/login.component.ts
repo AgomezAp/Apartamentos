@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { LoginCredentials } from '../../../../core/models/user.model';
@@ -17,16 +17,47 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = false;
   showPassword = false;
+  redirectMessage: string | null = null;
+  returnUrl: string = '/dashboard';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
+    // Inicializar el formulario PRIMERO (siempre, para evitar errores en la plantilla)
     this.initForm();
+    
+    // Verificar mensajes de redirección
+    this.checkRedirectMessage();
+  }
+
+  /**
+   * Verificar si hay mensaje de redirección
+   */
+  private checkRedirectMessage(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['message']) {
+        this.redirectMessage = params['message'];
+        this.notificationService.showInfo(
+          params['message'],
+          'Inicio de Sesión Requerido'
+        );
+      }
+      if (params['returnUrl']) {
+        this.returnUrl = params['returnUrl'];
+      }
+      if (params['sessionExpired']) {
+        this.notificationService.showWarning(
+          'Tu sesión ha expirado. Por favor inicia sesión nuevamente.',
+          'Sesión Expirada'
+        );
+      }
+    });
   }
 
   /**
@@ -59,9 +90,8 @@ export class LoginComponent implements OnInit {
           'Login Exitoso'
         );
         
-        // Redirigir al dashboard o a la URL guardada
-        const returnUrl = history.state?.returnUrl || '/dashboard';
-        this.router.navigate([returnUrl]);
+        // Redirigir a la URL guardada o al dashboard
+        this.router.navigate([this.returnUrl]);
       },
       error: (error) => {
         this.isLoading = false;

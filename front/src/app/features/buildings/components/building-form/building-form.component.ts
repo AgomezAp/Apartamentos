@@ -42,7 +42,7 @@ export class BuildingFormComponent implements OnInit, OnChanges {
       city: ['', [Validators.required]],
       state: ['', [Validators.required]],
       zip_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
-      country: ['México'],
+      country: ['Colombia'],
       total_units: [0, [Validators.required, Validators.min(1)]],
       year_built: ['', [Validators.min(1900), Validators.max(this.currentYear)]],
       floors: ['', [Validators.min(1)]],
@@ -67,7 +67,7 @@ export class BuildingFormComponent implements OnInit, OnChanges {
         city: this.building.city,
         state: this.building.state,
         zip_code: this.building.zip_code,
-        country: this.building.country || 'México',
+        country: this.building.country || 'Colombia',
         total_units: this.building.total_units,
         year_built: this.building.year_built,
         floors: this.building.floors,
@@ -155,7 +155,7 @@ export class BuildingFormComponent implements OnInit, OnChanges {
    */
   resetForm(): void {
     this.buildingForm.reset({
-      country: 'México',
+      country: 'Colombia',
       is_active: true
     });
   }

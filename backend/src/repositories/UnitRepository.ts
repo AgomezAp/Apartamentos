@@ -255,14 +255,61 @@ class UnitRepository {
   }
 
   /**
+   * Actualizar el estado de ocupación de una unidad
+   */
+  async updateOccupationStatus(unitId: number, status: string): Promise<boolean> {
+    console.log('🔧 updateOccupationStatus llamado:', { unitId, status });
+    
+    const query = `UPDATE units SET occupation_status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`;
+    
+    console.log('📝 Query SQL:', query);
+    console.log('📝 Valores:', [status, unitId]);
+    
+    const rowCount = await executeUpdate(query, [status, unitId]);
+    console.log('✅ Filas actualizadas:', rowCount);
+    
+    return rowCount > 0;
+  }
+
+  /**
    * Eliminar (soft delete) una unidad
    */
+  /**
+   * Eliminar unidad y todos sus contratos, pagos y mantenimientos en cascada
+   */
   async delete(id: number): Promise<boolean> {
-    const rowCount = await executeUpdate(
-      'UPDATE units SET is_active = FALSE, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
-      [id]
-    );
-    return rowCount > 0;
+    try {
+      // 1. Eliminar pagos de contratos de esta unidad
+      await executeUpdate(
+        `DELETE FROM payments WHERE contract_id IN (
+          SELECT id FROM contracts WHERE unit_id = $1
+        )`,
+        [id]
+      );
+
+      // 2. Eliminar contratos de esta unidad
+      await executeUpdate(
+        'DELETE FROM contracts WHERE unit_id = $1',
+        [id]
+      );
+
+      // 3. Eliminar solicitudes de mantenimiento de esta unidad
+      await executeUpdate(
+        'DELETE FROM maintenance_requests WHERE unit_id = $1',
+        [id]
+      );
+
+      // 4. Finalmente eliminar la unidad
+      const rowCount = await executeUpdate(
+        'DELETE FROM units WHERE id = $1',
+        [id]
+      );
+      
+      return rowCount > 0;
+    } catch (error) {
+      console.error('Error en borrado en cascada de unidad:', error);
+      throw error;
+    }
   }
 
   /**

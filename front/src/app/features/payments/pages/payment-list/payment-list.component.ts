@@ -163,9 +163,9 @@ export class PaymentListComponent implements OnInit, OnDestroy {
   onMarkCompleted(paymentId: number | undefined): void {
     if (!paymentId) return;
     
-    // payment_status_id: 3 = Completado/Pagado
+    // payment_status_id: 2 = Pagado/Completado
     this.paymentService.update(paymentId, { 
-      payment_status_id: 3, 
+      payment_status_id: 2, 
       payment_date: new Date().toISOString() 
     }).subscribe({
       next: () => {

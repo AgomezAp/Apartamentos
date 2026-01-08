@@ -93,8 +93,8 @@
           [class.error]="paymentForm.get('payment_status_id')?.invalid && paymentForm.get('payment_status_id')?.touched">
           <option value="">Seleccione un estado</option>
           <option value="1">⏳ Pendiente</option>
-          <option value="2">🟡 Parcial</option>
-          <option value="3">✅ Completado</option>
+          <option value="4">🟡 Parcial</option>
+          <option value="2">✅ Completado</option>
         </select>
         <span class="error-message" *ngIf="paymentForm.get('payment_status_id')?.invalid && paymentForm.get('payment_status_id')?.touched">
           {{ getFieldError('payment_status_id') }}
@@ -109,12 +109,12 @@
           formControlName="payment_method"
           class="form-control">
           <option value="">Seleccione método</option>
-          <option value="cash">💵 Efectivo</option>
-          <option value="bank_transfer">🏦 Transferencia</option>
-          <option value="credit_card">💳 Tarjeta de Crédito</option>
-          <option value="debit_card">💳 Tarjeta Débito</option>
-          <option value="check">📝 Cheque</option>
-          <option value="other">🔄 Otro</option>
+          <option value="Efectivo">💵 Efectivo</option>
+          <option value="Transferencia">🏦 Transferencia</option>
+          <option value="Tarjeta de Crédito">💳 Tarjeta de Crédito</option>
+          <option value="Tarjeta de Débito">💳 Tarjeta Débito</option>
+          <option value="Cheque">📝 Cheque</option>
+          <option value="Otro">🔄 Otro</option>
         </select>
       </div>
 

@@ -23,12 +23,22 @@ export class UnitCreateComponent {
   onFormSubmit(formData: UnitFormData): void {
     this.isSubmitting = true;
     
+    // Mapear estado del frontend al backend
+    const statusMapping: Record<string, string> = {
+      'available': 'vacant',
+      'occupied': 'occupied',
+      'maintenance': 'maintenance',
+      'reserved': 'reserved'
+    };
+    
+    const backendStatus = statusMapping[formData.status] || 'vacant';
+    
     // Mapear campos del frontend al backend
     const unitPayload = {
       ...formData,
       rental_price: formData.monthly_rent,
-      occupation_status: formData.status,
-      is_occupied: formData.status === 'occupied'
+      occupation_status: backendStatus,
+      is_occupied: backendStatus === 'occupied'
     };
     
     // Eliminar campos del frontend que no usa el backend

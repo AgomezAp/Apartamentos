@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authenticate } from '../middleware';
 import authRoutes from './auth';
 import buildingRoutes from './buildings';
 import unitRoutes from './units';
@@ -14,19 +15,31 @@ import settingsRoutes from './settings';
 import maintenanceRoutes from './maintenance';
 import alertRoutes from './alerts';
 import incomeRoutes from './income';
+import unitTypesRoutes from './unitTypes';
+import expenseCategoriesRoutes from './expenseCategories';
 
 const router = Router();
 
-// Health check
+// Health check - ruta pública
 router.get('/health', (_req, res) => {
   res.json({ success: true, message: 'API funcionando correctamente' });
 });
 
-// Rutas de autenticación (públicas)
+// Rutas de autenticación - PÚBLICAS (no requieren token)
 router.use('/auth', authRoutes);
 
-// Rutas de catálogos (CREAR PRIMERO)
+// ========================================
+// 🔒 TODAS LAS RUTAS SIGUIENTES ESTÁN PROTEGIDAS
+// Requieren autenticación con JWT
+// ========================================
+router.use(authenticate);
+
+// Rutas de catálogos
 router.use('/catalogs', catalogRoutes);
+
+// Rutas de configuración de tipos y categorías
+router.use('/unit-types', unitTypesRoutes);
+router.use('/expense-categories', expenseCategoriesRoutes);
 
 // Rutas principales
 router.use('/buildings', buildingRoutes);

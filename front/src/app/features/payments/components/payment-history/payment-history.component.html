@@ -25,7 +25,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let payment of payments">
-            <td>{{ payment.payment_date | dateFormat:'dd/MM/yyyy' }}</td>
+            <td>{{ (payment.payment_date || payment.due_date) | dateFormat:'dd/MM/yyyy' }}</td>
             <td>
               <div class="tenant-cell">
                 <span class="tenant-icon">👤</span>

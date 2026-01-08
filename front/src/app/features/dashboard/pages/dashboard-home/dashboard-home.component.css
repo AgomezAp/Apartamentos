@@ -10,6 +10,7 @@
   --dashboard-gap: var(--spacing-lg);
   --widget-min-height: 280px;
   --widget-compact-height: 240px;
+  --widget-tall-height: 400px; /* NUEVO: Para widgets altos */
   --header-height: 80px;
   --stats-height: 100px;
 }
@@ -259,7 +260,7 @@
     minmax(280px, auto) /* Fila 1: Charts principales */
     minmax(250px, 320px) /* Fila 2: Tabla pagos recientes */
     minmax(240px, auto) /* Fila 3: Widgets medianos */
-    minmax(200px, auto); /* Fila 4: Alertas y Tareas */
+    minmax(350px, auto); /* 🔥 Fila 4: Alertas y Tareas - AUMENTADA */
   gap: var(--spacing-lg);
   grid-template-areas:
     "revenue  revenue  revenue  revenue  revenue  revenue  revenue  trends  trends  trends  trends  trends"
@@ -356,10 +357,13 @@
   max-height: 320px;
 }
 
-/* Widgets más compactos en la fila inferior */
+/* =====================================================
+   🔥 WIDGETS ALERTAS Y TAREAS - MÁS ESPACIO VERTICAL
+   ===================================================== */
 .widget-alerts,
 .widget-tasks {
-  max-height: 260px;
+  min-height: 350px; /* 🔥 NUEVO: Altura mínima aumentada */
+  max-height: 450px; /* 🔥 CAMBIADO: de 260px a 450px */
 }
 
 /* Override para que los componentes internos manejen su propio scroll */
@@ -370,10 +374,17 @@
   max-height: 200px;
 }
 
+/* 🔥 LISTAS DE ALERTAS Y TAREAS - MÁS ESPACIO */
 .widget-alerts ::ng-deep .alerts-list,
 .widget-tasks ::ng-deep .tasks-list {
   overflow-y: auto;
-  max-height: 180px;
+  max-height: 320px; /* 🔥 CAMBIADO: de 180px a 320px */
+}
+
+/* 🔥 Ajustar altura mínima de los widgets internos */
+.widget-alerts ::ng-deep .alerts-widget,
+.widget-tasks ::ng-deep .pending-tasks {
+  min-height: 350px;
 }
 
 /* =====================================================
@@ -386,6 +397,18 @@
 
   .dashboard-grid {
     gap: var(--spacing-xl);
+  }
+
+  /* Aún más espacio en pantallas grandes */
+  .widget-alerts,
+  .widget-tasks {
+    min-height: 400px;
+    max-height: 500px;
+  }
+
+  .widget-alerts ::ng-deep .alerts-list,
+  .widget-tasks ::ng-deep .tasks-list {
+    max-height: 380px;
   }
 }
 
@@ -406,6 +429,18 @@
       "recent   recent   recent   recent   recent   recent"
       "occupancy occupancy overdue  overdue  history  history"
       "alerts   alerts   alerts   tasks    tasks    tasks";
+  }
+
+  /* Mantener altura en tablets */
+  .widget-alerts,
+  .widget-tasks {
+    min-height: 320px;
+    max-height: 400px;
+  }
+
+  .widget-alerts ::ng-deep .alerts-list,
+  .widget-tasks ::ng-deep .tasks-list {
+    max-height: 280px;
   }
 }
 
@@ -467,10 +502,17 @@
     gap: var(--spacing-md);
   }
 
+  /* Full width en tablets - más espacio vertical */
   .widget-recent-table,
   .widget-alerts,
   .widget-tasks {
     max-height: none;
+    min-height: 300px;
+  }
+
+  .widget-alerts ::ng-deep .alerts-list,
+  .widget-tasks ::ng-deep .tasks-list {
+    max-height: 250px;
   }
 }
 
@@ -516,6 +558,18 @@
       "alerts"
       "tasks";
     gap: var(--spacing-md);
+  }
+
+  /* En móvil, permitir altura automática pero con mínimo */
+  .widget-alerts,
+  .widget-tasks {
+    min-height: 280px;
+    max-height: none;
+  }
+
+  .widget-alerts ::ng-deep .alerts-list,
+  .widget-tasks ::ng-deep .tasks-list {
+    max-height: 220px;
   }
 }
 
@@ -567,6 +621,17 @@
   .widget-alerts:hover,
   .widget-tasks:hover {
     transform: none;
+  }
+
+  /* Altura más compacta en móviles pequeños */
+  .widget-alerts,
+  .widget-tasks {
+    min-height: 250px;
+  }
+
+  .widget-alerts ::ng-deep .alerts-list,
+  .widget-tasks ::ng-deep .tasks-list {
+    max-height: 180px;
   }
 }
 
@@ -693,6 +758,7 @@
     border: 1px solid var(--color-gray-300);
     break-inside: avoid;
     margin-bottom: var(--spacing-md);
+    max-height: none;
   }
 }
 

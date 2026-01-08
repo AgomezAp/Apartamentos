@@ -40,7 +40,7 @@ export class PaymentFormComponent implements OnInit {
       unit_id_hidden: [this.payment?.unit_id || '', Validators.required],
       amount_due: [this.payment?.amount_due || this.payment?.amount || '', [Validators.required, this.minValidator(50000)]],
       due_date: [this.payment?.due_date?.split('T')[0] || '', Validators.required],
-      payment_status_id: [this.payment?.payment_status_id || 3, Validators.required], // 3 = Completado por defecto
+      payment_status_id: [this.payment?.payment_status_id || 1, Validators.required], // 1 = Pendiente por defecto
       payment_method: [this.payment?.payment_method || ''],
       notes: [this.payment?.notes || '']
     });
@@ -90,7 +90,7 @@ export class PaymentFormComponent implements OnInit {
             unit_id: unitDisplay,
             unit_id_hidden: selectedContract.unit_id,
             amount_due: monthlyRent.toString(),
-            payment_status_id: 3 // Completado por defecto cuando se llena el monto completo
+            payment_status_id: 1 // Pendiente por defecto (se actualizará automáticamente según fecha)
           }, { emitEvent: false });
           
           console.log('✅ Datos del contrato cargados automáticamente:', {
@@ -103,25 +103,44 @@ export class PaymentFormComponent implements OnInit {
       }
     });
 
-    // Auto-detectar si es pago parcial comparando monto a pagar vs renta mensual
-    this.paymentForm.get('amount_due')?.valueChanges.subscribe(amountDue => {
+    // Auto-detectar estado basándose en fecha de vencimiento y monto
+    const updatePaymentStatus = () => {
+      const dueDate = this.paymentForm.get('due_date')?.value;
+      const amountDue = this.paymentForm.get('amount_due')?.value;
       const contractId = this.paymentForm.get('contract_id')?.value;
-      if (contractId && amountDue) {
-        const selectedContract = this.contracts.find(c => c.id === parseInt(contractId));
-        if (selectedContract && selectedContract.monthly_rent) {
-          const cleanAmountDue = amountDue.toString().replace(/\./g, '');
-          const amount = Number(cleanAmountDue);
-          const monthlyRent = selectedContract.monthly_rent;
-          
-          // Si el monto es menor que la renta, es pago parcial
-          if (amount < monthlyRent) {
-            this.paymentForm.patchValue({ payment_status_id: 2 }, { emitEvent: false }); // Parcial
-          } else if (amount >= monthlyRent) {
-            this.paymentForm.patchValue({ payment_status_id: 3 }, { emitEvent: false }); // Completado
-          }
-        }
+      
+      if (!dueDate || !amountDue || !contractId) return;
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const dueDateObj = new Date(dueDate);
+      dueDateObj.setHours(0, 0, 0, 0);
+      
+      const selectedContract = this.contracts.find(c => c.id === parseInt(contractId));
+      if (!selectedContract || !selectedContract.monthly_rent) return;
+      
+      const cleanAmountDue = amountDue.toString().replace(/\./g, '');
+      const amount = Number(cleanAmountDue);
+      const monthlyRent = selectedContract.monthly_rent;
+      
+      // Determinar estado según fecha y monto
+      if (dueDateObj > today) {
+        // Fecha futura = Pendiente
+        this.paymentForm.patchValue({ payment_status_id: 1 }, { emitEvent: false });
+      } else if (amount < monthlyRent) {
+        // Pago parcial
+        this.paymentForm.patchValue({ payment_status_id: 4 }, { emitEvent: false });
+      } else {
+        // Pago completo
+        this.paymentForm.patchValue({ payment_status_id: 2 }, { emitEvent: false });
       }
-    });
+    };
+    
+    // Escuchar cambios en monto
+    this.paymentForm.get('amount_due')?.valueChanges.subscribe(() => updatePaymentStatus());
+    
+    // Escuchar cambios en fecha de vencimiento
+    this.paymentForm.get('due_date')?.valueChanges.subscribe(() => updatePaymentStatus());
   }
 
   onSubmit(): void {

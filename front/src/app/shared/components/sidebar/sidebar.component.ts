@@ -30,7 +30,16 @@ export class SidebarComponent {
     { label: 'Gastos', icon: '📊', route: '/expenses' },
     { label: 'Mantenimiento', icon: '🔧', route: '/maintenance' },
     { label: 'Reportes', icon: '📊', route: '/reports' },
-    { label: 'Configuración', icon: '⚙️', route: '/settings' }
+    { label: 'Configuración', icon: '⚙️', route: '/settings' },
+    {
+      label: 'Catálogos',
+      icon: '📚',
+      expanded: false,
+      children: [
+        { label: 'Tipos de Unidades', icon: '🏠', route: '/unit-types' },
+        { label: 'Categorías de Mantenimiento', icon: '💰', route: '/expense-categories' }
+      ]
+    }
   ];
 
   toggleMenuItem(item: MenuItem): void {

@@ -95,13 +95,24 @@ class ContractRepository {
    */
   async create(contract: Contract): Promise<number> {
     // Generar número de contrato automáticamente en formato YYYY-NNNNN
+    // Buscar el último número de contrato del año actual para evitar duplicados
     const year = new Date().getFullYear();
-    const contractNumberResult: any = await executeQuery(
-      `SELECT COUNT(*) as count FROM contracts WHERE contract_number LIKE $1`,
+    const lastContractResult: any = await executeQuery(
+      `SELECT contract_number FROM contracts 
+       WHERE contract_number LIKE $1 
+       ORDER BY contract_number DESC 
+       LIMIT 1`,
       [`${year}-%`]
     );
-    const nextNumber = (parseInt(contractNumberResult[0].count) + 1).toString().padStart(5, '0');
-    const contractNumber = `${year}-${nextNumber}`;
+    
+    let nextNumber = 1;
+    if (lastContractResult.length > 0 && lastContractResult[0].contract_number) {
+      // Extraer el número del formato YYYY-NNNNN
+      const lastNumber = parseInt(lastContractResult[0].contract_number.split('-')[1]);
+      nextNumber = lastNumber + 1;
+    }
+    
+    const contractNumber = `${year}-${nextNumber.toString().padStart(5, '0')}`;
 
     const query = `
       INSERT INTO contracts (

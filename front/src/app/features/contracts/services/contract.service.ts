@@ -89,7 +89,7 @@ export class ContractService {
    * Finalizar contrato
    */
   finishContract(id: number): Observable<ApiResponse<void>> {
-    return this.http.patch<ApiResponse<void>>(`${this.API_URL}/${id}/finish`, {});
+    return this.http.post<ApiResponse<void>>(`${this.API_URL}/${id}/finish`, {});
   }
 
   /**

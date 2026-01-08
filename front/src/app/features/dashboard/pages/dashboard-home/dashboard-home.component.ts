@@ -11,7 +11,6 @@ import { RevenueChartComponent } from '../../components/revenue-chart/revenue-ch
 import { ExpenseTrendsChartComponent } from '../../components/expense-trends-chart/expense-trends-chart.component';
 import { PaymentHistoryComponent } from '../../../payments/components/payment-history/payment-history.component';
 import { OverduePaymentsComponent } from '../../../payments/components/overdue-payments/overdue-payments.component';
-import { RecentPaymentsTableComponent } from '../../components/recent-payments-table/recent-payments-table.component';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -26,8 +25,7 @@ import { RecentPaymentsTableComponent } from '../../components/recent-payments-t
     RevenueChartComponent,
     ExpenseTrendsChartComponent,
     PaymentHistoryComponent,
-    OverduePaymentsComponent,
-    RecentPaymentsTableComponent
+    OverduePaymentsComponent
   ],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css'

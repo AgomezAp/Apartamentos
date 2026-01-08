@@ -102,34 +102,34 @@ class Server {
       
       // Sincronizar modelos de Sequelize (verificar/crear tablas, sin modificar estructura)
       // Tablas base y catálogos
-      await UserModel.sync({alter: false});
-      await ServiceTypeModel.sync({alter: false});
-      await ExpenseCategoryModel.sync({alter: false});
-      await PaymentStatusModel.sync({alter: false});
-      await AlertTypeModel.sync({alter: false});
-      await UnitTypeModel.sync({alter: false});
+      await UserModel.sync({force: false});
+      await ServiceTypeModel.sync({force: false});
+      await ExpenseCategoryModel.sync({force: false});
+      await PaymentStatusModel.sync({force: false});
+      await AlertTypeModel.sync({force: false});
+      await UnitTypeModel.sync({force: false});
       
       // Tablas principales
-      await BuildingModel.sync({alter: false});
-      await BuildingUnitTypeConfigModel.sync({alter: false});
-      await UnitModel.sync({alter: false});
-      await UnitServiceModel.sync({alter: false});
-      await TenantModel.sync({alter: false});
-      await ContractModel.sync({alter: false});
-      await MaintenanceRequestModel.sync({alter: false});
+      await BuildingModel.sync({force: false});
+      await BuildingUnitTypeConfigModel.sync({force: false});
+      await UnitModel.sync({force: false});
+      await UnitServiceModel.sync({force: false});
+      await TenantModel.sync({force: false});
+      await ContractModel.sync({force: false});
+      await MaintenanceRequestModel.sync({force: false});
       
       // Tablas de pagos y transacciones
-      await PaymentModel.sync({alter: false});
-      await PaymentTransactionModel.sync({alter: false});
+      await PaymentModel.sync({force: false});
+      await PaymentTransactionModel.sync({force: false});
       
       // Tablas de gastos y servicios
-      await ExpenseModel.sync({alter: false});
-      await MonthlyServiceModel.sync({alter: false});
+      await ExpenseModel.sync({force: false});
+      await MonthlyServiceModel.sync({force: false});
       
       // Tablas de sistema
-      await AlertModel.sync({alter: false});
-      await AuditLogModel.sync({alter: false});
-      await SystemSettingModel.sync({alter: false});
+      await AlertModel.sync({force: false});
+      await AuditLogModel.sync({force: false});
+      await SystemSettingModel.sync({force: false});
       
     } catch (error) {
       console.error('❌ Error sincronizando modelos:', error);

@@ -6,6 +6,7 @@ import NotificationService from '../services/NotificationService';
 import BuildingModel from '../models/Building';
 import { ContractMapper, PaginationMapper } from '../utils/mappers';
 import ContractRepository from '../repositories/ContractRepository';
+import UnitRepository from '../repositories/UnitRepository';
 
 class ContractController {
   async getAll(req: Request, res: Response): Promise<Response> {
@@ -60,25 +61,28 @@ class ContractController {
   async create(req: Request, res: Response): Promise<Response> {
     try {
       const contract: Contract = req.body;
+      console.log('='.repeat(60));
+      console.log('📥 CREATE CONTRATO - Datos recibidos del frontend:');
+      console.log(JSON.stringify(contract, null, 2));
+      console.log('='.repeat(60));
+      
       const id = await ContractModel.create(contract);
       const newContract = await ContractRepository.findById(id);
 
-      // Generar pagos mensuales automáticamente si el contrato es activo
-      let paymentsGenerated = 0;
-      if (contract.status === 'active') {
-        const startDate = new Date(contract.start_date);
-        const endDate = new Date(contract.end_date);
-
-        let currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
-          await PaymentModel.generateMonthlyPayments(
-            id,
-            currentDate.getFullYear(),
-            currentDate.getMonth() + 1
+      // 🏠 Si el contrato está activo, actualizar el estado de la unidad a ocupada
+      if (contract.status === 'active' && contract.unit_id) {
+        console.log('✅ Contrato activo - Actualizando unidad', contract.unit_id, 'a occupied');
+        try {
+          const updated = await UnitRepository.updateOccupationStatus(
+            contract.unit_id,
+            'occupied'
           );
-          paymentsGenerated++;
-          currentDate.setMonth(currentDate.getMonth() + 1);
+          console.log('📝 Resultado actualización unidad:', updated);
+        } catch (unitError) {
+          console.error('❌ Error actualizando estado de unidad:', unitError);
         }
+      } else {
+        console.log('⚠️ No se actualizó la unidad. Status:', contract.status, 'Unit ID:', contract.unit_id);
       }
 
       // 🔔 Enviar email de bienvenida al inquilino
@@ -108,8 +112,7 @@ class ContractController {
       return res.status(201).json({
         success: true,
         data: normalizedContract,
-        message: `Contrato creado exitosamente. ${paymentsGenerated > 0 ? `Se generaron ${paymentsGenerated} pagos mensuales automáticamente.` : ''}`,
-        paymentsGenerated
+        message: 'Contrato creado exitosamente'
       });
     } catch (error: any) {
       // Error de foreign key - tenant no existe
@@ -135,6 +138,12 @@ class ContractController {
       const id = parseInt(req.params.id);
       const contract: Partial<Contract> = req.body;
 
+      console.log('='.repeat(60));
+      console.log('📥 UPDATE CONTRATO - ID:', id);
+      console.log('Datos recibidos del frontend:');
+      console.log(JSON.stringify(contract, null, 2));
+      console.log('='.repeat(60));
+
       const oldData = await ContractModel.findById(id);
       req.body.oldData = oldData;
 
@@ -145,6 +154,19 @@ class ContractController {
       }
 
       const updatedContract = await ContractRepository.findById(id);
+
+      // 🏠 Si el contrato está activo, actualizar el estado de la unidad a ocupada
+      if (updatedContract && updatedContract.status === 'active' && updatedContract.unit_id) {
+        console.log('✅ Contrato activo en UPDATE - Actualizando unidad', updatedContract.unit_id, 'a occupied');
+        try {
+          await UnitRepository.updateOccupationStatus(
+            updatedContract.unit_id,
+            'occupied'
+          );
+        } catch (unitError) {
+          console.error('❌ Error actualizando estado de unidad en UPDATE:', unitError);
+        }
+      }
 
       // Normalizar contrato actualizado
       const normalizedContract = updatedContract ? ContractMapper.toDTO(updatedContract) : null;
@@ -172,6 +194,18 @@ class ContractController {
 
       if (!finished) {
         return res.status(404).json({ success: false, error: 'Error finalizando contrato' });
+      }
+
+      // 🏠 Actualizar el estado de la unidad a disponible (vacant)
+      if (contract.unit_id) {
+        try {
+          await UnitRepository.updateOccupationStatus(
+            contract.unit_id,
+            'vacant'
+          );
+        } catch (unitError) {
+          console.error('Error actualizando estado de unidad:', unitError);
+        }
       }
 
       // 🔔 Enviar notificación de finalización al inquilino

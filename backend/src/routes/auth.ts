@@ -25,9 +25,8 @@ router.post(
       .withMessage('El nombre completo es requerido')
       .trim(),
     body('phone')
-      .optional()
-      .isMobilePhone('any')
-      .withMessage('Número de teléfono inválido'),
+      .optional({ values: 'falsy' })
+      .trim(),
     handleValidationErrors,
   ],
   AuthController.register
@@ -75,9 +74,8 @@ router.put(
       .withMessage('El nombre completo no puede estar vacío')
       .trim(),
     body('phone')
-      .optional()
-      .isMobilePhone('any')
-      .withMessage('Número de teléfono inválido'),
+      .optional({ values: 'falsy' })
+      .trim(),
     handleValidationErrors,
   ],
   AuthController.updateProfile

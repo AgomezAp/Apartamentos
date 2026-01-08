@@ -32,8 +32,8 @@ export class AuthService {
     private http: HttpClient,
     private router: Router
   ) {
-    // Verificar token al iniciar
-    this.checkTokenExpiration();
+    // No hacer nada en el constructor para evitar problemas de inicialización
+    // La verificación del token se hará cuando se necesite
   }
 
   /**

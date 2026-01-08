@@ -41,7 +41,8 @@ export class PaymentCreateComponent implements OnInit {
   }
 
   loadContracts(): void {
-    this.contractService.getContracts(1, 1000).subscribe({
+    // Solo cargar contratos activos para pagos
+    this.contractService.getContracts(1, 1000, { status: 'active' }).subscribe({
       next: (response: any) => {
         this.contracts = response.data || response.items || [];
       },

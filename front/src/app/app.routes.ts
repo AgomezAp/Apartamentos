@@ -1,22 +1,29 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  // Ruta raíz - redirige al login
+  // Ruta raíz - redirige al dashboard (protegido)
   {
     path: '',
     redirectTo: '/auth/login',
     pathMatch: 'full'
   },
 
-  // Rutas de autenticación
+  // Rutas de autenticación - PÚBLICAS (sin guard)
   {
     path: 'auth',
     loadChildren: () => import('./features/auth/pages/auth.module').then(m => m.AuthModule)
   },
 
+  // ========================================
+  // 🔒 TODAS LAS RUTAS SIGUIENTES ESTÁN PROTEGIDAS
+  // Requieren autenticación con authGuard
+  // ========================================
+
   // Dashboard - ruta protegida
   {
     path: 'dashboard',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
       .then(m => m.DashboardHomeComponent)
   },
@@ -24,6 +31,7 @@ export const routes: Routes = [
   // Edificios
   {
     path: 'buildings',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -51,6 +59,7 @@ export const routes: Routes = [
   // Unidades
   {
     path: 'units',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -83,6 +92,7 @@ export const routes: Routes = [
   // Inquilinos
   {
     path: 'tenants',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -110,6 +120,7 @@ export const routes: Routes = [
   // Contratos
   {
     path: 'contracts',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -137,6 +148,7 @@ export const routes: Routes = [
   // Pagos
   {
     path: 'payments',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -159,6 +171,7 @@ export const routes: Routes = [
   // Gastos
   {
     path: 'expenses',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -186,6 +199,7 @@ export const routes: Routes = [
   // Mantenimiento
   {
     path: 'maintenance',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -208,6 +222,7 @@ export const routes: Routes = [
   // Reportes
   {
     path: 'reports',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -250,17 +265,35 @@ export const routes: Routes = [
   // Configuración
   {
     path: 'settings',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/settings/pages/settings-home/settings-home.component')
       .then(m => m.SettingsHomeComponent)
+  },
+
+  // Tipos de Unidades
+  {
+    path: 'unit-types',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/unit-types/pages/unit-type-list/unit-type-list.component')
+      .then(m => m.UnitTypeListComponent)
+  },
+
+  // Categorías de Gastos/Mantenimiento
+  {
+    path: 'expense-categories',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/expense-categories/pages/expense-category-list/expense-category-list.component')
+      .then(m => m.ExpenseCategoryListComponent)
   },
 
   // Catálogos
   {
     path: 'catalogs',
+    canActivate: [authGuard],
     loadChildren: () => import('./features/catalogs/catalogs.module').then(m => m.CatalogsModule)
   },
 
-  // Ruta 404 - No encontrado
+  // Ruta 404 - Redirige al login
   {
     path: '**',
     redirectTo: '/auth/login'

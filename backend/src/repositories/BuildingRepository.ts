@@ -45,7 +45,7 @@ class BuildingRepository {
              b.updated_at,
              COUNT(DISTINCT u.id) as units_count,
              COUNT(DISTINCT CASE WHEN u.occupation_status = 'occupied' THEN u.id END) as occupied_units,
-             COUNT(DISTINCT CASE WHEN u.occupation_status = 'vacant' THEN u.id END) as vacant_units,
+             COUNT(DISTINCT CASE WHEN u.occupation_status != 'occupied' OR u.occupation_status IS NULL THEN u.id END) as vacant_units,
              ROUND(
                CASE 
                  WHEN COUNT(DISTINCT u.id) > 0 THEN 
@@ -111,6 +111,7 @@ class BuildingRepository {
       SELECT b.*,
              COUNT(DISTINCT u.id) as units_count,
              COUNT(DISTINCT CASE WHEN u.occupation_status = 'occupied' THEN u.id END) as occupied_units,
+             COUNT(DISTINCT CASE WHEN u.occupation_status != 'occupied' OR u.occupation_status IS NULL THEN u.id END) as vacant_units,
              COUNT(DISTINCT c.id) as active_contracts_count
       FROM buildings b
       LEFT JOIN units u ON b.id = u.building_id AND u.is_active = TRUE
@@ -237,12 +238,55 @@ class BuildingRepository {
   /**
    * Eliminar (soft delete) un edificio
    */
+  /**
+   * Eliminar edificio y todas sus unidades, contratos, pagos y mantenimientos en cascada
+   */
   async delete(id: number): Promise<boolean> {
-    const rowCount = await executeUpdate(
-      'UPDATE buildings SET is_active = FALSE, updated_at = CURRENT_TIMESTAMP WHERE id = $1 AND is_active = TRUE',
-      [id]
-    );
-    return rowCount > 0;
+    try {
+      // 1. Obtener todas las unidades del edificio
+      const unitsQuery = 'SELECT id FROM units WHERE building_id = $1';
+      const units = await executeQuery(unitsQuery, [id]) as any[];
+      const unitIds = units.map((u: any) => u.id);
+
+      if (unitIds.length > 0) {
+        // 2. Eliminar pagos de contratos de estas unidades
+        await executeUpdate(
+          `DELETE FROM payments WHERE contract_id IN (
+            SELECT id FROM contracts WHERE unit_id = ANY($1)
+          )`,
+          [unitIds]
+        );
+
+        // 3. Eliminar contratos de estas unidades
+        await executeUpdate(
+          'DELETE FROM contracts WHERE unit_id = ANY($1)',
+          [unitIds]
+        );
+
+        // 4. Eliminar solicitudes de mantenimiento de estas unidades
+        await executeUpdate(
+          'DELETE FROM maintenance_requests WHERE unit_id = ANY($1)',
+          [unitIds]
+        );
+
+        // 5. Eliminar unidades
+        await executeUpdate(
+          'DELETE FROM units WHERE building_id = $1',
+          [id]
+        );
+      }
+
+      // 6. Finalmente eliminar el edificio
+      const rowCount = await executeUpdate(
+        'DELETE FROM buildings WHERE id = $1',
+        [id]
+      );
+      
+      return rowCount > 0;
+    } catch (error) {
+      console.error('Error en borrado en cascada de edificio:', error);
+      throw error;
+    }
   }
 }
 

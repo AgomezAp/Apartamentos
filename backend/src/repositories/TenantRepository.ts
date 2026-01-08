@@ -231,8 +231,9 @@ class TenantRepository {
    * Eliminar (soft delete) un inquilino
    */
   async delete(id: number): Promise<boolean> {
+    // Hard delete - elimina físicamente el registro de la base de datos
     const rowCount = await executeUpdate(
-      'UPDATE tenants SET is_active = FALSE, updated_at = CURRENT_TIMESTAMP WHERE id = $1 AND is_active = TRUE',
+      'DELETE FROM tenants WHERE id = $1',
       [id]
     );
     return rowCount > 0;

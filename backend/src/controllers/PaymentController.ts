@@ -88,6 +88,33 @@ class PaymentController {
   async create(req: Request, res: Response): Promise<Response> {
     try {
       const payment: Payment = req.body;
+      
+      // Determinar el estado correcto basándose en la fecha de vencimiento y el monto pagado
+      const dueDate = new Date(payment.due_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      dueDate.setHours(0, 0, 0, 0);
+      
+      // Si no se especifica payment_status_id, determinarlo automáticamente
+      if (!payment.payment_status_id) {
+        if (dueDate > today) {
+          // Fecha futura = Pendiente
+          payment.payment_status_id = 1;
+        } else if (payment.amount_paid && payment.amount_paid >= payment.amount_due) {
+          // Ya pagado completo = Pagado
+          payment.payment_status_id = 2;
+        } else if (payment.amount_paid && payment.amount_paid < payment.amount_due) {
+          // Pago parcial = Parcial
+          payment.payment_status_id = 4;
+        } else if (dueDate < today) {
+          // Fecha pasada sin pago = Vencido
+          payment.payment_status_id = 3;
+        } else {
+          // Hoy sin pago = Pendiente
+          payment.payment_status_id = 1;
+        }
+      }
+      
       const id = await PaymentModel.create(payment);
       const newPayment = await PaymentModel.findById(id);
 
