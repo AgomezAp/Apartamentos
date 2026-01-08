@@ -1,0 +1,99 @@
+<div class="payment-card">
+  <div class="card-header">
+    <div class="header-left">
+      <div class="amount-badge">
+        <span class="amount">{{ payment.amount | currencyFormat }}</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+        {{ getStatusLabel(payment.status) }}
+      </span>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="tenant-section">
+      <div class="tenant-info">
+        <span class="info-icon">👤</span>
+        <div class="info-content">
+          <span class="info-label">Inquilino</span>
+          <span class="info-value">{{ payment.tenant_name || 'N/A' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="detail-icon">🏢</span>
+        <div class="detail-content">
+          <span class="detail-label">Edificio</span>
+          <span class="detail-value">{{ payment.building_name || 'N/A' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-icon">🏠</span>
+        <div class="detail-content">
+          <span class="detail-label">Unidad</span>
+          <span class="detail-value">{{ payment.unit_number || 'N/A' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-icon">📅</span>
+        <div class="detail-content">
+          <span class="detail-label">Vencimiento</span>
+          <span class="detail-value">{{ payment.due_date | dateFormat:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-icon">{{ getPaymentMethodIcon(payment.payment_method) }}</span>
+        <div class="detail-content">
+          <span class="detail-label">Método</span>
+          <span class="detail-value">{{ getPaymentMethodLabel(payment.payment_method) }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item" *ngIf="payment.payment_date">
+        <span class="detail-icon">✅</span>
+        <div class="detail-content">
+          <span class="detail-label">Fecha Pago</span>
+          <span class="detail-value">{{ payment.payment_date | dateFormat:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item" *ngIf="payment.reference_number">
+        <span class="detail-icon">🔢</span>
+        <div class="detail-content">
+          <span class="detail-label">Referencia</span>
+          <span class="detail-value">{{ payment.reference_number }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert-section" *ngIf="isOverdue(payment.due_date, payment.status)">
+      <div class="alert alert-danger">
+        ⚠️ Vencido hace {{ getDaysUntilDue(payment.due_date) * -1 }} días
+      </div>
+    </div>
+
+    <div class="notes-section" *ngIf="payment.notes">
+      <span class="notes-label">📝 Notas:</span>
+      <p class="notes-text">{{ payment.notes }}</p>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button class="btn btn-view" [routerLink]="['/payments', payment.id || payment.payment_id]">
+      👁️ Ver
+    </button>
+    <button class="btn btn-complete" (click)="onMarkCompleted()" *ngIf="payment.status === 'pending'">
+      ✅ Completar
+    </button>
+    <button class="btn btn-delete" (click)="onDelete()">
+      🗑️ Eliminar
+    </button>
+  </div>
+</div>

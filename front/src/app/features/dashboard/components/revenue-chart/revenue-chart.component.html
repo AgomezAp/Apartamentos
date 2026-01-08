@@ -1,0 +1,69 @@
+<div class="revenue-chart">
+  <div class="widget-header">
+    <h3>📈 Ingresos Mensuales</h3>
+    <select [(ngModel)]="months" (change)="loadRevenueData()" class="months-select">
+      <option value="3">3 meses</option>
+      <option value="6">6 meses</option>
+      <option value="12">12 meses</option>
+    </select>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando datos...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="chart-content" *ngIf="!loading && !error">
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="summary-label">Total Esperado</div>
+        <div class="summary-value">{{ getTotalExpected() | currencyFormat }}</div>
+      </div>
+      <div class="summary-card success">
+        <div class="summary-label">Total Cobrado</div>
+        <div class="summary-value">{{ getTotalCollected() | currencyFormat }}</div>
+      </div>
+      <div class="summary-card warning">
+        <div class="summary-label">Pendiente</div>
+        <div class="summary-value">{{ getTotalPending() | currencyFormat }}</div>
+      </div>
+      <div class="summary-card info">
+        <div class="summary-label">Tasa de Cobranza</div>
+        <div class="summary-value">{{ getAverageCollectionRate() | number:'1.0-1' }}%</div>
+      </div>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="chart-bars">
+      <div class="bar-group" *ngFor="let data of revenueData">
+        <div class="bars-container">
+          <div class="bar expected" 
+               [style.height]="getBarHeight(data.expected_revenue)"
+               [title]="'Esperado: ' + (data.expected_revenue | currencyFormat)">
+          </div>
+          <div class="bar collected" 
+               [style.height]="getBarHeight(data.collected_revenue)"
+               [title]="'Cobrado: ' + (data.collected_revenue | currencyFormat)">
+          </div>
+        </div>
+        <div class="bar-label">{{ formatMonth(data.month) }}</div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="chart-legend">
+      <div class="legend-item">
+        <span class="legend-color expected"></span>
+        <span class="legend-label">Esperado</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color collected"></span>
+        <span class="legend-label">Cobrado</span>
+      </div>
+    </div>
+  </div>
+</div>

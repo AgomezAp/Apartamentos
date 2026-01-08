@@ -1,0 +1,54 @@
+<div class="expense-chart">
+  <div class="chart-header">
+    <h3>📈 Gastos Mensuales</h3>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando gráfico...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="chart-content" *ngIf="!loading && !error && monthlyData.length > 0">
+    <!-- Summary Stats -->
+    <div class="chart-summary">
+      <div class="summary-item">
+        <span class="summary-label">Total:</span>
+        <span class="summary-value">{{ getTotalAmount() | currencyFormat }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Promedio:</span>
+        <span class="summary-value">{{ getAverageAmount() | currencyFormat }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Meses:</span>
+        <span class="summary-value">{{ monthlyData.length }}</span>
+      </div>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="chart-bars">
+      <div class="bar-group" *ngFor="let data of monthlyData">
+        <div class="bar-container">
+          <div 
+            class="bar" 
+            [style.height.%]="getBarHeight(data.total)"
+            [title]="data.total | currencyFormat">
+            <span class="bar-value">{{ data.total | currencyFormat }}</span>
+          </div>
+        </div>
+        <div class="bar-label">
+          <div class="bar-month">{{ getMonthLabel(data.month) }}</div>
+          <div class="bar-year">{{ data.year }}</div>
+          <div class="bar-count">{{ data.count }} gastos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-data" *ngIf="!loading && !error && monthlyData.length === 0">
+    <p>No hay datos disponibles para mostrar</p>
+  </div>
+</div>

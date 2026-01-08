@@ -1,0 +1,87 @@
+<div class="search-container">
+  <!-- Búsqueda Rápida -->
+  <div class="quick-search">
+    <div class="search-input-wrapper">
+      <input
+        type="text"
+        [(ngModel)]="filter.search_term"
+        (keyup.enter)="onSearch()"
+        placeholder="Buscar por nombre, email o teléfono..."
+        class="search-input"
+      />
+      <button type="button" class="btn-search" (click)="onSearch()">
+        <span class="icon">🔍</span>
+      </button>
+    </div>
+
+    <button 
+      type="button" 
+      class="btn-toggle-filters"
+      (click)="toggleFilters()"
+      [class.active]="isExpanded"
+    >
+      <span class="icon">⚙️</span>
+      Filtros {{ isExpanded ? '▲' : '▼' }}
+      <span *ngIf="hasActiveFilters()" class="filter-badge">!</span>
+    </button>
+
+    <button 
+      type="button" 
+      class="btn-clear"
+      (click)="onClear()"
+      *ngIf="hasActiveFilters()"
+      title="Limpiar filtros"
+    >
+      <span class="icon">✕</span>
+    </button>
+  </div>
+
+  <!-- Filtros Avanzados -->
+  <div class="advanced-filters" [class.expanded]="isExpanded">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="status">Estado</label>
+        <select
+          id="status"
+          [(ngModel)]="filter.status"
+          (change)="onSearch()"
+          class="filter-select"
+        >
+          <option value="">Todos los estados</option>
+          <option *ngFor="let status of tenantStatuses" [value]="status.value">
+            {{ status.icon }} {{ status.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="building">Edificio</label>
+        <select
+          id="building"
+          [(ngModel)]="filter.building_id"
+          (change)="onSearch()"
+          class="filter-select"
+        >
+          <option [ngValue]="undefined">Todos los edificios</option>
+          <option *ngFor="let building of buildings" [ngValue]="building.id">
+            {{ building.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="hasContract">Contrato</label>
+        <select
+          id="hasContract"
+          [(ngModel)]="filter.has_active_contract"
+          (change)="onSearch()"
+          class="filter-select"
+        >
+          <option [ngValue]="undefined">Todos</option>
+          <option [ngValue]="true">Con contrato activo</option>
+          <option [ngValue]="false">Sin contrato activo</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

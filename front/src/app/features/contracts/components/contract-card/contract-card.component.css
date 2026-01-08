@@ -1,0 +1,617 @@
+/* =====================================================
+   CONTRACT CARD COMPONENT
+   ===================================================== */
+
+.contract-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--color-gray-200);
+  height: 100%;
+}
+
+.contract-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-secondary);
+}
+
+/* =====================================================
+   CARD STATES - Expiring & Expired
+   ===================================================== */
+
+/* Por vencer (warning) */
+.contract-card.expiring {
+  border-color: var(--color-warning);
+  border-width: 2px;
+}
+
+.contract-card.expiring .card-header {
+  background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
+}
+
+.contract-card.expiring:hover {
+  border-color: var(--color-warning);
+  box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.3);
+}
+
+/* Vencido (danger) */
+.contract-card.expired {
+  border-color: var(--color-error);
+  border-width: 2px;
+}
+
+.contract-card.expired .card-header {
+  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+}
+
+.contract-card.expired:hover {
+  border-color: var(--color-error);
+  box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.3);
+}
+
+/* =====================================================
+   CARD HEADER
+   ===================================================== */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-lg);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-light) 100%
+  );
+  gap: var(--spacing-md);
+}
+
+.contract-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.contract-number {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.contract-number::before {
+  content: "📋";
+  font-size: 1rem;
+}
+
+/* =====================================================
+   STATUS BADGE
+   ===================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: var(--radius-xl);
+  gap: var(--spacing-xs);
+}
+
+/* Status: Active */
+.badge.active,
+.badge.status-active {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.badge.active::before,
+.badge.status-active::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-success);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Status: Pending */
+.badge.pending,
+.badge.status-pending {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+/* Status: Finished */
+.badge.finished,
+.badge.status-finished {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+  border: 1px solid var(--color-info);
+}
+
+/* Status: Cancelled */
+.badge.cancelled,
+.badge.status-cancelled {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-500);
+  border: 1px solid var(--color-gray-400);
+}
+
+/* Status: Expired */
+.badge.expired,
+.badge.status-expired {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+/* =====================================================
+   HEADER ACTIONS
+   ===================================================== */
+.actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 1rem;
+}
+
+.btn-icon:hover {
+  background-color: var(--color-secondary);
+  transform: scale(1.1);
+}
+
+.btn-icon i {
+  line-height: 1;
+}
+
+.btn-icon.btn-danger:hover {
+  background-color: var(--color-error);
+}
+
+/* =====================================================
+   CARD BODY
+   ===================================================== */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  flex: 1;
+}
+
+/* =====================================================
+   INFO ROW
+   ===================================================== */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.info-row:hover {
+  background-color: var(--color-secondary-subtle);
+}
+
+.info-row .label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  flex-shrink: 0;
+}
+
+.info-row .value {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: right;
+  word-break: break-word;
+}
+
+.info-row .building-name {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--color-gray-500);
+}
+
+/* Rent Amount Highlight */
+.info-row .rent-amount {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+/* =====================================================
+   CARD DATES
+   ===================================================== */
+.card-dates {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-gray-50);
+  border-top: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid var(--color-gray-200);
+  gap: var(--spacing-sm);
+}
+
+.date-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+}
+
+.date-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.date-value {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.date-separator {
+  font-size: 1.25rem;
+  color: var(--color-secondary);
+  font-weight: 700;
+}
+
+/* =====================================================
+   CARD FOOTER - Days Remaining
+   ===================================================== */
+.card-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-white);
+}
+
+.days-remaining {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  text-align: center;
+  border: 1px solid var(--color-success);
+}
+
+.days-remaining strong {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin-right: var(--spacing-xs);
+}
+
+/* Warning state (expiring soon) */
+.days-remaining.warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+  animation: pulse-warning 2s ease-in-out infinite;
+}
+
+/* Danger state (expired) */
+.days-remaining.danger {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.expired-label {
+  font-weight: 600;
+}
+
+@keyframes pulse-warning {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+}
+
+/* =====================================================
+   CARD ACTIONS
+   ===================================================== */
+.card-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-gray-50);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.card-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex: 1;
+  white-space: nowrap;
+}
+
+/* Button Primary - Ver detalles */
+.card-actions .btn-primary {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  border-color: var(--color-secondary);
+}
+
+.card-actions .btn-primary:hover {
+  background-color: var(--color-secondary-dark);
+  border-color: var(--color-secondary-dark);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+/* Button Warning - Finalizar contrato */
+.card-actions .btn-warning {
+  background-color: transparent;
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.card-actions .btn-warning:hover {
+  background-color: var(--color-warning);
+  color: var(--color-white);
+}
+
+/* Button Outline - Ver detalles (non-active) */
+.card-actions .btn-outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-gray-300);
+  width: 100%;
+}
+
+.card-actions .btn-outline:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+@media (max-width: 768px) {
+  .card-header {
+    padding: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+
+  .contract-number {
+    font-size: 1rem;
+  }
+
+  .actions {
+    order: -1;
+    width: 100%;
+    justify-content: flex-end;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .card-body {
+    padding: var(--spacing-md);
+    gap: var(--spacing-xs);
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+  }
+
+  .info-row .value {
+    text-align: left;
+    width: 100%;
+  }
+
+  .card-dates {
+    padding: var(--spacing-md);
+  }
+
+  .date-value {
+    font-size: 0.85rem;
+  }
+
+  .card-footer {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .card-actions {
+    padding: var(--spacing-sm) var(--spacing-md);
+    flex-wrap: wrap;
+  }
+
+  .card-actions .btn {
+    font-size: 0.75rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    order: 0;
+    width: auto;
+    margin-bottom: 0;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .card-dates {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .date-separator {
+    transform: rotate(90deg);
+    font-size: 1rem;
+  }
+
+  .date-item {
+    flex-direction: row;
+    gap: var(--spacing-sm);
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .card-actions .btn {
+    width: 100%;
+    padding: var(--spacing-sm);
+    font-size: 0.85rem;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+.btn-icon:focus-visible,
+.card-actions .btn:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contract-card,
+  .btn-icon,
+  .info-row,
+  .card-actions .btn,
+  .days-remaining.warning {
+    transition: none;
+    animation: none;
+  }
+
+  .contract-card:hover {
+    transform: none;
+  }
+
+  .btn-icon:hover {
+    transform: none;
+  }
+
+  .card-actions .btn-primary:hover {
+    transform: none;
+  }
+
+  .badge.active::before,
+  .badge.status-active::before {
+    animation: none;
+  }
+}
+
+/* =====================================================
+   HOVER EFFECTS ADICIONALES
+   ===================================================== */
+
+/* Efecto de brillo en la card */
+.contract-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 214, 0, 0.1) 50%,
+    transparent 100%
+  );
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+
+.contract-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.contract-card:hover::after {
+  left: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contract-card::after {
+    display: none;
+  }
+}

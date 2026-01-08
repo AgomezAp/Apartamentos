@@ -1,0 +1,40 @@
+<div class="alerts-widget">
+  <div class="widget-header">
+    <h3>🔔 Alertas Recientes</h3>
+    <button class="btn-refresh" (click)="loadAlerts()">🔄</button>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando alertas...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="alerts-list" *ngIf="!loading && !error">
+    <div class="alert-item" 
+         *ngFor="let alert of alerts"
+         [ngClass]="getSeverityClass(alert.severity)"
+         [class.read]="alert.is_read"
+         (click)="markAsRead(alert)">
+      <div class="alert-icon">{{ getSeverityIcon(alert.severity) }}</div>
+      <div class="alert-content">
+        <div class="alert-message">{{ alert.message }}</div>
+        <div class="alert-meta">
+          <span class="alert-type">{{ alert.type }}</span>
+          <span class="alert-date">{{ alert.created_at | dateFormat:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+      <div class="alert-indicator" *ngIf="!alert.is_read"></div>
+    </div>
+
+    <div class="no-alerts" *ngIf="alerts.length === 0">
+      <p>✅ No hay alertas nuevas</p>
+    </div>
+  </div>
+
+  <div class="widget-footer" *ngIf="alerts.length > 0">
+    <a routerLink="/alerts" class="link-all">Ver todas las alertas →</a>
+  </div>
+</div>

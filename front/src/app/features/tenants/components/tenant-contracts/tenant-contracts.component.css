@@ -1,0 +1,258 @@
+.contracts-container {
+  padding: 20px 0;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 40px;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.section-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.contracts-count {
+  background: #ecf0f1;
+  color: #34495e;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-badge.small {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+/* Contrato Activo */
+.active-contract {
+  margin-bottom: 32px;
+}
+
+.contract-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  border-left: 4px solid #95a5a6;
+  transition: transform 0.3s ease;
+}
+
+.contract-card.active {
+  border-left-color: #27ae60;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
+}
+
+.contract-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.contract-info .info-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.contract-info .info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-item .label {
+  font-size: 12px;
+  color: #7f8c8d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-item .value {
+  font-size: 15px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.info-item .value.highlight {
+  color: #27ae60;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.expiry-warning {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 16px;
+  color: #856404;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Historial de Contratos */
+.contracts-history {
+  margin-top: 32px;
+}
+
+.contracts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contract-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.contract-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.unit-badge {
+  background: #667eea;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.building-name {
+  color: #34495e;
+  font-weight: 500;
+}
+
+.contract-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #34495e;
+  font-size: 14px;
+}
+
+.detail-item .icon {
+  font-size: 16px;
+}
+
+.detail-item .duration {
+  color: #7f8c8d;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.termination-info {
+  margin-top: 12px;
+  padding: 12px;
+  background: #fee;
+  border-left: 3px solid #e74c3c;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #c0392b;
+}
+
+/* Empty States */
+.no-active-contract,
+.no-contracts {
+  margin: 40px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #dcdde1;
+}
+
+.empty-state .icon {
+  font-size: 64px;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  color: #7f8c8d;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .contract-info .info-row {
+    grid-template-columns: 1fr;
+  }
+
+  .contract-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

@@ -1,0 +1,611 @@
+/* =====================================================
+   BUILDING STATS COMPONENT
+   ===================================================== */
+
+.stats-container {
+  width: 100%;
+}
+
+/* =====================================================
+   STATS GRID
+   ===================================================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+/* =====================================================
+   STAT CARD - BASE STYLES
+   ===================================================== */
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+  border-left: 4px solid var(--color-gray-400);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: 0;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card:hover::before {
+  opacity: 0.03;
+}
+
+/* =====================================================
+   STAT ICON
+   ===================================================== */
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background-color: var(--color-gray-100);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  transition: all var(--transition-normal);
+  position: relative;
+  z-index: 1;
+}
+
+.stat-icon i {
+  font-size: 1.5rem;
+  color: var(--color-gray-500);
+  transition: all var(--transition-normal);
+}
+
+.stat-card:hover .stat-icon {
+  transform: scale(1.05);
+}
+
+/* =====================================================
+   STAT INFO
+   ===================================================== */
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.stat-sublabel {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-gray-400);
+  margin-top: var(--spacing-xs);
+}
+
+/* =====================================================
+   STAT CARD VARIANTS
+   ===================================================== */
+
+/* Primary - Amarillo (Color corporativo) */
+.stat-card.primary {
+  border-left-color: var(--color-secondary);
+  background: linear-gradient(135deg, var(--color-white) 0%, var(--color-secondary-subtle) 100%);
+}
+
+.stat-card.primary::before {
+  background: var(--color-secondary);
+}
+
+.stat-card.primary .stat-icon {
+  background-color: var(--color-secondary);
+}
+
+.stat-card.primary .stat-icon i {
+  color: var(--color-primary);
+}
+
+.stat-card.primary .stat-value {
+  color: var(--color-primary);
+}
+
+.stat-card.primary:hover {
+  border-color: var(--color-secondary);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Success - Verde */
+.stat-card.success {
+  border-left-color: var(--color-success);
+}
+
+.stat-card.success::before {
+  background: var(--color-success);
+}
+
+.stat-card.success .stat-icon {
+  background-color: var(--color-success-bg);
+}
+
+.stat-card.success .stat-icon i {
+  color: var(--color-success);
+}
+
+.stat-card.success .stat-value {
+  color: var(--color-success);
+}
+
+.stat-card.success:hover {
+  border-color: var(--color-success);
+}
+
+.stat-card.success:hover .stat-icon {
+  background-color: var(--color-success);
+}
+
+.stat-card.success:hover .stat-icon i {
+  color: var(--color-white);
+}
+
+/* Warning - Naranja */
+.stat-card.warning {
+  border-left-color: var(--color-warning);
+}
+
+.stat-card.warning::before {
+  background: var(--color-warning);
+}
+
+.stat-card.warning .stat-icon {
+  background-color: var(--color-warning-bg);
+}
+
+.stat-card.warning .stat-icon i {
+  color: var(--color-warning);
+}
+
+.stat-card.warning .stat-value {
+  color: var(--color-warning);
+}
+
+.stat-card.warning:hover {
+  border-color: var(--color-warning);
+}
+
+.stat-card.warning:hover .stat-icon {
+  background-color: var(--color-warning);
+}
+
+.stat-card.warning:hover .stat-icon i {
+  color: var(--color-white);
+}
+
+/* Info - Azul */
+.stat-card.info {
+  border-left-color: var(--color-info);
+}
+
+.stat-card.info::before {
+  background: var(--color-info);
+}
+
+.stat-card.info .stat-icon {
+  background-color: var(--color-info-bg);
+}
+
+.stat-card.info .stat-icon i {
+  color: var(--color-info);
+}
+
+.stat-card.info .stat-value {
+  color: var(--color-info);
+}
+
+.stat-card.info:hover {
+  border-color: var(--color-info);
+}
+
+.stat-card.info:hover .stat-icon {
+  background-color: var(--color-info);
+}
+
+.stat-card.info:hover .stat-icon i {
+  color: var(--color-white);
+}
+
+/* Danger - Rojo */
+.stat-card.danger {
+  border-left-color: var(--color-error);
+}
+
+.stat-card.danger::before {
+  background: var(--color-error);
+}
+
+.stat-card.danger .stat-icon {
+  background-color: var(--color-error-bg);
+}
+
+.stat-card.danger .stat-icon i {
+  color: var(--color-error);
+}
+
+.stat-card.danger .stat-value {
+  color: var(--color-error);
+}
+
+.stat-card.danger:hover {
+  border-color: var(--color-error);
+}
+
+.stat-card.danger:hover .stat-icon {
+  background-color: var(--color-error);
+}
+
+.stat-card.danger:hover .stat-icon i {
+  color: var(--color-white);
+}
+
+/* =====================================================
+   OCCUPANCY SPECIFIC CLASSES
+   ===================================================== */
+
+/* Alta ocupación (> 80%) - Verde */
+.stat-card.occupancy-high {
+  border-left-color: var(--color-success);
+}
+
+.stat-card.occupancy-high .stat-icon {
+  background-color: var(--color-success-bg);
+}
+
+.stat-card.occupancy-high .stat-icon i {
+  color: var(--color-success);
+}
+
+.stat-card.occupancy-high .stat-value {
+  color: var(--color-success);
+}
+
+.stat-card.occupancy-high:hover .stat-icon {
+  background-color: var(--color-success);
+}
+
+.stat-card.occupancy-high:hover .stat-icon i {
+  color: var(--color-white);
+}
+
+/* Ocupación media (50-80%) - Amarillo */
+.stat-card.occupancy-medium {
+  border-left-color: var(--color-secondary);
+}
+
+.stat-card.occupancy-medium .stat-icon {
+  background-color: var(--color-secondary-subtle);
+}
+
+.stat-card.occupancy-medium .stat-icon i {
+  color: var(--color-secondary-dark);
+}
+
+.stat-card.occupancy-medium .stat-value {
+  color: var(--color-secondary-dark);
+}
+
+.stat-card.occupancy-medium:hover .stat-icon {
+  background-color: var(--color-secondary);
+}
+
+.stat-card.occupancy-medium:hover .stat-icon i {
+  color: var(--color-primary);
+}
+
+/* Baja ocupación (< 50%) - Rojo */
+.stat-card.occupancy-low {
+  border-left-color: var(--color-error);
+}
+
+.stat-card.occupancy-low .stat-icon {
+  background-color: var(--color-error-bg);
+}
+
+.stat-card.occupancy-low .stat-icon i {
+  color: var(--color-error);
+}
+
+.stat-card.occupancy-low .stat-value {
+  color: var(--color-error);
+}
+
+.stat-card.occupancy-low:hover .stat-icon {
+  background-color: var(--color-error);
+}
+
+.stat-card.occupancy-low:hover .stat-icon i {
+  color: var(--color-white);
+}
+
+/* =====================================================
+   PROGRESS BAR (Opcional para porcentajes)
+   ===================================================== */
+.stat-progress {
+  width: 100%;
+  height: 6px;
+  background-color: var(--color-gray-200);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-top: var(--spacing-sm);
+}
+
+.stat-progress .progress-fill {
+  height: 100%;
+  border-radius: var(--radius-xl);
+  transition: width var(--transition-slow);
+}
+
+.stat-card.success .stat-progress .progress-fill {
+  background: linear-gradient(90deg, var(--color-success) 0%, #34d399 100%);
+}
+
+.stat-card.warning .stat-progress .progress-fill {
+  background: linear-gradient(90deg, var(--color-warning) 0%, #fbbf24 100%);
+}
+
+.stat-card.danger .stat-progress .progress-fill,
+.stat-card.occupancy-low .stat-progress .progress-fill {
+  background: linear-gradient(90deg, var(--color-error) 0%, #f87171 100%);
+}
+
+.stat-card.occupancy-high .stat-progress .progress-fill {
+  background: linear-gradient(90deg, var(--color-success) 0%, #34d399 100%);
+}
+
+.stat-card.occupancy-medium .stat-progress .progress-fill {
+  background: linear-gradient(90deg, var(--color-secondary-dark) 0%, var(--color-secondary) 100%);
+}
+
+/* =====================================================
+   LOADING STATE
+   ===================================================== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-2xl);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+  min-height: 200px;
+}
+
+.loading-container i {
+  font-size: 2.5rem;
+  color: var(--color-secondary);
+}
+
+.loading-container span {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-gray-500);
+}
+
+/* =====================================================
+   NO DATA STATE
+   ===================================================== */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-2xl);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 2px dashed var(--color-gray-300);
+  min-height: 200px;
+}
+
+.no-data i {
+  font-size: 3rem;
+  color: var(--color-gray-300);
+}
+
+.no-data p {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-gray-400);
+  margin: 0;
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .stat-card {
+    padding: var(--spacing-md);
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .stat-icon i {
+    font-size: 1.25rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-card {
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .stat-icon i {
+    font-size: 1.1rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.35rem;
+  }
+
+  .stat-sublabel {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .stat-card {
+    padding: var(--spacing-md);
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .stat-icon i {
+    font-size: 1.25rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .loading-container,
+  .no-data {
+    min-height: 150px;
+    padding: var(--spacing-xl);
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .stat-card::before,
+  .stat-icon,
+  .stat-icon i,
+  .stat-progress .progress-fill {
+    transition: none;
+  }
+
+  .stat-card:hover {
+    transform: none;
+  }
+
+  .stat-card:hover .stat-icon {
+    transform: none;
+  }
+}
+
+/* Focus visible para teclado */
+.stat-card:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   ANIMACIÓN DE ENTRADA (Opcional)
+   ===================================================== */
+.stats-grid.animated .stat-card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideInUp 0.4s ease forwards;
+}
+
+.stats-grid.animated .stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stats-grid.animated .stat-card:nth-child(2) { animation-delay: 0.15s; }
+.stats-grid.animated .stat-card:nth-child(3) { animation-delay: 0.2s; }
+.stats-grid.animated .stat-card:nth-child(4) { animation-delay: 0.25s; }
+.stats-grid.animated .stat-card:nth-child(5) { animation-delay: 0.3s; }
+.stats-grid.animated .stat-card:nth-child(6) { animation-delay: 0.35s; }
+.stats-grid.animated .stat-card:nth-child(7) { animation-delay: 0.4s; }
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stats-grid.animated .stat-card {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}

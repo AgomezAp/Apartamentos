@@ -1,0 +1,143 @@
+/* Expiring Contracts Styles */
+.expiring-contracts {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.25rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #f3f4f6;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: #e5e7eb;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.loading, .error, .no-contracts {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.error {
+  color: #ef4444;
+}
+
+.no-contracts {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.contracts-table {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+th {
+  padding: 0.75rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+td {
+  padding: 1rem 0.75rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tr.urgent {
+  background: #fef2f2;
+}
+
+tr.warning {
+  background: #fffbeb;
+}
+
+tr.normal {
+  background: white;
+}
+
+.days-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.days-badge.urgent {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.days-badge.warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.days-badge.normal {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.btn-link:hover {
+  color: #2563eb;
+}
+
+@media (max-width: 768px) {
+  .contracts-table {
+    font-size: 0.75rem;
+  }
+  
+  th, td {
+    padding: 0.5rem;
+  }
+}

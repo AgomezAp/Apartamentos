@@ -1,0 +1,13 @@
+<div class="maintenance-create-container">
+  <div class="form-wrapper">
+    <app-maintenance-form
+      [buildings]="buildings"
+      [units]="units"
+      [tenants]="tenants"
+      (buildingChange)="onBuildingChange($event)"
+      (unitChange)="onUnitChange($event)"
+      (submit)="onSubmit($event)"
+      (cancel)="onCancel()">
+    </app-maintenance-form>
+  </div>
+</div>

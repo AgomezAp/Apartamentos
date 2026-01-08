@@ -1,0 +1,87 @@
+<div class="revenue-report-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>💰 Reporte de Ingresos</h1>
+      <p>Análisis de ingresos por fuente</p>
+    </div>
+    <div class="header-actions">
+      <app-export-buttons [data]="revenueData" filename="reporte_ingresos"></app-export-buttons>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <app-report-filter
+    [showReportTypeFilter]="false"
+    [showTenantFilter]="false"
+    [showUnitFilter]="false"
+    (filterChange)="onFilterChange($event)">
+  </app-report-filter>
+
+  <!-- Summary Cards -->
+  <div class="summary-section">
+    <div class="summary-card rent">
+      <div class="card-icon">🏠</div>
+      <div class="card-content">
+        <h3>{{ summary.totalRent | currencyFormat }}</h3>
+        <p>Rentas</p>
+      </div>
+    </div>
+    <div class="summary-card services">
+      <div class="card-icon">⚙️</div>
+      <div class="card-content">
+        <h3>{{ summary.totalServices | currencyFormat }}</h3>
+        <p>Servicios</p>
+      </div>
+    </div>
+    <div class="summary-card other">
+      <div class="card-icon">📊</div>
+      <div class="card-content">
+        <h3>{{ summary.totalOther | currencyFormat }}</h3>
+        <p>Otros</p>
+      </div>
+    </div>
+    <div class="summary-card total">
+      <div class="card-icon">💵</div>
+      <div class="card-content">
+        <h3>{{ summary.total | currencyFormat }}</h3>
+        <p>Total Ingresos</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando reporte de ingresos...</p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-grid" *ngIf="!loading">
+    <!-- Revenue Trend Chart -->
+    <div class="chart-section" *ngIf="chartData">
+      <app-chart-viewer 
+        [chartData]="chartData" 
+        [title]="'Tendencia de Ingresos'" 
+        [height]="350">
+      </app-chart-viewer>
+    </div>
+
+    <!-- Revenue Sources Chart -->
+    <div class="chart-section" *ngIf="sourceChartData">
+      <app-chart-viewer 
+        [chartData]="sourceChartData" 
+        [title]="'Fuentes de Ingreso'" 
+        [height]="300">
+      </app-chart-viewer>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-section" *ngIf="!loading">
+    <app-report-table 
+      [data]="revenueData" 
+      [columns]="tableColumns" 
+      [title]="'Detalle de Ingresos por Período'"
+      [showTotals]="true">
+    </app-report-table>
+  </div>
+</div>

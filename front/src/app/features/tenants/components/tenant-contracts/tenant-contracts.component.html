@@ -1,0 +1,122 @@
+<div class="contracts-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando contratos...</p>
+  </div>
+
+  <!-- Contrato Activo -->
+  <div *ngIf="!isLoading && activeContract" class="active-contract">
+    <div class="section-header">
+      <h3>📄 Contrato Activo</h3>
+      <span class="status-badge" [style.background-color]="getStatusConfig(activeContract.status).color">
+        {{ getStatusConfig(activeContract.status).icon }} {{ getStatusConfig(activeContract.status).label }}
+      </span>
+    </div>
+
+    <div class="contract-card active">
+      <div class="contract-info">
+        <div class="info-row">
+          <div class="info-item">
+            <span class="label">🏢 Unidad:</span>
+            <span class="value">{{ activeContract.unit_number }} - {{ activeContract.building_name }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">📅 Periodo:</span>
+            <span class="value">
+              {{ activeContract.start_date | dateFormat:'dd/MM/yyyy' }} - {{ activeContract.end_date | dateFormat:'dd/MM/yyyy' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-item">
+            <span class="label">💵 Renta Mensual:</span>
+            <span class="value highlight">{{ activeContract.monthly_rent | currencyFormat }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">🛡️ Depósito:</span>
+            <span class="value">{{ activeContract.deposit_amount | currencyFormat }}</span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-item">
+            <span class="label">📆 Día de Pago:</span>
+            <span class="value">Día {{ activeContract.payment_day }} de cada mes</span>
+          </div>
+          <div class="info-item">
+            <span class="label">🔄 Auto-renovación:</span>
+            <span class="value">{{ activeContract.auto_renewal ? 'Sí' : 'No' }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="isExpiringSoon(activeContract)" class="expiry-warning">
+          ⚠️ Este contrato vence pronto. Finaliza el {{ activeContract.end_date | dateFormat:'dd/MM/yyyy' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sin Contrato Activo -->
+  <div *ngIf="!isLoading && !activeContract" class="no-active-contract">
+    <div class="empty-state">
+      <span class="icon">📝</span>
+      <p>No hay contrato activo</p>
+    </div>
+  </div>
+
+  <!-- Historial de Contratos -->
+  <div *ngIf="!isLoading && contracts.length > 0" class="contracts-history">
+    <div class="section-header">
+      <h3>📊 Historial de Contratos</h3>
+      <span class="contracts-count">{{ contracts.length }} {{ contracts.length === 1 ? 'contrato' : 'contratos' }}</span>
+    </div>
+
+    <div class="contracts-list">
+      <div *ngFor="let contract of contracts" class="contract-card" [class.active]="contract.status === 'active'">
+        <div class="contract-header">
+          <div class="contract-title">
+            <span class="unit-badge">🏢 {{ contract.unit_number }}</span>
+            <span class="building-name">{{ contract.building_name }}</span>
+          </div>
+          <span 
+            class="status-badge small" 
+            [style.background-color]="getStatusConfig(contract.status).color"
+          >
+            {{ getStatusConfig(contract.status).icon }} {{ getStatusConfig(contract.status).label }}
+          </span>
+        </div>
+
+        <div class="contract-details">
+          <div class="detail-item">
+            <span class="icon">📅</span>
+            <span>{{ contract.start_date | dateFormat:'dd/MM/yyyy' }} - {{ contract.end_date | dateFormat:'dd/MM/yyyy' }}</span>
+            <span class="duration">({{ getDurationInMonths(contract.start_date, contract.end_date) }} meses)</span>
+          </div>
+          <div class="detail-item">
+            <span class="icon">💵</span>
+            <span>{{ contract.monthly_rent | currencyFormat }}/mes</span>
+          </div>
+          <div class="detail-item">
+            <span class="icon">📆</span>
+            <span>Pago día {{ contract.payment_day }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="contract.termination_date" class="termination-info">
+          <strong>Terminado:</strong> {{ contract.termination_date | dateFormat:'dd/MM/yyyy' }}
+          <span *ngIf="contract.termination_reason"> - {{ contract.termination_reason }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sin Contratos -->
+  <div *ngIf="!isLoading && contracts.length === 0" class="no-contracts">
+    <div class="empty-state">
+      <span class="icon">📄</span>
+      <p>No hay contratos registrados</p>
+    </div>
+  </div>
+</div>

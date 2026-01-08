@@ -1,0 +1,23 @@
+<div class="unit-edit-container">
+  <div class="page-header">
+    <h1>Editar Unidad</h1>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Cargando unidad...</p>
+  </div>
+
+  <app-unit-form
+    *ngIf="!isLoading && unit"
+    [unit]="unit"
+    submitButtonText="Actualizar Unidad"
+    (formSubmit)="onFormSubmit($event)"
+    (formCancel)="onFormCancel()"
+  ></app-unit-form>
+
+  <div *ngIf="isSubmitting" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Actualizando unidad...</p>
+  </div>
+</div>

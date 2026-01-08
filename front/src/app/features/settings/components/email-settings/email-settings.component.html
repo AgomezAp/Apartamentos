@@ -1,0 +1,203 @@
+<div class="email-settings-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>📧 Configuración de Correo</h1>
+      <p>Configura el servidor SMTP para envío de correos electrónicos</p>
+    </div>
+  </div>
+
+  <!-- Mensajes de éxito/error -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    <span>✓</span> {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <span>✕</span> {{ errorMessage }}
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="loading && !emailForm.dirty" class="loading">
+    <p>Cargando configuración...</p>
+  </div>
+
+  <!-- Formulario de configuración de correo -->
+  <div *ngIf="!loading || emailForm.dirty" class="form-section">
+    <form [formGroup]="emailForm" (ngSubmit)="onSubmit()">
+      <h3>Configuración SMTP</h3>
+
+      <div class="form-grid">
+        <!-- SMTP Host -->
+        <div class="form-group">
+          <label for="smtp_host">Servidor SMTP *</label>
+          <input
+            type="text"
+            id="smtp_host"
+            formControlName="smtp_host"
+            class="form-control"
+            placeholder="smtp.gmail.com"
+            [class.invalid]="smtp_host?.invalid && smtp_host?.touched"
+          />
+          <span *ngIf="smtp_host?.invalid && smtp_host?.touched" class="error-message">
+            El servidor SMTP es requerido
+          </span>
+        </div>
+
+        <!-- SMTP Port -->
+        <div class="form-group">
+          <label for="smtp_port">Puerto *</label>
+          <input
+            type="number"
+            id="smtp_port"
+            formControlName="smtp_port"
+            class="form-control"
+            placeholder="587"
+            [class.invalid]="smtp_port?.invalid && smtp_port?.touched"
+          />
+          <span *ngIf="smtp_port?.invalid && smtp_port?.touched" class="error-message">
+            Puerto válido requerido (1-65535)
+          </span>
+        </div>
+
+        <!-- SMTP Secure -->
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="smtp_secure" />
+            Conexión segura (TLS/SSL)
+          </label>
+        </div>
+
+        <!-- Enabled -->
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="enabled" />
+            Habilitar envío de correos
+          </label>
+        </div>
+
+        <!-- SMTP User -->
+        <div class="form-group">
+          <label for="smtp_user">Usuario SMTP *</label>
+          <input
+            type="email"
+            id="smtp_user"
+            formControlName="smtp_user"
+            class="form-control"
+            placeholder="usuario@ejemplo.com"
+            [class.invalid]="smtp_user?.invalid && smtp_user?.touched"
+          />
+          <span *ngIf="smtp_user?.invalid && smtp_user?.touched" class="error-message">
+            Email válido requerido
+          </span>
+        </div>
+
+        <!-- SMTP Password -->
+        <div class="form-group">
+          <label for="smtp_password">Contraseña SMTP</label>
+          <div class="password-input">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="smtp_password"
+              formControlName="smtp_password"
+              class="form-control"
+              placeholder="••••••••"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePasswordVisibility()"
+            >
+              {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+            </button>
+          </div>
+          <small>Dejar en blanco para no cambiar</small>
+        </div>
+
+        <!-- From Email -->
+        <div class="form-group">
+          <label for="from_email">Email remitente *</label>
+          <input
+            type="email"
+            id="from_email"
+            formControlName="from_email"
+            class="form-control"
+            placeholder="noreply@ejemplo.com"
+            [class.invalid]="from_email?.invalid && from_email?.touched"
+          />
+          <span *ngIf="from_email?.invalid && from_email?.touched" class="error-message">
+            Email válido requerido
+          </span>
+        </div>
+
+        <!-- From Name -->
+        <div class="form-group">
+          <label for="from_name">Nombre remitente *</label>
+          <input
+            type="text"
+            id="from_name"
+            formControlName="from_name"
+            class="form-control"
+            placeholder="Mi Empresa"
+            [class.invalid]="from_name?.invalid && from_name?.touched"
+          />
+          <span *ngIf="from_name?.invalid && from_name?.touched" class="error-message">
+            El nombre del remitente es requerido
+          </span>
+        </div>
+
+        <!-- Reply To -->
+        <div class="form-group">
+          <label for="reply_to">Responder a (opcional)</label>
+          <input
+            type="email"
+            id="reply_to"
+            formControlName="reply_to"
+            class="form-control"
+            placeholder="soporte@ejemplo.com"
+            [class.invalid]="reply_to?.invalid && reply_to?.touched"
+          />
+          <span *ngIf="reply_to?.invalid && reply_to?.touched" class="error-message">
+            Email válido requerido
+          </span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="loading || emailForm.invalid">
+          {{ loading ? 'Guardando...' : '💾 Guardar Configuración' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Sección de prueba de correo -->
+  <div class="test-section">
+    <h3>Probar Configuración</h3>
+    <p>Envía un correo de prueba para verificar que la configuración es correcta</p>
+
+    <form [formGroup]="testEmailForm" (ngSubmit)="onTestEmail()">
+      <div class="test-form">
+        <div class="form-group">
+          <label for="test_email">Email de prueba</label>
+          <input
+            type="email"
+            id="test_email"
+            formControlName="test_email"
+            class="form-control"
+            placeholder="destinatario@ejemplo.com"
+            [class.invalid]="test_email?.invalid && test_email?.touched"
+          />
+          <span *ngIf="test_email?.invalid && test_email?.touched" class="error-message">
+            Email válido requerido
+          </span>
+        </div>
+
+        <button type="submit" class="btn btn-secondary" [disabled]="testing || testEmailForm.invalid">
+          {{ testing ? 'Enviando...' : '📤 Enviar Prueba' }}
+        </button>
+      </div>
+    </form>
+
+    <div *ngIf="testMessage" class="test-message">
+      {{ testMessage }}
+    </div>
+  </div>
+</div>

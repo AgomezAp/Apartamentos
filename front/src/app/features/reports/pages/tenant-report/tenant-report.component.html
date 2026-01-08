@@ -1,0 +1,84 @@
+<div class="tenant-report-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>👥 Reporte de Inquilinos</h1>
+      <p>Información completa de inquilinos y contratos</p>
+    </div>
+    <div class="header-actions">
+      <app-export-buttons [data]="tenantData" filename="reporte_inquilinos"></app-export-buttons>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-section">
+    <div class="summary-card total">
+      <div class="card-icon">👤</div>
+      <div class="card-content">
+        <h3>{{ summary.totalTenants }}</h3>
+        <p>Total Inquilinos</p>
+      </div>
+    </div>
+    <div class="summary-card active">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <h3>{{ summary.activeTenants }}</h3>
+        <p>Activos</p>
+      </div>
+    </div>
+    <div class="summary-card expiring">
+      <div class="card-icon">⚠️</div>
+      <div class="card-content">
+        <h3>{{ summary.expiringSoon }}</h3>
+        <p>Contratos por Vencer</p>
+      </div>
+    </div>
+    <div class="summary-card rent">
+      <div class="card-icon">💵</div>
+      <div class="card-content">
+        <h3>{{ summary.totalMonthlyRent | currencyFormat }}</h3>
+        <p>Renta Mensual Total</p>
+      </div>
+    </div>
+    <div class="summary-card paid">
+      <div class="card-icon">💰</div>
+      <div class="card-content">
+        <h3>{{ summary.totalPaid | currencyFormat }}</h3>
+        <p>Total Pagado</p>
+      </div>
+    </div>
+    <div class="summary-card current">
+      <div class="card-icon">📊</div>
+      <div class="card-content">
+        <h3>{{ summary.currentTenants }}</h3>
+        <p>Al Día en Pagos</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando reporte de inquilinos...</p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-section" *ngIf="!loading">
+    <!-- Payment Status Chart -->
+    <div class="chart-section" *ngIf="chartData">
+      <app-chart-viewer 
+        [chartData]="chartData" 
+        [title]="'Estado de Pagos'" 
+        [height]="300">
+      </app-chart-viewer>
+    </div>
+
+    <!-- Table -->
+    <div class="table-section">
+      <app-report-table 
+        [data]="tenantData" 
+        [columns]="tableColumns" 
+        [title]="'Detalle de Inquilinos'"
+        [showTotals]="true">
+      </app-report-table>
+    </div>
+  </div>
+</div>

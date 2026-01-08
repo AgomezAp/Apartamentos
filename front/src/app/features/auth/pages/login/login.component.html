@@ -1,0 +1,107 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <!-- Header -->
+    <div class="auth-header">
+      <div class="logo">
+        <!-- Opción 1: Con icono -->
+        <i class="fas fa-building"></i>
+
+        <!-- Opción 2: Con imagen de logo -->
+        <!-- <img src="assets/logo.png" alt="Logo"> -->
+      </div>
+      <h1>Bienvenido</h1>
+      <p>Ingresa tus credenciales para acceder al sistema</p>
+    </div>
+
+    <!-- Formulario -->
+    <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email -->
+      <div class="form-group">
+        <label>
+          <i class="fas fa-envelope"></i>
+          Correo electrónico
+        </label>
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="tu@email.com"
+          [class.error]="
+            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          "
+        />
+        <span
+          class="error-message"
+          *ngIf="
+            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          "
+        >
+          Ingresa un correo válido
+        </span>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label>
+          <i class="fas fa-lock"></i>
+          Contraseña
+        </label>
+        <div class="password-input">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="••••••••"
+            [class.error]="
+              loginForm.get('password')?.invalid &&
+              loginForm.get('password')?.touched
+            "
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="showPassword = !showPassword"
+          >
+            <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+        <span
+          class="error-message"
+          *ngIf="
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+          "
+        >
+          La contraseña es requerida
+        </span>
+      </div>
+
+      <!-- Options Row -->
+      <div class="form-row">
+        <label class="custom-checkbox">
+          <input type="checkbox" formControlName="rememberMe" />
+          <span class="checkmark"></span>
+          Recordarme
+        </label>
+        <a href="/forgot-password" class="link">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="loginForm.invalid || isLoading"
+      >
+        <span class="btn-spinner" *ngIf="isLoading"></span>
+        <span *ngIf="!isLoading">
+          <i class="fas fa-sign-in-alt"></i>
+          Iniciar Sesión
+        </span>
+      </button>
+
+    </form>
+
+    <!-- Footer -->
+    <div class="form-footer">
+      <p>¿No tienes cuenta? <a  routerLink="/auth/register" class="link">Regístrate aquí</a></p>
+    </div>
+  </div>
+</div>

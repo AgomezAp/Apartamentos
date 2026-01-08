@@ -1,0 +1,4 @@
+<div class="status-indicator" [ngClass]="getStatusClass()">
+  <span class="status-icon">{{ getStatusIcon() }}</span>
+  <span *ngIf="showLabel" class="status-label">{{ getStatusLabel() }}</span>
+</div>

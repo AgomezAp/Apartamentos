@@ -1,0 +1,40 @@
+<div class="occupancy-chart">
+  <div class="widget-header">
+    <h3>🏢 Ocupación por Edificio</h3>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando datos...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="chart-container" *ngIf="!loading && !error">
+    <div class="building-row" *ngFor="let building of buildingStats">
+      <div class="building-info">
+        <div class="building-name">{{ building.building_name }}</div>
+        <div class="building-units">{{ building.occupied_units }}/{{ building.total_units }} unidades</div>
+      </div>
+      
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" 
+               [style.width]="getOccupancyBarWidth(building.occupancy_rate)"
+               [style.background-color]="getOccupancyColor(building.occupancy_rate)">
+          </div>
+        </div>
+        <div class="progress-label">{{ building.occupancy_rate | number:'1.0-1' }}%</div>
+      </div>
+
+      <div class="building-revenue">
+        {{ building.monthly_income | currencyFormat }}/mes
+      </div>
+    </div>
+
+    <div class="no-data" *ngIf="buildingStats.length === 0">
+      <p>No hay datos de edificios disponibles</p>
+    </div>
+  </div>
+</div>

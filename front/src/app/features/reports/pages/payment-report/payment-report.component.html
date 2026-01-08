@@ -1,0 +1,94 @@
+<div class="payment-report-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>💳 Reporte de Pagos</h1>
+      <p>Análisis de pagos y tasas de cobro</p>
+    </div>
+    <div class="header-actions">
+      <app-export-buttons [data]="paymentData" filename="reporte_pagos"></app-export-buttons>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <app-report-filter
+    [showReportTypeFilter]="false"
+    [showTenantFilter]="false"
+    [showUnitFilter]="false"
+    (filterChange)="onFilterChange($event)">
+  </app-report-filter>
+
+  <!-- Summary Cards -->
+  <div class="summary-section">
+    <div class="summary-card expected">
+      <div class="card-icon">📅</div>
+      <div class="card-content">
+        <h3>{{ summary.totalExpected | currencyFormat }}</h3>
+        <p>Total Esperado</p>
+      </div>
+    </div>
+    <div class="summary-card collected">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <h3>{{ summary.totalCollected | currencyFormat }}</h3>
+        <p>Total Cobrado</p>
+      </div>
+    </div>
+    <div class="summary-card pending">
+      <div class="card-icon">⏳</div>
+      <div class="card-content">
+        <h3>{{ summary.totalPending | currencyFormat }}</h3>
+        <p>Pendiente</p>
+      </div>
+    </div>
+    <div class="summary-card overdue">
+      <div class="card-icon">🔴</div>
+      <div class="card-content">
+        <h3>{{ summary.totalOverdue | currencyFormat }}</h3>
+        <p>Vencido</p>
+      </div>
+    </div>
+    <div class="summary-card rate">
+      <div class="card-icon">📈</div>
+      <div class="card-content">
+        <h3>{{ summary.collectionRate.toFixed(2) }}%</h3>
+        <p>Tasa de Cobro</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando reporte de pagos...</p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-grid" *ngIf="!loading">
+    <!-- Collection Trend Chart -->
+    <div class="chart-section" *ngIf="chartData">
+      <app-chart-viewer 
+        [chartData]="chartData" 
+        [title]="'Tendencia de Cobros'" 
+        [height]="350">
+      </app-chart-viewer>
+    </div>
+
+    <!-- Status Distribution Chart -->
+    <div class="chart-section" *ngIf="statusChartData">
+      <app-chart-viewer 
+        [chartData]="statusChartData" 
+        [title]="'Distribución por Estado'" 
+        [height]="300">
+      </app-chart-viewer>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-section" *ngIf="!loading">
+    <app-report-table 
+      [data]="paymentData" 
+      [columns]="tableColumns" 
+      [title]="'Detalle de Pagos por Período'"
+      [showTotals]="true">
+    </app-report-table>
+  </div>
+</div>

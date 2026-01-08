@@ -1,0 +1,670 @@
+/* =====================================================
+   BUILDING CARD COMPONENT - COLORES CORPORATIVOS
+   #141414 (Negro) y #FFD600 (Amarillo)
+   Tipografías: Century Gothic y Fira Sans
+   ===================================================== */
+
+:host {
+  display: block;
+}
+
+/* =====================================================
+   TARJETA PRINCIPAL
+   ===================================================== */
+.building-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--color-gray-200);
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.building-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl), 0 0 0 2px var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+/* Estado inactivo */
+.building-card.inactive {
+  opacity: 0.7;
+  filter: grayscale(30%);
+}
+
+.building-card.inactive:hover {
+  opacity: 1;
+  filter: grayscale(0%);
+}
+
+/* =====================================================
+   IMAGEN DE LA TARJETA
+   ===================================================== */
+.card-image {
+  position: relative;
+  height: 180px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-light) 100%
+  );
+  overflow: hidden;
+}
+
+.card-image::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 214, 0, 0.15) 0%,
+    transparent 60%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.building-card:hover .card-image img {
+  transform: scale(1.08);
+}
+
+/* =====================================================
+   BADGE DE ESTADO
+   ===================================================== */
+.status-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--shadow-md);
+}
+
+.status-badge::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+.status-badge.active {
+  background: var(--color-success);
+  color: var(--color-white);
+}
+
+.status-badge.active::before {
+  background: var(--color-white);
+}
+
+.status-badge.inactive {
+  background: var(--color-error);
+  color: var(--color-white);
+}
+
+.status-badge.inactive::before {
+  background: var(--color-white);
+  animation: none;
+}
+
+.status-badge.maintenance {
+  background: var(--color-warning);
+  color: var(--color-white);
+}
+
+.status-badge.maintenance::before {
+  background: var(--color-white);
+}
+
+/* =====================================================
+   CONTENIDO DE LA TARJETA
+   ===================================================== */
+.card-content {
+  padding: var(--spacing-lg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.building-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 var(--spacing-md) 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color var(--transition-normal);
+}
+
+.building-card:hover .building-name {
+  color: var(--color-primary);
+}
+
+/* =====================================================
+   INFORMACIÓN DEL EDIFICIO
+   ===================================================== */
+.building-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-gray-500);
+}
+
+.info-item i {
+  width: 18px;
+  color: var(--color-secondary);
+  font-size: 14px;
+  text-align: center;
+  filter: drop-shadow(0 0 2px rgba(255, 214, 0, 0.3));
+}
+
+.info-item span {
+  flex: 1;
+}
+
+/* =====================================================
+   BARRA DE OCUPACIÓN - CORREGIDA
+   ===================================================== */
+.occupancy-bar {
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--color-gray-100);
+  transition: all var(--transition-normal);
+}
+
+.building-card:hover .occupancy-bar {
+  background: #f8f8f8;
+  border-color: var(--color-gray-200);
+}
+
+.occupancy-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.occupancy-label span:first-child {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.occupancy-percentage {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  transition: color var(--transition-normal);
+}
+
+.occupancy-percentage.high {
+  color: var(--color-success);
+}
+
+.occupancy-percentage.medium {
+  color: var(--color-warning);
+}
+
+.occupancy-percentage.low {
+  color: #dc2626;
+}
+
+/* Barra de progreso */
+.progress-bar {
+  height: 12px;
+  background: var(--color-gray-200);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s ease;
+  position: relative;
+  min-width: 8px;
+}
+
+/* Animación shimmer solo para high y medium */
+.progress-fill.high::after,
+.progress-fill.medium::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Sin animación para low - solo color sólido */
+.progress-fill.low::after {
+  display: none;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Colores de la barra de progreso */
+.progress-fill.high {
+  background: linear-gradient(90deg, #059669, #10b981);
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.4);
+}
+
+.progress-fill.medium {
+  background: linear-gradient(90deg, #d97706, #f59e0b);
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.4);
+}
+
+/* ROJO SÓLIDO Y VISIBLE */
+.progress-fill.low {
+  background: #dc2626;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.5);
+}
+
+/* Detalles de ocupación */
+.occupancy-details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.occupancy-details span {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-gray-500);
+}
+
+/* =====================================================
+   ACCIONES DE LA TARJETA
+   ===================================================== */
+.card-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 2px solid var(--color-gray-100);
+  margin-top: auto;
+}
+
+/* Botón base */
+.card-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-actions button i {
+  font-size: 14px;
+}
+
+/* Efecto ripple */
+.card-actions button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.card-actions button:active::after {
+  width: 200px;
+  height: 200px;
+}
+
+/* Botón Ver (Secundario) */
+.btn-secondary {
+  flex: 1;
+  background: var(--color-gray-100);
+  color: var(--color-primary);
+  border-color: var(--color-gray-200);
+}
+
+.btn-secondary:hover {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20, 20, 20, 0.2);
+}
+
+.btn-secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.2);
+}
+
+/* Botón Editar (Primario) */
+.btn-primary {
+  flex: 1;
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border-color: var(--color-secondary);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary);
+  color: var(--color-secondary);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.4);
+}
+
+/* Botón Eliminar (Danger) */
+.btn-danger {
+  flex: 0 0 auto;
+  width: 48px;
+  padding: 12px;
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  border-color: #fecaca;
+}
+
+.btn-danger:hover {
+  background: var(--color-error);
+  color: var(--color-white);
+  border-color: var(--color-error);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+}
+
+/* =====================================================
+   ESTADOS ESPECIALES
+   ===================================================== */
+
+/* Tarjeta seleccionada */
+.building-card.selected {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 4px rgba(255, 214, 0, 0.2);
+}
+
+/* Tarjeta con carga */
+.building-card.loading {
+  pointer-events: none;
+}
+
+.building-card.loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* =====================================================
+   RESPONSIVE - 1024px
+   ===================================================== */
+@media (max-width: 1024px) {
+  .card-image {
+    height: 170px;
+  }
+
+  .building-name {
+    font-size: 19px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - 768px
+   ===================================================== */
+@media (max-width: 768px) {
+  .card-image {
+    height: 160px;
+  }
+
+  .card-content {
+    padding: 20px;
+  }
+
+  .building-name {
+    font-size: 18px;
+  }
+
+  .info-item {
+    font-size: 13px;
+  }
+
+  .occupancy-bar {
+    padding: 14px;
+  }
+
+  .occupancy-percentage {
+    font-size: 16px;
+  }
+
+  .progress-bar {
+    height: 10px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - 480px
+   ===================================================== */
+@media (max-width: 480px) {
+  .card-image {
+    height: 140px;
+  }
+
+  .status-badge {
+    padding: 6px 12px;
+    font-size: 10px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .card-content {
+    padding: 16px;
+  }
+
+  .building-name {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .building-info {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .info-item {
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .info-item i {
+    width: 16px;
+    font-size: 12px;
+  }
+
+  .occupancy-bar {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .occupancy-label span:first-child {
+    font-size: 12px;
+  }
+
+  .occupancy-percentage {
+    font-size: 14px;
+  }
+
+  .progress-bar {
+    height: 8px;
+    margin-bottom: 10px;
+  }
+
+  .occupancy-details span {
+    font-size: 11px;
+  }
+
+  .card-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 16px;
+  }
+
+  .card-actions button {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    flex: 1 1 calc(50% - 30px);
+  }
+
+  .btn-danger {
+    width: 42px;
+    padding: 10px;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .building-card,
+  .card-image img,
+  .progress-fill,
+  .card-actions button,
+  .occupancy-bar {
+    transition: none;
+  }
+
+  .progress-fill.high::after,
+  .progress-fill.medium::after,
+  .status-badge::before {
+    animation: none;
+  }
+}
+
+/* Focus visible */
+.card-actions button:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+  .building-card {
+    border-width: 3px;
+  }
+
+  .card-actions button {
+    border-width: 3px;
+  }
+
+  .status-badge {
+    border: 2px solid var(--color-white);
+  }
+
+  .progress-bar {
+    border: 1px solid var(--color-gray-400);
+  }
+
+  .progress-fill.low {
+    background: #b91c1c;
+  }
+
+  .progress-fill.medium {
+    background: #d97706;
+  }
+
+  .progress-fill.high {
+    background: #059669;
+  }
+}

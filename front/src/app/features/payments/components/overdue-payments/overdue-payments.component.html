@@ -1,0 +1,56 @@
+<div class="overdue-payments-widget">
+  <div class="widget-header">
+    <h3>🔴 Pagos Vencidos</h3>
+    <div class="total-overdue">
+      <span class="label">Total:</span>
+      <span class="amount">{{ totalOverdue | currencyFormat }}</span>
+    </div>
+  </div>
+
+  <div class="widget-content">
+    <div class="loading" *ngIf="loading">
+      <p>⏳ Cargando pagos vencidos...</p>
+    </div>
+
+    <div class="overdue-list" *ngIf="!loading && overduePayments.length > 0">
+      <div class="overdue-item" *ngFor="let payment of overduePayments">
+        <div class="item-header">
+          <div class="tenant-info">
+            <span class="tenant-icon">👤</span>
+            <div class="tenant-details">
+              <h4>{{ payment.tenant_name || 'N/A' }}</h4>
+              <p>{{ payment.building_name }} - {{ payment.unit_number }}</p>
+            </div>
+          </div>
+          <div class="overdue-badge">
+            {{ getDaysOverdue(payment.due_date) }} días
+          </div>
+        </div>
+
+        <div class="item-body">
+          <div class="payment-details">
+            <div class="detail">
+              <span class="detail-label">💰 Monto:</span>
+              <span class="detail-value amount">{{ payment.amount | currencyFormat }}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">📅 Vencimiento:</span>
+              <span class="detail-value">{{ payment.due_date | date: 'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-actions">
+          <button class="btn btn-view" [routerLink]="['/payments', payment.id || payment.payment_id]">
+            👁️ Ver
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && overduePayments.length === 0">
+      <div class="empty-icon">✅</div>
+      <p>No hay pagos vencidos</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,143 @@
+<div class="payment-form-container">
+  <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+      <!-- Contract -->
+      <div class="form-group">
+        <label for="contract_id">📋 Contrato *</label>
+        <select 
+          id="contract_id" 
+          formControlName="contract_id"
+          class="form-control"
+          [class.error]="paymentForm.get('contract_id')?.invalid && paymentForm.get('contract_id')?.touched">
+          <option value="">Seleccione un contrato</option>
+          <option *ngFor="let contract of contracts" [value]="contract.id">
+            {{ contract.contract_number }} - {{ contract.unit_number }} ({{ contract.tenant_name }})
+          </option>
+        </select>
+        <span class="error-message" *ngIf="paymentForm.get('contract_id')?.invalid && paymentForm.get('contract_id')?.touched">
+          {{ getFieldError('contract_id') }}
+        </span>
+      </div>
+
+      <!-- Hidden fields for real IDs -->
+      <input type="hidden" formControlName="tenant_id_hidden" />
+      <input type="hidden" formControlName="unit_id_hidden" />
+
+      <!-- Tenant Display -->
+      <div class="form-group">
+        <label for="tenant_display">👤 Inquilino *</label>
+        <input 
+          type="text"
+          id="tenant_display" 
+          [value]="paymentForm.get('tenant_id')?.value || ''"
+          class="form-control"
+          placeholder="Se completará al seleccionar contrato"
+          readonly>
+        <span class="error-message" *ngIf="paymentForm.get('tenant_id_hidden')?.invalid && paymentForm.get('tenant_id_hidden')?.touched">
+          {{ getFieldError('tenant_id_hidden') }}
+        </span>
+      </div>
+
+      <!-- Unit Display -->
+      <div class="form-group">
+        <label for="unit_display">🏠 Unidad *</label>
+        <input 
+          type="text"
+          id="unit_display" 
+          [value]="paymentForm.get('unit_id')?.value || ''"
+          class="form-control"
+          placeholder="Se completará al seleccionar contrato"
+          readonly>
+        <span class="error-message" *ngIf="paymentForm.get('unit_id_hidden')?.invalid && paymentForm.get('unit_id_hidden')?.touched">
+          {{ getFieldError('unit_id_hidden') }}
+        </span>
+      </div>
+
+      <!-- Amount Due -->
+      <div class="form-group">
+        <label for="amount_due">💰 Monto a Pagar *</label>
+        <input 
+          type="text" 
+          id="amount_due" 
+          formControlName="amount_due"
+          class="form-control"
+          placeholder="0"
+          appNumberFormat
+          [class.error]="paymentForm.get('amount_due')?.invalid && paymentForm.get('amount_due')?.touched">
+        <span class="error-message" *ngIf="paymentForm.get('amount_due')?.invalid && paymentForm.get('amount_due')?.touched">
+          {{ getFieldError('amount_due') }}
+        </span>
+      </div>
+
+      <!-- Due Date -->
+      <div class="form-group">
+        <label for="due_date">⏰ Fecha de Vencimiento *</label>
+        <input 
+          type="date" 
+          id="due_date" 
+          formControlName="due_date"
+          class="form-control"
+          [class.error]="paymentForm.get('due_date')?.invalid && paymentForm.get('due_date')?.touched">
+        <span class="error-message" *ngIf="paymentForm.get('due_date')?.invalid && paymentForm.get('due_date')?.touched">
+          {{ getFieldError('due_date') }}
+        </span>
+      </div>
+
+      <!-- Payment Status -->
+      <div class="form-group">
+        <label for="payment_status_id">📊 Estado del Pago *</label>
+        <select 
+          id="payment_status_id" 
+          formControlName="payment_status_id"
+          class="form-control"
+          [class.error]="paymentForm.get('payment_status_id')?.invalid && paymentForm.get('payment_status_id')?.touched">
+          <option value="">Seleccione un estado</option>
+          <option value="1">⏳ Pendiente</option>
+          <option value="2">🟡 Parcial</option>
+          <option value="3">✅ Completado</option>
+        </select>
+        <span class="error-message" *ngIf="paymentForm.get('payment_status_id')?.invalid && paymentForm.get('payment_status_id')?.touched">
+          {{ getFieldError('payment_status_id') }}
+        </span>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="form-group">
+        <label for="payment_method">💳 Método de Pago</label>
+        <select 
+          id="payment_method" 
+          formControlName="payment_method"
+          class="form-control">
+          <option value="">Seleccione método</option>
+          <option value="cash">💵 Efectivo</option>
+          <option value="bank_transfer">🏦 Transferencia</option>
+          <option value="credit_card">💳 Tarjeta de Crédito</option>
+          <option value="debit_card">💳 Tarjeta Débito</option>
+          <option value="check">📝 Cheque</option>
+          <option value="other">🔄 Otro</option>
+        </select>
+      </div>
+
+      <!-- Notes -->
+      <div class="form-group full-width">
+        <label for="notes">📝 Notas</label>
+        <textarea 
+          id="notes" 
+          formControlName="notes"
+          class="form-control"
+          rows="3"
+          placeholder="Notas adicionales sobre el pago"></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="loading">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-submit" [disabled]="loading || paymentForm.invalid">
+        <span *ngIf="!loading">{{ payment ? 'Actualizar' : 'Crear' }} Pago</span>
+        <span *ngIf="loading">Guardando...</span>
+      </button>
+    </div>
+  </form>
+</div>

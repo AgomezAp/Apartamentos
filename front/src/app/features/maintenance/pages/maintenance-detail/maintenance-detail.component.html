@@ -1,0 +1,222 @@
+<div class="maintenance-detail-container" *ngIf="request">
+  <!-- Modal para resolver -->
+  <app-resolve-maintenance-modal 
+    (submit)="handleResolveSubmit($event)"
+    (cancel)="resolveModal.hide()"
+  ></app-resolve-maintenance-modal>
+
+  <div class="page-header">
+    <div class="header-content">
+      <h1>🔧 {{ request.title }}</h1>
+      <div class="header-meta">
+        <app-priority-badge [priority]="request.priority" [size]="'large'"></app-priority-badge>
+        <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+          {{ getStatusLabel(request.status) }}
+        </span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" [routerLink]="['/maintenance']">
+        ← Volver
+      </button>
+      <button class="btn btn-primary" (click)="onEdit()" *ngIf="request.status !== 'completed' && request.status !== 'cancelled'">
+        ✏️ Editar
+      </button>
+      <button class="btn btn-success" (click)="onResolve()" *ngIf="request.status === 'in_progress'">
+        ✅ Resolver
+      </button>
+      <button class="btn btn-danger" (click)="onDelete()">
+        🗑️ Eliminar
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando solicitud...</p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-grid" *ngIf="!loading">
+    <!-- Left Column -->
+    <div class="left-column">
+      <!-- General Information -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3>📝 Información General</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-icon">{{ getCategoryIcon(request.category) }}</span>
+              <div class="info-content">
+                <span class="info-label">Categoría</span>
+                <span class="info-value">{{ getCategoryLabel(request.category) }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">🏢</span>
+              <div class="info-content">
+                <span class="info-label">Edificio</span>
+                <span class="info-value">{{ request.building_name || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">🏠</span>
+              <div class="info-content">
+                <span class="info-label">Unidad</span>
+                <span class="info-value">{{ request.unit_number || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">👤</span>
+              <div class="info-content">
+                <span class="info-label">Inquilino</span>
+                <span class="info-value">{{ request.tenant_name || 'N/A' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="description-section">
+            <h4>Descripción</h4>
+            <p>{{ request.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dates & Schedule -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3>📅 Fechas y Programación</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-icon">📅</span>
+              <div class="info-content">
+                <span class="info-label">Reportado</span>
+                <span class="info-value">{{ request.reported_date | dateFormat:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">⏰</span>
+              <div class="info-content">
+                <span class="info-label">Programado</span>
+                <div class="scheduled-date-input" *ngIf="request.status !== 'completed' && request.status !== 'cancelled'">
+                  <input 
+                    type="datetime-local" 
+                    [value]="request.scheduled_date ? (request.scheduled_date | date:'yyyy-MM-ddTHH:mm') : ''"
+                    (change)="updateScheduledDate($event)"
+                    class="date-input"
+                    placeholder="Seleccionar fecha y hora"
+                  />
+                  <button 
+                    class="clear-date-btn" 
+                    *ngIf="request.scheduled_date"
+                    (click)="clearScheduledDate()"
+                    title="Quitar fecha"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <span class="info-value" *ngIf="request.status === 'completed' || request.status === 'cancelled'">
+                  {{ request.scheduled_date ? (request.scheduled_date | dateFormat:'dd/MM/yyyy HH:mm') : 'No programado' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="info-item" *ngIf="request.resolved_date">
+              <span class="info-icon">✅</span>
+              <div class="info-content">
+                <span class="info-label">Resuelto</span>
+                <span class="info-value">{{ request.resolved_date | dateFormat:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item" *ngIf="request.assigned_to_display_name || request.assigned_to_name">
+              <span class="info-icon">🔧</span>
+              <div class="info-content">
+                <span class="info-label">Asignado a</span>
+                <span class="info-value">{{ request.assigned_to_display_name || request.assigned_to_name }}</span>
+              </div>
+            </div>
+
+            <div class="info-item" *ngIf="request.assigned_to_phone">
+              <span class="info-icon">📱</span>
+              <div class="info-content">
+                <span class="info-label">Teléfono</span>
+                <span class="info-value">{{ request.assigned_to_phone }}</span>
+              </div>
+            </div>
+
+            <div class="info-item" *ngIf="request.assigned_to_company">
+              <span class="info-icon">🏢</span>
+              <div class="info-content">
+                <span class="info-label">Empresa</span>
+                <span class="info-value">{{ request.assigned_to_company }}</span>
+              </div>
+            </div>
+
+            <div class="info-item" *ngIf="request.assigned_to_email">
+              <span class="info-icon">📧</span>
+              <div class="info-content">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ request.assigned_to_email }}</span>
+              </div>
+            </div>
+
+            <div class="info-item" *ngIf="request.resolved_by_name">
+              <span class="info-icon">👤</span>
+              <div class="info-content">
+                <span class="info-label">Resuelto por</span>
+                <span class="info-value">{{ request.resolved_by_name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Costs -->
+      <div class="info-card" *ngIf="request.estimated_cost || request.actual_cost">
+        <div class="card-header">
+          <h3>💰 Costos</h3>
+        </div>
+        <div class="card-body">
+          <div class="cost-grid">
+            <div class="cost-item" *ngIf="request.estimated_cost">
+              <span class="cost-label">Estimado</span>
+              <span class="cost-value estimated">{{ request.estimated_cost | currencyFormat }}</span>
+            </div>
+            <div class="cost-item" *ngIf="request.actual_cost">
+              <span class="cost-label">Real</span>
+              <span class="cost-value actual">{{ request.actual_cost | currencyFormat }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="info-card" *ngIf="request.notes">
+        <div class="card-header">
+          <h3>📝 Notas</h3>
+        </div>
+        <div class="card-body">
+          <p>{{ request.notes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column - Timeline -->
+    <div class="right-column">
+      <app-maintenance-timeline [request]="request"></app-maintenance-timeline>
+    </div>
+  </div>
+</div>
+
+<div class="loading" *ngIf="!request && !loading">
+  <p>💭 Solicitud no encontrada</p>
+</div>

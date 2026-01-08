@@ -1,0 +1,94 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+/* Sizes */
+.badge-small {
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+.badge-medium {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.badge-large {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* Types */
+.badge-success {
+  background: #d5f4e6;
+  color: #27ae60;
+  border: 1px solid #a8e6cf;
+}
+
+.badge-error {
+  background: #fce4e4;
+  color: #e74c3c;
+  border: 1px solid #f5b7b1;
+}
+
+.badge-warning {
+  background: #fff3cd;
+  color: #d68910;
+  border: 1px solid #fce183;
+}
+
+.badge-info {
+  background: #d6eaf8;
+  color: #2874a6;
+  border: 1px solid #aed6f1;
+}
+
+.badge-default {
+  background: #ecf0f1;
+  color: #34495e;
+  border: 1px solid #d5dbdb;
+}
+
+/* Icon */
+.badge-icon {
+  font-size: 14px;
+}
+
+/* Dot Only */
+.badge-dot {
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.badge-dot-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badge-success.badge-dot .badge-dot-indicator {
+  background: #27ae60;
+}
+
+.badge-error.badge-dot .badge-dot-indicator {
+  background: #e74c3c;
+}
+
+.badge-warning.badge-dot .badge-dot-indicator {
+  background: #f39c12;
+}
+
+.badge-info.badge-dot .badge-dot-indicator {
+  background: #3498db;
+}
+
+.badge-default.badge-dot .badge-dot-indicator {
+  background: #95a5a6;
+}

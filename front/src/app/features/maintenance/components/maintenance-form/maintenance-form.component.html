@@ -1,0 +1,147 @@
+<div class="maintenance-form-container">
+  <form [formGroup]="maintenanceForm" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+      <!-- Edificio -->
+      <div class="form-group">
+        <label for="building_id">🏢 Edificio *</label>
+        <select 
+          id="building_id" 
+          formControlName="building_id"
+          (change)="onBuildingChange($any($event.target).value)"
+          class="form-control"
+          [class.error]="maintenanceForm.get('building_id')?.invalid && maintenanceForm.get('building_id')?.touched">
+          <option value="">Seleccione un edificio</option>
+          <option *ngFor="let building of buildings" [value]="building.id">
+            {{ building.name }}
+          </option>
+        </select>
+        <span class="error-message" *ngIf="maintenanceForm.get('building_id')?.invalid && maintenanceForm.get('building_id')?.touched">
+          {{ getFieldError('building_id') }}
+        </span>
+      </div>
+
+      <!-- Unidad -->
+      <div class="form-group">
+        <label for="unit_id">🏠 Unidad *</label>
+        <select 
+          id="unit_id" 
+          formControlName="unit_id"
+          (change)="onUnitChange($any($event.target).value)"
+          class="form-control"
+          [class.error]="maintenanceForm.get('unit_id')?.invalid && maintenanceForm.get('unit_id')?.touched"
+          [disabled]="units.length === 0">
+          <option value="">{{ units.length === 0 ? 'Seleccione un edificio primero' : 'Seleccione una unidad' }}</option>
+          <option *ngFor="let unit of units" [value]="unit.unit_id">
+            {{ unit.unit_number }}
+          </option>
+        </select>
+        <span class="error-message" *ngIf="maintenanceForm.get('unit_id')?.invalid && maintenanceForm.get('unit_id')?.touched">
+          {{ getFieldError('unit_id') }}
+        </span>
+      </div>
+
+      <!-- Inquilino -->
+      <div class="form-group">
+        <label for="tenant_id">👤 Inquilino (Opcional)</label>
+        <select 
+          id="tenant_id" 
+          formControlName="tenant_id"
+          class="form-control">
+          <option value="">Sin inquilino (Unidad desocupada)</option>
+          <option *ngFor="let tenant of tenants" [value]="tenant.tenant_id">
+            {{ tenant.first_name }} {{ tenant.last_name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Categoría -->
+      <div class="form-group">
+        <label for="category">📊 Categoría *</label>
+        <select 
+          id="category" 
+          formControlName="category"
+          class="form-control">
+          <option *ngFor="let cat of categories" [value]="cat.value">
+            {{ cat.icon }} {{ cat.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Prioridad -->
+      <div class="form-group">
+        <label for="priority">⚠️ Prioridad *</label>
+        <select 
+          id="priority" 
+          formControlName="priority"
+          class="form-control">
+          <option *ngFor="let p of priorities" [value]="p.value">
+            {{ p.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Título -->
+      <div class="form-group full-width">
+        <label for="title">📝 Título *</label>
+        <input 
+          type="text" 
+          id="title" 
+          formControlName="title"
+          class="form-control"
+          placeholder="Título breve de la solicitud"
+          [class.error]="maintenanceForm.get('title')?.invalid && maintenanceForm.get('title')?.touched">
+        <span class="error-message" *ngIf="maintenanceForm.get('title')?.invalid && maintenanceForm.get('title')?.touched">
+          {{ getFieldError('title') }}
+        </span>
+      </div>
+
+      <!-- Descripción -->
+      <div class="form-group full-width">
+        <label for="description">📝 Descripción *</label>
+        <textarea 
+          id="description" 
+          formControlName="description"
+          class="form-control"
+          rows="4"
+          placeholder="Descripción detallada del problema"
+          [class.error]="maintenanceForm.get('description')?.invalid && maintenanceForm.get('description')?.touched"></textarea>
+        <span class="error-message" *ngIf="maintenanceForm.get('description')?.invalid && maintenanceForm.get('description')?.touched">
+          {{ getFieldError('description') }}
+        </span>
+      </div>
+
+      <!-- Fecha Programada -->
+      <div class="form-group">
+        <label for="scheduled_date">📅 Fecha Programada</label>
+        <input 
+          type="date" 
+          id="scheduled_date" 
+          formControlName="scheduled_date"
+          class="form-control">
+      </div>
+
+      <!-- Costo Estimado -->
+      <div class="form-group">
+        <label for="estimated_cost">💰 Costo Estimado</label>
+        <input 
+          type="number" 
+          id="estimated_cost" 
+          formControlName="estimated_cost"
+          class="form-control"
+          placeholder="0.00"
+          step="0.01"
+          min="0">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="loading">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-submit" [disabled]="loading || maintenanceForm.invalid">
+        <span *ngIf="!loading">{{ request ? 'Actualizar' : 'Crear' }} Solicitud</span>
+        <span *ngIf="loading">Guardando...</span>
+      </button>
+    </div>
+  </form>
+</div>

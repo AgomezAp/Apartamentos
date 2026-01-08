@@ -1,0 +1,466 @@
+/* =====================================================
+   BUILDING FORM COMPONENT
+   ===================================================== */
+
+/* Asumiendo que el form tiene una estructura similar */
+:host {
+  display: block;
+}
+
+.building-form,
+form {
+  padding: var(--spacing-xl);
+}
+
+/* =====================================================
+   FORM GRID
+   ===================================================== */
+.form-grid,
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-row-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* =====================================================
+   FORM GROUP
+   ===================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group.half-width {
+  grid-column: span 1;
+}
+
+.form-group label {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* =====================================================
+   FORM CONTROLS - INPUTS, SELECTS, TEXTAREAS
+   ===================================================== */
+.form-control,
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-primary);
+  background-color: var(--color-gray-50);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.form-control::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-gray-400);
+}
+
+.form-control:hover,
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--color-gray-300);
+  background-color: var(--color-white);
+}
+
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-secondary);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 4px var(--color-secondary-subtle);
+}
+
+/* Select específico */
+select,
+select.form-control {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23141414' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-md) center;
+  padding-right: var(--spacing-2xl);
+}
+
+select:focus,
+select.form-control:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FFD600' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
+/* Textarea específico */
+textarea,
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+}
+
+/* Input number - ocultar flechas nativas */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* =====================================================
+   CHECKBOX STYLES
+   ===================================================== */
+.form-group.checkbox-group,
+.checkbox-wrapper {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-gray-200);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.form-group.checkbox-group:hover,
+.checkbox-wrapper:hover {
+  border-color: var(--color-secondary);
+  background-color: var(--color-secondary-subtle);
+}
+
+/* Custom Checkbox */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-white);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  flex-shrink: 0;
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--color-secondary);
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--color-secondary-subtle);
+}
+
+.checkbox-label {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* =====================================================
+   ERROR STATES
+   ===================================================== */
+.form-control.error,
+input.error,
+select.error,
+textarea.error,
+.ng-invalid.ng-touched {
+  border-color: var(--color-error);
+  background-color: var(--color-error-bg);
+}
+
+.form-control.error:focus,
+input.error:focus,
+select.error:focus,
+textarea.error:focus,
+.ng-invalid.ng-touched:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-error);
+  margin-top: var(--spacing-xs);
+  animation: slideIn 0.2s ease;
+}
+
+.error-message::before {
+  content: "⚠️";
+  font-size: 0.75rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================
+   FORM ACTIONS / BUTTONS
+   ===================================================== */
+.form-actions,
+.button-group,
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.btn,
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-width: 150px;
+}
+
+/* Button Cancel / Secondary */
+.btn-cancel,
+.btn-secondary,
+button[type="button"] {
+  background-color: transparent;
+  color: var(--color-gray-600);
+  border-color: var(--color-gray-300);
+}
+
+.btn-cancel:hover,
+.btn-secondary:hover,
+button[type="button"]:hover {
+  background-color: var(--color-gray-100);
+  border-color: var(--color-gray-400);
+  color: var(--color-primary);
+}
+
+/* Button Submit / Primary */
+.btn-submit,
+.btn-primary,
+button[type="submit"] {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  border-color: var(--color-secondary);
+}
+
+.btn-submit:hover,
+.btn-primary:hover,
+button[type="submit"]:hover {
+  background-color: var(--color-secondary-dark);
+  border-color: var(--color-secondary-dark);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+/* Disabled States */
+.btn:disabled,
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button[type="submit"]:disabled {
+  background-color: var(--color-gray-300);
+  border-color: var(--color-gray-300);
+  color: var(--color-gray-500);
+  box-shadow: none;
+}
+
+/* =====================================================
+   SECTION DIVIDERS (si los tienes)
+   ===================================================== */
+.form-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-section-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+@media (max-width: 1024px) {
+  .form-row-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .building-form,
+  form {
+    padding: var(--spacing-lg);
+  }
+
+  .form-grid,
+  .form-row,
+  .form-row-3,
+  .form-row-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.full-width,
+  .form-group.half-width {
+    grid-column: 1;
+  }
+
+  .form-control,
+  input,
+  select,
+  textarea {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 1rem; /* Previene zoom en iOS */
+  }
+
+  .form-actions,
+  .button-group,
+  .form-buttons {
+    flex-direction: column-reverse;
+    gap: var(--spacing-sm);
+  }
+
+  .btn,
+  button {
+    width: 100%;
+    padding: var(--spacing-md);
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .building-form,
+  form {
+    padding: var(--spacing-md);
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+  }
+
+  input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+.form-control:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+.btn:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-control,
+  input,
+  select,
+  textarea,
+  .btn,
+  button,
+  .error-message,
+  .checkbox-wrapper {
+    transition: none;
+  }
+
+  button[type="submit"]:hover {
+    transform: none;
+  }
+}

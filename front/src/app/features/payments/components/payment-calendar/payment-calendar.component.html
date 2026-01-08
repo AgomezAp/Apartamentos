@@ -1,0 +1,60 @@
+<div class="payment-calendar">
+  <div class="calendar-header">
+    <h3>📅 Calendario de Pagos</h3>
+    <div class="calendar-controls">
+      <button class="btn-nav" (click)="previousMonth()">◀</button>
+      <span class="current-month">{{ currentMonthYear }}</span>
+      <button class="btn-nav" (click)="nextMonth()">▶</button>
+      <button class="btn-today" (click)="goToToday()">Hoy</button>
+    </div>
+  </div>
+
+  <div class="calendar-body">
+    <div class="loading" *ngIf="loading">
+      <p>⏳ Cargando calendario...</p>
+    </div>
+
+    <div class="calendar-grid" *ngIf="!loading">
+      <!-- Week days header -->
+      <div class="weekday-header" *ngFor="let day of weekDays">
+        {{ day }}
+      </div>
+
+      <!-- Calendar days -->
+      <div 
+        *ngFor="let calDay of calendarDays"
+        class="calendar-day"
+        [class.other-month]="!calDay.is_current_month"
+        [class.today]="isToday(calDay.date)"
+        [class.has-payments]="calDay.payments.length > 0"
+        [class.has-overdue]="calDay.has_overdue">
+        
+        <div class="day-number">{{ calDay.date.getDate() }}</div>
+        
+        <div class="day-content" *ngIf="calDay.payments.length > 0">
+          <div class="payment-count">
+            {{ calDay.payments.length }} pago(s)
+          </div>
+          <div class="payment-amount">
+            {{ calDay.total_amount | currencyFormat }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="calendar-legend">
+    <div class="legend-item">
+      <span class="legend-color today"></span>
+      <span class="legend-label">Hoy</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-color has-payments"></span>
+      <span class="legend-label">Con pagos</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-color has-overdue"></span>
+      <span class="legend-label">Vencidos</span>
+    </div>
+  </div>
+</div>

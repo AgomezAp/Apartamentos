@@ -1,0 +1,147 @@
+<div class="payment-list-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>💰 Pagos</h1>
+      <p>Gestione todos los pagos de arrendamiento</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" [routerLink]="['/payments/create']">
+        ➕ Nuevo Pago
+      </button>
+      <button class="btn btn-secondary" [routerLink]="['/payments/register']">
+        📊 Registro
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card total">
+      <div class="card-icon">💵</div>
+      <div class="card-content">
+        <h3>{{ summary.total | currencyFormat }}</h3>
+        <p>Total</p>
+      </div>
+    </div>
+    <div class="summary-card completed">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <h3>{{ summary.completed }}</h3>
+        <p>Completados</p>
+      </div>
+    </div>
+    <div class="summary-card pending">
+      <div class="card-icon">⏳</div>
+      <div class="card-content">
+        <h3>{{ summary.pending }}</h3>
+        <p>Pendientes</p>
+      </div>
+    </div>
+    <div class="summary-card overdue">
+      <div class="card-icon">🔴</div>
+      <div class="card-content">
+        <h3>{{ summary.overdue }}</h3>
+        <p>Vencidos</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label> Buscar Inquilino</label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTenant" 
+          (input)="applyFilters()"
+          placeholder="Nombre del inquilino..."
+          class="filter-control">
+      </div>
+
+      <div class="filter-group">
+        <label>Estado</label>
+        <select [(ngModel)]="filter.status" (change)="applyFilters()" class="filter-control">
+          <option value="">Todos</option>
+          <option *ngFor="let s of statuses" [value]="s.value">
+            {{ s.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Método de Pago</label>
+        <select [(ngModel)]="filter.payment_method" (change)="applyFilters()" class="filter-control">
+          <option value="">Todos</option>
+          <option *ngFor="let m of paymentMethods" [value]="m.value">
+            {{ m.icon }} {{ m.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Desde</label>
+        <input type="date" [(ngModel)]="filter.start_date" (change)="onDateChange()" class="filter-control">
+      </div>
+
+      <div class="filter-group">
+        <label>Hasta</label>
+        <input type="date" [(ngModel)]="filter.end_date" (change)="onDateChange()" class="filter-control">
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn btn-filter" (click)="applyFilters()">
+          Filtrar
+        </button>
+        <button class="btn btn-clear" (click)="clearFilters()">
+          Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>Cargando pagos...</p>
+  </div>
+
+  <!-- Payments Grid -->
+  <div class="payments-grid" *ngIf="!loading && paginatedPayments.length > 0">
+    <app-payment-card
+      *ngFor="let payment of paginatedPayments"
+      [payment]="payment"
+      (delete)="onDelete(payment.id || payment.payment_id)"
+      (markCompleted)="onMarkCompleted(payment.id || payment.payment_id)">
+    </app-payment-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && paginatedPayments.length === 0">
+    <p>No se encontraron pagos</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="!loading && totalPages > 1">
+    <button 
+      class="pagination-btn"
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)">
+      ◀ Anterior
+    </button>
+    
+    <button 
+      *ngFor="let page of pages"
+      class="pagination-btn"
+      [class.active]="page === currentPage"
+      (click)="changePage(page)">
+      {{ page }}
+    </button>
+    
+    <button 
+      class="pagination-btn"
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)">
+      Siguiente ▶
+    </button>
+  </div>
+</div>

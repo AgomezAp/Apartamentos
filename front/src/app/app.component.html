@@ -1,0 +1,20 @@
+<div class="app-layout">
+  <!-- Header Fijo -->
+  <app-header 
+    class="app-header"
+    (toggleSidebar)="onToggleSidebar()"
+  ></app-header>
+
+  <div class="app-body">
+    <!-- Sidebar Fijo -->
+    <app-sidebar 
+      class="app-sidebar"
+      [collapsed]="sidebarCollapsed"
+    ></app-sidebar>
+
+    <!-- Contenido Principal - Scroll Natural -->
+    <main class="app-main">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

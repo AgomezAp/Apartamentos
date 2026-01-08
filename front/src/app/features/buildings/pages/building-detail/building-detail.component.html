@@ -1,0 +1,170 @@
+<div class="page-container" *ngIf="building">
+  <div class="page-header">
+    <div class="header-content">
+      <button class="btn-back" (click)="goBack()">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div>
+        <h1>{{ building.name }}</h1>
+        <p>
+          <i class="fa-solid fa-location-dot"></i>
+          {{ building.address }}, {{ building.city }}, {{ building.state }}
+        </p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="editBuilding()">
+        <i class="fa-solid fa-edit"></i>
+        Editar
+      </button>
+      <button class="btn-danger" (click)="deleteBuilding()">
+        <i class="fa-solid fa-trash"></i>
+        Eliminar
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button 
+      class="tab" 
+      [class.active]="selectedTab === 'info'"
+      (click)="selectTab('info')">
+      <i class="fa-solid fa-info-circle"></i>
+      Información
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="selectedTab === 'stats'"
+      (click)="selectTab('stats')">
+      <i class="fa-solid fa-chart-line"></i>
+      Estadísticas
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="selectedTab === 'units'"
+      (click)="selectTab('units')">
+      <i class="fa-solid fa-door-open"></i>
+      Unidades
+    </button>
+  </div>
+
+  <!-- Tab Content: Info -->
+  <div class="tab-content" *ngIf="selectedTab === 'info'">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>
+          <i class="fa-solid fa-building"></i>
+          Datos Generales
+        </h3>
+        <div class="info-items">
+          <div class="info-item">
+            <span class="label">Nombre:</span>
+            <span class="value">{{ building.name }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Dirección Completa:</span>
+            <span class="value">{{ building.address }}, {{ building.city }}, {{ building.state }} {{ building.zip_code }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">País:</span>
+            <span class="value">{{ building.country || 'México' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Estado:</span>
+            <span class="status-badge" [class.active]="building.is_active" [class.inactive]="!building.is_active">
+              {{ building.is_active ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>
+          <i class="fa-solid fa-layer-group"></i>
+          Estructura
+        </h3>
+        <div class="info-items">
+          <div class="info-item">
+            <span class="label">Total de Unidades:</span>
+            <span class="value">{{ building.total_units }}</span>
+          </div>
+          <div class="info-item" *ngIf="building.floors">
+            <span class="label">Número de Pisos:</span>
+            <span class="value">{{ building.floors }}</span>
+          </div>
+          <div class="info-item" *ngIf="building.year_built">
+            <span class="label">Año de Construcción:</span>
+            <span class="value">{{ building.year_built }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card full-width" *ngIf="building.description">
+        <h3>
+          <i class="fa-solid fa-align-left"></i>
+          Descripción
+        </h3>
+        <p class="description">{{ building.description }}</p>
+      </div>
+
+      <div class="info-card full-width" *ngIf="building.amenities">
+        <h3>
+          <i class="fa-solid fa-star"></i>
+          Amenidades
+        </h3>
+        <p class="amenities">{{ building.amenities }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Content: Stats -->
+  <div class="tab-content" *ngIf="selectedTab === 'stats'">
+    <app-building-stats 
+      [building]="building" 
+      [loading]="isLoadingStats"
+    ></app-building-stats>
+  </div>
+
+  <!-- Tab Content: Units -->
+  <div class="tab-content" *ngIf="selectedTab === 'units'">
+    <div class="units-section">
+      <div class="units-header">
+        <h3>Unidades del Edificio</h3>
+        <button class="btn-primary" (click)="viewUnits()">
+          <i class="fa-solid fa-eye"></i>
+          Ver Todas las Unidades
+        </button>
+      </div>
+      <div class="units-summary">
+        <div class="summary-card">
+          <i class="fa-solid fa-door-open"></i>
+          <div>
+            <span class="number">{{ building.occupied_units || 0 }}</span>
+            <span class="label">Ocupadas</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <i class="fa-solid fa-door-closed"></i>
+          <div>
+            <span class="number">{{ building.vacant_units || 0 }}</span>
+            <span class="label">Vacantes</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <i class="fa-solid fa-percent"></i>
+          <div>
+            <span class="number">{{ getOccupancyPercentage() }}%</span>
+            <span class="label">Ocupación</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading && !building">
+  <i class="fa-solid fa-spinner fa-spin"></i>
+  <span>Cargando edificio...</span>
+</div>

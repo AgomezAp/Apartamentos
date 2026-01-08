@@ -1,0 +1,539 @@
+/* =====================================================
+   UNIT FORM COMPONENT - COLORES CORPORATIVOS
+   #141414 (Negro) y #FFD600 (Amarillo)
+   Tipografías: Century Gothic y Fira Sans
+   ===================================================== */
+
+:host {
+  display: block;
+}
+
+/* =====================================================
+   FORMULARIO PRINCIPAL
+   ===================================================== */
+.unit-form {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+}
+
+/* =====================================================
+   GRID DEL FORMULARIO
+   ===================================================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* =====================================================
+   GRUPO DE CAMPO
+   ===================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* =====================================================
+   LABELS
+   ===================================================== */
+.form-group label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* Asterisco para campos requeridos */
+.form-group label::after {
+  content: "";
+}
+
+/* Estilo para labels que contienen * en el texto */
+.form-group label:has(+ .form-control[required])::after,
+.form-group label:has(+ select[required])::after {
+  content: "*";
+  color: var(--color-error);
+  font-weight: 700;
+}
+
+/* =====================================================
+   INPUTS Y SELECTS
+   ===================================================== */
+.form-control {
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-primary);
+  background: var(--color-gray-50);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-control::placeholder {
+  color: var(--color-gray-400);
+}
+
+.form-control:hover {
+  border-color: var(--color-gray-300);
+  background: var(--color-white);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  background: var(--color-white);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Estado inválido */
+.form-control.is-invalid {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+
+.form-control.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* =====================================================
+   SELECT PERSONALIZADO
+   ===================================================== */
+select.form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 44px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23141414' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+select.form-control:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FFD600' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+}
+
+select.form-control.is-invalid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ef4444' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+}
+
+/* =====================================================
+   INPUT NUMBER - Ocultar flechas
+   ===================================================== */
+input[type="number"].form-control {
+  -moz-appearance: textfield;
+}
+
+input[type="number"].form-control::-webkit-outer-spin-button,
+input[type="number"].form-control::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* =====================================================
+   TEXTAREA
+   ===================================================== */
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   CHECKBOX GROUP
+   ===================================================== */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  padding-top: 28px; /* Alinear con otros campos */
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  transition: color var(--transition-normal);
+}
+
+.checkbox-group label:hover {
+  color: var(--color-primary);
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--color-white);
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.checkbox-group input[type="checkbox"]:hover {
+  border-color: var(--color-secondary);
+}
+
+.checkbox-group input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.3);
+  border-color: var(--color-secondary);
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.checkbox-group input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--color-primary);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-group span {
+  user-select: none;
+}
+
+/* =====================================================
+   MENSAJES DE ERROR
+   ===================================================== */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-error);
+  padding: var(--spacing-xs) 0;
+  animation: slideInError 0.3s ease;
+}
+
+.error-message::before {
+  content: "⚠️";
+  font-size: 12px;
+}
+
+@keyframes slideInError {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================
+   ACCIONES DEL FORMULARIO
+   ===================================================== */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-xl);
+  border-top: 2px solid var(--color-gray-100);
+  margin-top: var(--spacing-lg);
+}
+
+/* =====================================================
+   BOTONES
+   ===================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 12px 28px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 2px solid transparent;
+  min-width: 120px;
+}
+
+/* Botón Secundario - Cancelar */
+.btn-secondary {
+  background: var(--color-white);
+  color: var(--color-gray-600);
+  border-color: var(--color-gray-300);
+}
+
+.btn-secondary:hover {
+  background: var(--color-gray-100);
+  color: var(--color-primary);
+  border-color: var(--color-gray-400);
+}
+
+.btn-secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.1);
+}
+
+/* Botón Primario - Submit */
+.btn-primary {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border-color: var(--color-secondary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: var(--color-secondary);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--color-gray-300);
+  border-color: var(--color-gray-300);
+  color: var(--color-gray-500);
+}
+
+/* =====================================================
+   RESPONSIVE - 1024px (Tablets Landscape)
+   ===================================================== */
+@media (max-width: 1024px) {
+  .unit-form {
+    padding: var(--spacing-lg);
+  }
+
+  .form-grid {
+    gap: var(--spacing-md);
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - 768px (Tablets Portrait)
+   ===================================================== */
+@media (max-width: 768px) {
+  .unit-form {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .checkbox-group {
+    padding-top: 0;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: var(--spacing-sm);
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - 480px (Móviles)
+   ===================================================== */
+@media (max-width: 480px) {
+  .unit-form {
+    padding: var(--spacing-sm);
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-control {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  select.form-control {
+    padding-right: 40px;
+    background-position: right 12px center;
+  }
+
+  textarea.form-control {
+    min-height: 80px;
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .checkbox-group input[type="checkbox"]:checked::after {
+    top: 1px;
+    left: 5px;
+    width: 4px;
+    height: 9px;
+  }
+
+  .error-message {
+    font-size: 11px;
+  }
+
+  .form-actions {
+    padding-top: var(--spacing-md);
+    margin-top: var(--spacing-md);
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 13px;
+    min-width: auto;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - Reduced Motion
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .form-control,
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .checkbox-group input[type="checkbox"],
+  .checkbox-group label {
+    transition: none;
+  }
+
+  .error-message {
+    animation: none;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - Focus Visible
+   ===================================================== */
+.form-control:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+.checkbox-group input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   ACCESIBILIDAD - Alto Contraste
+   ===================================================== */
+@media (prefers-contrast: high) {
+  .unit-form {
+    border-width: 2px;
+  }
+
+  .form-control {
+    border-width: 3px;
+  }
+
+  .btn {
+    border-width: 3px;
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    border-width: 3px;
+  }
+
+  .form-actions {
+    border-top-width: 3px;
+  }
+}
+
+/* =====================================================
+   ESTADOS DE CARGA (Opcional)
+   ===================================================== */
+.unit-form.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.unit-form.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 3px solid var(--color-gray-200);
+  border-top-color: var(--color-secondary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================
+   MEJORAS VISUALES ADICIONALES
+   ===================================================== */
+
+/* Efecto de grupo con enfoque */
+.form-group:focus-within label {
+  color: var(--color-secondary-dark);
+}
+
+/* Sombra sutil en hover del formulario */
+.unit-form:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Transición suave para el formulario */
+.unit-form {
+  transition: box-shadow var(--transition-normal);
+}

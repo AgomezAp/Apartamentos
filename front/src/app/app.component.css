@@ -1,0 +1,155 @@
+/* =====================================================
+   LAYOUT PRINCIPAL - SIDEBAR FIJO + CONTENIDO SCROLL
+   ===================================================== */
+
+/* Reset y base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f4f4f5;
+  color: #141414;
+  overflow-x: hidden;
+}
+
+/* =====================================================
+   APP LAYOUT
+   ===================================================== */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER - FIJO EN LA PARTE SUPERIOR
+   ===================================================== */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 70px;
+}
+
+/* =====================================================
+   BODY - CONTENEDOR DE SIDEBAR + MAIN
+   ===================================================== */
+.app-body {
+  display: flex;
+  flex: 1;
+  padding-top: 70px; /* Altura del header */
+}
+
+/* =====================================================
+   SIDEBAR - FIJO (STICKY)
+   ===================================================== */
+.app-sidebar {
+  position: fixed;
+  top: 70px; /* Debajo del header */
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  z-index: 900;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #141414;
+  transition: all 0.3s ease;
+}
+
+/* Sidebar colapsado */
+.app-sidebar.collapsed {
+  width: 80px;
+}
+
+/* Scrollbar del sidebar */
+.app-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+  background: #ffd600;
+  border-radius: 3px;
+}
+
+/* =====================================================
+   MAIN - CONTENIDO PRINCIPAL (SCROLL NATURAL)
+   ===================================================== */
+.app-main {
+  flex: 1;
+  margin-left: 280px; /* Ancho del sidebar */
+  min-height: calc(100vh - 70px);
+  transition: margin-left 0.3s ease;
+  /* NO TIENE OVERFLOW - El scroll es del body */
+}
+
+/* Cuando el sidebar está colapsado */
+.app-sidebar.collapsed + .app-main,
+.app-body:has(.app-sidebar.collapsed) .app-main {
+  margin-left: 80px;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 1024px) {
+  .app-sidebar {
+    width: 260px;
+  }
+
+  .app-main {
+    margin-left: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-sidebar {
+    transform: translateX(-100%);
+    width: 280px;
+  }
+
+  .app-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .app-main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* Overlay cuando el sidebar está abierto en móvil */
+  .sidebar-overlay {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 899;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}

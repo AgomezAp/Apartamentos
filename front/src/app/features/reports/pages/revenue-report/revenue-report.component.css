@@ -1,0 +1,296 @@
+/* =====================================================
+   REVENUE REPORT CONTAINER
+   ===================================================== */
+
+.revenue-report-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+/* =====================================================
+   PAGE HEADER
+   ===================================================== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.header-content h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.header-content p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* =====================================================
+   SUMMARY SECTION
+   ===================================================== */
+.summary-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border-left: 4px solid transparent;
+  transition: all var(--transition-normal);
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.summary-card .card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  font-size: 1.75rem;
+  background-color: var(--color-gray-100);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.summary-card .card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-card .card-content h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-card .card-content p {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-gray-500);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Card Variants */
+.summary-card.rent {
+  border-left-color: var(--color-info);
+}
+
+.summary-card.rent .card-icon {
+  background-color: var(--color-info-bg);
+}
+
+.summary-card.rent .card-content h3 {
+  color: var(--color-info);
+}
+
+.summary-card.services {
+  border-left-color: var(--color-warning);
+}
+
+.summary-card.services .card-icon {
+  background-color: var(--color-warning-bg);
+}
+
+.summary-card.services .card-content h3 {
+  color: var(--color-warning);
+}
+
+.summary-card.other {
+  border-left-color: var(--color-gray-500);
+}
+
+.summary-card.other .card-icon {
+  background-color: var(--color-gray-100);
+}
+
+.summary-card.total {
+  border-left-color: var(--color-secondary);
+  background: linear-gradient(
+    135deg,
+    var(--color-white) 0%,
+    var(--color-secondary-subtle) 100%
+  );
+}
+
+.summary-card.total .card-icon {
+  background-color: var(--color-secondary);
+}
+
+.summary-card.total .card-content h3 {
+  color: var(--color-primary);
+}
+
+/* =====================================================
+   LOADING STATE
+   ===================================================== */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-2xl);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-200);
+}
+
+.loading p {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-gray-500);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* =====================================================
+   CONTENT GRID
+   ===================================================== */
+.content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.chart-section {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-gray-200);
+}
+
+/* =====================================================
+   TABLE SECTION
+   ===================================================== */
+.table-section {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid var(--color-gray-200);
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+@media (max-width: 1200px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .revenue-report-container {
+    padding: var(--spacing-lg);
+  }
+
+  .summary-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .revenue-report-container {
+    padding: var(--spacing-md);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .summary-section {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .summary-card {
+    padding: var(--spacing-md);
+  }
+
+  .summary-card .card-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+  }
+
+  .summary-card .card-content h3 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-card .card-content h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .summary-card {
+    transition: none;
+  }
+
+  .summary-card:hover {
+    transform: none;
+  }
+
+  .loading p {
+    animation: none;
+  }
+}

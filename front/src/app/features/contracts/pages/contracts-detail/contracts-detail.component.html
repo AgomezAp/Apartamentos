@@ -1,0 +1,158 @@
+<div class="contracts-detail-page">
+  <div class="loading" *ngIf="loading">
+    <p>Cargando contrato...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+    <button class="btn btn-secondary" routerLink="/contracts">← Volver a contratos</button>
+  </div>
+
+  <div class="contract-detail" *ngIf="!loading && !error && contract">
+    <!-- Header -->
+    <div class="detail-header">
+      <div class="header-info">
+        <h1>Contrato {{ contract.contract_number || '#' + contract.id }}</h1>
+        <span class="badge" [ngClass]="getStatusClass(contract.status)">
+          {{ getStatusLabel(contract.status) }}
+        </span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" routerLink="/contracts">← Volver</button>
+        <button class="btn btn-primary" [routerLink]="['/contracts', contractId, 'edit']" 
+                *ngIf="contract.status !== 'finished'">
+          ✏️ Editar
+        </button>
+        <button class="btn btn-warning" (click)="finishContract()" 
+                *ngIf="contract.status === 'active'">
+          🏁 Finalizar Contrato
+        </button>
+        <button class="btn btn-danger" (click)="deleteContract()">
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'info'"
+        (click)="setActiveTab('info')">
+        📝 Información
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'timeline'"
+        (click)="setActiveTab('timeline')">
+        📅 Línea de Tiempo
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'payments'"
+        (click)="setActiveTab('payments')">
+        💵 Pagos
+      </button>
+    </div>
+
+    <!-- Tab: Información -->
+    <div class="tab-content" *ngIf="activeTab === 'info'">
+      <div class="info-grid">
+        <div class="info-section">
+          <h3>🏠 Información de la Unidad</h3>
+          <div class="info-item">
+            <span class="label">Unidad:</span>
+            <span class="value">{{ contract.unit_number || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Edificio:</span>
+            <span class="value">{{ contract.building_name || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Dirección:</span>
+            <span class="value">{{ contract.building_address || 'N/A' }}</span>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>👤 Información del Inquilino</h3>
+          <div class="info-item">
+            <span class="label">Nombre:</span>
+            <span class="value">{{ contract.tenant_name || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ contract.tenant_email || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Teléfono:</span>
+            <span class="value">{{ contract.tenant_phone || 'N/A' }}</span>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>📅 Fechas del Contrato</h3>
+          <div class="info-item">
+            <span class="label">Fecha de inicio:</span>
+            <span class="value">{{ formatDate(contract.start_date) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Fecha de fin:</span>
+            <span class="value">{{ formatDate(contract.end_date) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Creado:</span>
+            <span class="value">{{ formatDate(contract.created_at) }}</span>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>💰 Información Financiera</h3>
+          <div class="info-item">
+            <span class="label">Renta mensual:</span>
+            <span class="value highlight">{{ formatAmount(contract.monthly_rent) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Depósito:</span>
+            <span class="value">{{ formatAmount(contract.deposit_amount) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Día de pago:</span>
+            <span class="value">{{ contract.payment_day }}</span>
+          </div>
+        </div>
+
+        <div class="info-section" *ngIf="contract.has_rent_increase">
+          <h3>📈 Incremento de Renta</h3>
+          <div class="info-item">
+            <span class="label">Porcentaje:</span>
+            <span class="value">{{ contract.rent_increase_percentage }}%</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Frecuencia:</span>
+            <span class="value">{{ contract.rent_increase_frequency_months }} meses</span>
+          </div>
+          <div class="info-item" *ngIf="contract.next_increase_date">
+            <span class="label">Próximo incremento:</span>
+            <span class="value">{{ formatDate(contract.next_increase_date) }}</span>
+          </div>
+        </div>
+
+        <div class="info-section full-width" *ngIf="contract.notes">
+          <h3>📝 Notas</h3>
+          <p class="notes">{{ contract.notes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Timeline -->
+    <div class="tab-content" *ngIf="activeTab === 'timeline'">
+      <app-contract-timeline [contract]="contract"></app-contract-timeline>
+    </div>
+
+    <!-- Tab: Pagos -->
+    <div class="tab-content" *ngIf="activeTab === 'payments'">
+      <app-contract-payments [contractId]="contractId"></app-contract-payments>
+    </div>
+  </div>
+</div>

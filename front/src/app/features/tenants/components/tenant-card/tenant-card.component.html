@@ -1,0 +1,75 @@
+<div class="tenant-card" *ngIf="tenant">
+  <div class="card-header">
+    <div class="tenant-avatar">
+      <img *ngIf="tenant.photo_url" [src]="tenant.photo_url" [alt]="getFullName()">
+      <div *ngIf="!tenant.photo_url" class="avatar-placeholder">
+        {{ getInitials() }}
+      </div>
+    </div>
+    <div class="tenant-info">
+      <h3>{{ getFullName() }}</h3>
+      <span class="status-badge" [ngClass]="getStatusClass()">
+        {{ getStatusLabel() }}
+      </span>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <!-- Documento -->
+    <div class="info-row">
+      <i class="bi bi-card-text"></i>
+      <span class="info-label">{{ tenant.identification_type || 'Documento' }}:</span>
+      <span class="info-value">{{ tenant.identification_number || 'No registrado' }}</span>
+    </div>
+
+    <!-- Email -->
+    <div class="info-row">
+      <i class="bi bi-envelope"></i>
+      <span class="info-label">Email:</span>
+      <span class="info-value">{{ tenant.email }}</span>
+    </div>
+
+    <!-- Teléfono -->
+    <div class="info-row">
+      <i class="bi bi-telephone"></i>
+      <span class="info-label">Teléfono:</span>
+      <span class="info-value">{{ tenant.phone || 'No registrado' }}</span>
+    </div>
+
+    <!-- Edificio -->
+    <div class="info-row" *ngIf="tenant.building_name">
+      <i class="bi bi-building"></i>
+      <span class="info-label">Edificio:</span>
+      <span class="info-value">{{ tenant.building_name }}</span>
+    </div>
+
+    <!-- Unidad -->
+    <div class="info-row" *ngIf="tenant.unit_number">
+      <i class="bi bi-door-closed"></i>
+      <span class="info-label">Unidad:</span>
+      <span class="info-value">{{ tenant.unit_number }}</span>
+    </div>
+
+    <!-- Ocupación -->
+    <div class="info-row" *ngIf="tenant.occupation">
+      <i class="bi bi-briefcase"></i>
+      <span class="info-label">Ocupación:</span>
+      <span class="info-value">{{ tenant.occupation }}</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button class="btn btn-info btn-sm" [routerLink]="['/tenants', tenant.id || tenant.tenant_id]" title="Ver detalles">
+      <i class="bi bi-eye"></i>
+      Ver más
+    </button>
+    <button class="btn btn-primary btn-sm" (click)="onEdit()" title="Editar">
+      <i class="bi bi-pencil"></i>
+      Editar
+    </button>
+    <button class="btn btn-danger btn-sm" (click)="onDelete()" title="Eliminar">
+      <i class="bi bi-trash"></i>
+      Eliminar
+    </button>
+  </div>
+</div>

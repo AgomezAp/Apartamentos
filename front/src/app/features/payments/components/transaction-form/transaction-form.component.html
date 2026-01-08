@@ -1,0 +1,109 @@
+<div class="transaction-form-container">
+  <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+      <!-- Payment ID -->
+      <div class="form-group" *ngIf="!payment">
+        <label for="payment_id">💰 ID de Pago *</label>
+        <input 
+          type="number" 
+          id="payment_id" 
+          formControlName="payment_id"
+          class="form-control"
+          placeholder="ID del pago"
+          [class.error]="transactionForm.get('payment_id')?.invalid && transactionForm.get('payment_id')?.touched">
+        <span class="error-message" *ngIf="transactionForm.get('payment_id')?.invalid && transactionForm.get('payment_id')?.touched">
+          {{ getFieldError('payment_id') }}
+        </span>
+      </div>
+
+      <!-- Amount -->
+      <div class="form-group">
+        <label for="amount">💵 Monto *</label>
+        <input 
+          type="number" 
+          id="amount" 
+          formControlName="amount"
+          class="form-control"
+          placeholder="0.00"
+          step="0.01"
+          min="0"
+          [class.error]="transactionForm.get('amount')?.invalid && transactionForm.get('amount')?.touched">
+        <span class="error-message" *ngIf="transactionForm.get('amount')?.invalid && transactionForm.get('amount')?.touched">
+          {{ getFieldError('amount') }}
+        </span>
+      </div>
+
+      <!-- Transaction Date -->
+      <div class="form-group">
+        <label for="transaction_date">📅 Fecha de Transacción *</label>
+        <input 
+          type="date" 
+          id="transaction_date" 
+          formControlName="transaction_date"
+          class="form-control"
+          [class.error]="transactionForm.get('transaction_date')?.invalid && transactionForm.get('transaction_date')?.touched">
+        <span class="error-message" *ngIf="transactionForm.get('transaction_date')?.invalid && transactionForm.get('transaction_date')?.touched">
+          {{ getFieldError('transaction_date') }}
+        </span>
+      </div>
+
+      <!-- Transaction Type -->
+      <div class="form-group">
+        <label for="transaction_type">📊 Tipo de Transacción *</label>
+        <select 
+          id="transaction_type" 
+          formControlName="transaction_type"
+          class="form-control">
+          <option *ngFor="let type of transactionTypes" [value]="type.value">
+            {{ type.icon }} {{ type.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="form-group">
+        <label for="payment_method">💳 Método de Pago *</label>
+        <select 
+          id="payment_method" 
+          formControlName="payment_method"
+          class="form-control">
+          <option *ngFor="let method of paymentMethods" [value]="method.value">
+            {{ method.icon }} {{ method.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Reference Number -->
+      <div class="form-group">
+        <label for="reference_number">🔢 Número de Referencia</label>
+        <input 
+          type="text" 
+          id="reference_number" 
+          formControlName="reference_number"
+          class="form-control"
+          placeholder="Número de referencia">
+      </div>
+
+      <!-- Notes -->
+      <div class="form-group full-width">
+        <label for="notes">📝 Notas</label>
+        <textarea 
+          id="notes" 
+          formControlName="notes"
+          class="form-control"
+          rows="3"
+          placeholder="Notas adicionales sobre la transacción"></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="loading">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-submit" [disabled]="loading || transactionForm.invalid">
+        <span *ngIf="!loading">{{ transaction ? 'Actualizar' : 'Crear' }} Transacción</span>
+        <span *ngIf="loading">Guardando...</span>
+      </button>
+    </div>
+  </form>
+</div>

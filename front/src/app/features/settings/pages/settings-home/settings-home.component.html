@@ -1,0 +1,54 @@
+<div class="settings-home-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>⚙️ Configuración</h1>
+      <p>Administra todas las configuraciones del sistema desde un solo lugar</p>
+    </div>
+  </div>
+
+  <div class="settings-grid">
+    <a
+      *ngFor="let card of settingsCards"
+      [routerLink]="card.route"
+      class="settings-card"
+      [style.--card-color]="card.color"
+    >
+      <div class="card-icon">{{ card.icon }}</div>
+      <div class="card-content">
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.description }}</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="system-info-section">
+    <div class="info-card">
+      <h3>Información del Sistema</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Versión:</span>
+          <span class="info-value">{{ systemInfo.version }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Última Actualización:</span>
+          <span class="info-value">{{ systemInfo.lastUpdate | date:'medium' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Entorno:</span>
+          <span class="info-value">{{ systemInfo.environment }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-tips">
+      <h3>💡 Consejos Rápidos</h3>
+      <ul>
+        <li>Configura el servidor SMTP para habilitar el envío de correos electrónicos</li>
+        <li>Personaliza las notificaciones para recibir alertas importantes</li>
+        <li>Actualiza tu perfil para mantener tu información al día</li>
+        <li>Revisa la configuración general para ajustar preferencias regionales</li>
+      </ul>
+    </div>
+  </div>
+</div>

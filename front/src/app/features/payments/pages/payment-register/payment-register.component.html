@@ -1,0 +1,139 @@
+<div class="payment-register-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>📊 Registro de Pagos</h1>
+      <p>Reporte detallado de todos los pagos registrados</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" [routerLink]="['/payments']">
+        ← Volver
+      </button>
+      <button class="btn btn-success" (click)="exportToExcel()">
+        📄 Excel
+      </button>
+      <button class="btn btn-danger" (click)="exportToPDF()">
+        📝 PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-section">
+    <div class="summary-card total">
+      <div class="card-icon">💵</div>
+      <div class="card-content">
+        <h3>{{ formatCurrency(summary.total) }}</h3>
+        <p>Total Registrado</p>
+      </div>
+    </div>
+    <div class="summary-card completed">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <h3>{{ formatCurrency(summary.completed) }}</h3>
+        <p>Completados</p>
+      </div>
+    </div>
+    <div class="summary-card pending">
+      <div class="card-icon">⏳</div>
+      <div class="card-content">
+        <h3>{{ formatCurrency(summary.pending) }}</h3>
+        <p>Pendientes</p>
+      </div>
+    </div>
+    <div class="summary-card overdue">
+      <div class="card-icon">🔴</div>
+      <div class="card-content">
+        <h3>{{ formatCurrency(summary.overdue) }}</h3>
+        <p>Vencidos</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>📅 Desde</label>
+        <input type="date" [(ngModel)]="filter.start_date" class="filter-control">
+      </div>
+
+      <div class="filter-group">
+        <label>📅 Hasta</label>
+        <input type="date" [(ngModel)]="filter.end_date" class="filter-control">
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn btn-filter" (click)="applyFilters()">
+          🔍 Aplicar
+        </button>
+        <button class="btn btn-clear" (click)="clearFilters()">
+          ❌ Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando registro...</p>
+  </div>
+
+  <!-- Register Table -->
+  <div class="register-table" *ngIf="!loading && payments.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha Pago</th>
+          <th>Vencimiento</th>
+          <th>Inquilino</th>
+          <th>Unidad</th>
+          <th>Método</th>
+          <th>Monto</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of payments">
+          <td>{{ payment.id || payment.payment_id }}</td>
+          <td>{{ payment.payment_date | dateFormat:'dd/MM/yyyy' }}</td>
+          <td>{{ payment.due_date | dateFormat:'dd/MM/yyyy' }}</td>
+          <td>{{ payment.tenant_name || 'N/A' }}</td>
+          <td>{{ payment.unit_number || 'N/A' }}</td>
+          <td>{{ payment.payment_method }}</td>
+          <td class="amount-cell">{{ payment.amount | currencyFormat }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+              {{ getStatusLabel(payment.status) }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-view-small" [routerLink]="['/payments', payment.id || payment.payment_id]">
+              👁️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="totals-row">
+          <td colspan="6"><strong>Totales</strong></td>
+          <td class="amount-cell"><strong>{{ summary.total | currencyFormat }}</strong></td>
+          <td colspan="2"><strong>{{ summary.count }} pagos</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && payments.length === 0">
+    <div class="empty-icon">💭</div>
+    <h3>No hay pagos registrados</h3>
+    <p>No se encontraron pagos en el período seleccionado</p>
+  </div>
+
+  <!-- Payment History Component -->
+  <div class="history-section" *ngIf="!loading">
+    <app-payment-history [limit]="20"></app-payment-history>
+  </div>
+</div>

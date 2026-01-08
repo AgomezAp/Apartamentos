@@ -1,0 +1,50 @@
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-icon {
+  font-size: 1.2em;
+}
+
+/* Sizes */
+.size-small {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+}
+
+.size-medium {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+}
+
+.size-large {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Status colors */
+.status-available {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-occupied {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-maintenance {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-reserved {
+  background-color: #dbeafe;
+  color: #1e40af;
+}

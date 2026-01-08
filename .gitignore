@@ -1,0 +1,274 @@
+# =====================================================
+# GITIGNORE - Proyecto Apartamentos
+# Backend (Node.js/TypeScript) + Frontend (Angular)
+# =====================================================
+
+# =====================================================
+# NODE MODULES
+# =====================================================
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# =====================================================
+# BUILDS Y DISTRIBUCIONES
+# =====================================================
+dist/
+dist-ssr/
+build/
+out/
+*.local
+
+# Frontend Angular
+front/dist/
+front/.angular/
+front/out-tsc/
+
+# Backend
+backend/dist/
+backend/build/
+
+# =====================================================
+# ARCHIVOS DE ENTORNO Y CONFIGURACIÓN SENSIBLE
+# =====================================================
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env*.local
+*.env
+
+# =====================================================
+# LOGS
+# =====================================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# =====================================================
+# ARCHIVOS DE SISTEMA OPERATIVO
+# =====================================================
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =====================================================
+# IDEs Y EDITORES
+# =====================================================
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+*.vsix
+
+# JetBrains (WebStorm, IntelliJ, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+
+# =====================================================
+# ANGULAR ESPECÍFICO
+# =====================================================
+front/.angular/cache/
+front/.sass-cache/
+front/connect.lock
+front/coverage/
+front/libpeerconnection.log
+front/testem.log
+front/typings/
+
+# =====================================================
+# TYPESCRIPT
+# =====================================================
+*.tsbuildinfo
+*.js.map
+
+# =====================================================
+# TESTING
+# =====================================================
+coverage/
+*.lcov
+.nyc_output/
+.grunt/
+.lock-wscript
+lib-cov/
+*.seed
+*.pid
+*.pid.lock
+
+# Jest
+jest.config.js
+jest-coverage/
+
+# =====================================================
+# BASES DE DATOS
+# =====================================================
+# PostgreSQL
+*.sql.backup
+*.dump
+*.db-shm
+*.db-wal
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# =====================================================
+# UPLOADS Y ARCHIVOS TEMPORALES
+# =====================================================
+uploads/*
+!uploads/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep
+temp/
+tmp/
+*.tmp
+*.temp
+
+# =====================================================
+# DEPENDENCIAS Y CACHÉ
+# =====================================================
+.npm/
+.eslintcache
+.node_repl_history
+.yarn-integrity
+.cache/
+.parcel-cache/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# =====================================================
+# OTROS ARCHIVOS
+# =====================================================
+# Certificados SSL
+*.pem
+*.key
+*.crt
+*.p12
+
+# Backups
+*.backup
+*.bak
+*.swp
+*.swo
+
+# Archivos comprimidos
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Archivos grandes
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mkv
+
+# =====================================================
+# HERRAMIENTAS DE DESARROLLO
+# =====================================================
+.vite/
+.next/
+.nuxt/
+.output/
+.vercel/
+
+# Storybook
+storybook-static/
+
+# =====================================================
+# DOCUMENTACIÓN AUTO-GENERADA
+# =====================================================
+# Mantener archivos MD principales pero ignorar generados
+# (Descomenta si usas generadores de docs)
+# docs/api/
+# docs/generated/
+
+# =====================================================
+# ARCHIVOS ESPECÍFICOS DEL PROYECTO
+# =====================================================
+# Descomentar según necesites:
+# *.postman_collection.json.backup
+# *.BACKUP.json

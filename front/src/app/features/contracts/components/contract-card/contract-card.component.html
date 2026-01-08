@@ -1,0 +1,87 @@
+<div class="contract-card" [class.expiring]="isExpiringSoon()" [class.expired]="isExpired()">
+  <!-- Header -->
+  <div class="card-header">
+    <div class="contract-info">
+      <h3 class="contract-number">{{ contract.contract_number || 'Sin número' }}</h3>
+      <span class="badge" [ngClass]="getStatusClass()">{{ getStatusLabel() }}</span>
+    </div>
+    <div class="actions">
+      <button 
+        class="btn-icon" 
+        (click)="edit()" 
+        title="Editar"
+        *ngIf="contract.status !== 'finished'">
+        <i class="icon-edit">✏️</i>
+      </button>
+      <button 
+        class="btn-icon btn-danger" 
+        (click)="delete()" 
+        title="Eliminar">
+        <i class="icon-delete">🗑️</i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tenant and Unit Info -->
+  <div class="card-body">
+    <div class="info-row">
+      <span class="label">Inquilino:</span>
+      <span class="value">{{ contract.tenant_name || 'No especificado' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Unidad:</span>
+      <span class="value">
+        {{ contract.unit_number || 'N/A' }}
+        <span class="building-name" *ngIf="contract.building_name">
+          ({{ contract.building_name }})
+        </span>
+      </span>
+    </div>
+    <div class="info-row">
+      <span class="label">Renta mensual:</span>
+      <span class="value rent-amount">{{ formatAmount(contract.monthly_rent) }}</span>
+    </div>
+  </div>
+
+  <!-- Date Info -->
+  <div class="card-dates">
+    <div class="date-item">
+      <span class="date-label">Inicio</span>
+      <span class="date-value">{{ formatDate(contract.start_date) }}</span>
+    </div>
+    <div class="date-separator">→</div>
+    <div class="date-item">
+      <span class="date-label">Fin</span>
+      <span class="date-value">{{ formatDate(contract.end_date) }}</span>
+    </div>
+  </div>
+
+  <!-- Days Remaining -->
+  <div class="card-footer" *ngIf="contract.status === 'active'">
+    <div class="days-remaining" [class.warning]="isExpiringSoon()" [class.danger]="isExpired()">
+      <span *ngIf="!isExpired()">
+        <strong>{{ getDaysRemaining() }}</strong> días restantes
+      </span>
+      <span *ngIf="isExpired()" class="expired-label">
+        ⚠️ Contrato vencido hace {{ Math.abs(getDaysRemaining()) }} días
+      </span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="card-actions" *ngIf="contract.status === 'active'">
+    <button class="btn btn-primary" [routerLink]="['/contracts', contract.id]">
+      Ver detalles
+    </button>
+    <button class="btn btn-warning" (click)="finish()">
+      Finalizar contrato
+    </button>
+  </div>
+
+  <!-- View Details (for non-active contracts) -->
+  <div class="card-actions" *ngIf="contract.status !== 'active'">
+    <button class="btn btn-outline" [routerLink]="['/contracts', contract.id]">
+      Ver detalles
+    </button>
+  </div>
+</div>

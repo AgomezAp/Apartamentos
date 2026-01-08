@@ -1,0 +1,16 @@
+<div class="stats-card" [ngClass]="colorClass">
+  <div class="card-header">
+    <div class="icon">{{ icon }}</div>
+    <div class="trend" *ngIf="trend" [ngClass]="trendClass">
+      <span class="trend-icon">{{ trendIcon }}</span>
+      <span class="trend-value">{{ trend | number : "1.0-1" }}%</span>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="title">{{ title }}</div>
+    <div class="value">{{ value }}</div>
+    <div class="subtitle" *ngIf="subtitle">{{ subtitle }}</div>
+    <div class="trend-label" *ngIf="trendLabel">{{ trendLabel }}</div>
+  </div>
+</div>

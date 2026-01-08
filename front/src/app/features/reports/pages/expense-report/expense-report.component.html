@@ -1,0 +1,72 @@
+<div class="expense-report-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>💸 Reporte de Gastos</h1>
+      <p>Análisis detallado de gastos por categoría</p>
+    </div>
+    <div class="header-actions">
+      <app-export-buttons [data]="expenses" filename="reporte_gastos"></app-export-buttons>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <app-report-filter
+    [showReportTypeFilter]="false"
+    [showBuildingFilter]="false"
+    [showUnitFilter]="false"
+    [showTenantFilter]="false"
+    (filterChange)="onFilterChange($event)">
+  </app-report-filter>
+
+  <!-- Summary Cards -->
+  <div class="summary-section">
+    <div class="summary-card total">
+      <div class="card-icon">💵</div>
+      <div class="card-content">
+        <h3>{{ summary.total | currencyFormat }}</h3>
+        <p>Total Gastado</p>
+      </div>
+    </div>
+    <div class="summary-card count">
+      <div class="card-icon">📊</div>
+      <div class="card-content">
+        <h3>{{ summary.count }}</h3>
+        <p>Total Gastos</p>
+      </div>
+    </div>
+    <div class="summary-card average">
+      <div class="card-icon">💳</div>
+      <div class="card-content">
+        <h3>{{ summary.average | currencyFormat }}</h3>
+        <p>Promedio</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando reporte de gastos...</p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-grid" *ngIf="!loading">
+    <!-- Chart -->
+    <div class="chart-section" *ngIf="chartData">
+      <app-chart-viewer 
+        [chartData]="chartData" 
+        [title]="'Gastos por Categoría'" 
+        [height]="350">
+      </app-chart-viewer>
+    </div>
+
+    <!-- Table -->
+    <div class="table-section">
+      <app-report-table 
+        [data]="expenses" 
+        [columns]="tableColumns" 
+        [title]="'Detalle de Gastos'"
+        [showTotals]="true">
+      </app-report-table>
+    </div>
+  </div>
+</div>

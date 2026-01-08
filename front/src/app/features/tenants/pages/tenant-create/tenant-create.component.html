@@ -1,0 +1,18 @@
+<div class="create-tenant-container">
+
+  <div class="form-container">
+    <app-tenant-form
+      submitButtonText="Crear Inquilino"
+      (formSubmit)="onFormSubmit($event)"
+      (formCancel)="onFormCancel()"
+    ></app-tenant-form>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isSubmitting" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p>Creando inquilino...</p>
+    </div>
+  </div>
+</div>

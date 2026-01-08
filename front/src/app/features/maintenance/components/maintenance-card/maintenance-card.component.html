@@ -1,0 +1,105 @@
+<div class="maintenance-card">
+  <div class="card-header">
+    <div class="header-left">
+      <span class="category-icon">{{ getCategoryIcon(request.category) }}</span>
+      <div class="header-info">
+        <h4>{{ request.title }}</h4>
+        <p class="category-label">{{ getCategoryLabel(request.category) }}</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <app-priority-badge [priority]="request.priority"></app-priority-badge>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="status-section">
+      <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+        {{ getStatusLabel(request.status) }}
+      </span>
+      <span class="days-elapsed">
+        {{ getDaysElapsed(request.reported_date) }} días desde reporte
+      </span>
+    </div>
+
+    <div class="description">
+      <p>{{ request.description }}</p>
+    </div>
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="detail-icon">🏢</span>
+        <div class="detail-content">
+          <span class="detail-label">Edificio</span>
+          <span class="detail-value">{{ request.building_name || 'N/A' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-icon">🏠</span>
+        <div class="detail-content">
+          <span class="detail-label">Unidad</span>
+          <span class="detail-value">{{ request.unit_number || 'N/A' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-icon">👤</span>
+        <div class="detail-content">
+          <span class="detail-label">Inquilino</span>
+          <span class="detail-value">{{ request.tenant_name || 'N/A' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-icon">📅</span>
+        <div class="detail-content">
+          <span class="detail-label">Reportado</span>
+          <span class="detail-value">{{ request.reported_date | dateFormat:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item" *ngIf="request.scheduled_date">
+        <span class="detail-icon">⏰</span>
+        <div class="detail-content">
+          <span class="detail-label">Programado</span>
+          <span class="detail-value">{{ request.scheduled_date | dateFormat:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-item" *ngIf="request.assigned_to_name">
+        <span class="detail-icon">🔧</span>
+        <div class="detail-content">
+          <span class="detail-label">Asignado a</span>
+          <span class="detail-value">{{ request.assigned_to_name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cost-section" *ngIf="request.estimated_cost || request.actual_cost">
+      <div class="cost-item" *ngIf="request.estimated_cost">
+        <span class="cost-label">Estimado:</span>
+        <span class="cost-value">{{ request.estimated_cost | currencyFormat }}</span>
+      </div>
+      <div class="cost-item" *ngIf="request.actual_cost">
+        <span class="cost-label">Real:</span>
+        <span class="cost-value">{{ request.actual_cost | currencyFormat }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button class="btn btn-view" [routerLink]="['/maintenance', request.request_id]">
+      👁️ Ver
+    </button>
+    <button class="btn btn-assign" (click)="onAssign()" *ngIf="request.status === 'pending'">
+      👤 Asignar
+    </button>
+    <button class="btn btn-resolve" (click)="onResolve()" *ngIf="request.status === 'in_progress'">
+      ✅ Resolver
+    </button>
+    <button class="btn btn-delete" (click)="onDelete()">
+      🗑️ Eliminar
+    </button>
+  </div>
+</div>

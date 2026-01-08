@@ -1,0 +1,88 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MaintenanceService } from '../../services/maintenance.service';
+import { MaintenanceRequest } from '../../models/miantenance.model';
+import { MaintenanceCardComponent } from '../../components/maintenance-card/maintenance-card.component';
+
+@Component({
+  selector: 'app-maintenance-pending',
+  imports: [CommonModule, RouterModule, MaintenanceCardComponent],
+  templateUrl: './maintenance-pending.component.html',
+  styleUrl: './maintenance-pending.component.css'
+})
+export class MaintenancePendingComponent implements OnInit {
+  requests: MaintenanceRequest[] = [];
+  loading = false;
+
+  constructor(private maintenanceService: MaintenanceService) {}
+
+  ngOnInit(): void {
+    this.loadPendingRequests();
+  }
+
+  loadPendingRequests(): void {
+    this.loading = true;
+    this.maintenanceService.getPending().subscribe({
+      next: (data) => {
+        this.requests = data;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading pending requests:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  onDelete(requestId: number): void {
+    if (confirm('¿Está seguro de eliminar esta solicitud?')) {
+      this.maintenanceService.delete(requestId).subscribe({
+        next: () => {
+          this.loadPendingRequests();
+        },
+        error: (error) => {
+          console.error('Error deleting request:', error);
+          alert('Error al eliminar la solicitud');
+        }
+      });
+    }
+  }
+
+  onResolve(requestId: number): void {
+    const resolvedBy = prompt('Ingrese nombre de quien resolvió:');
+    const actualCost = prompt('Ingrese costo real:');
+    const notes = prompt('Notas de resolución:');
+    
+    if (resolvedBy) {
+      this.maintenanceService.resolve(requestId, {
+        resolved_by: resolvedBy,
+        actual_cost: actualCost ? parseFloat(actualCost) : undefined,
+        notes: notes || undefined
+      }).subscribe({
+        next: () => {
+          this.loadPendingRequests();
+        },
+        error: (error) => {
+          console.error('Error resolving request:', error);
+          alert('Error al resolver la solicitud');
+        }
+      });
+    }
+  }
+
+  onAssign(requestId: number): void {
+    const assignedTo = prompt('Ingrese nombre de la persona asignada:');
+    if (assignedTo) {
+      this.maintenanceService.update(requestId, { assigned_to: assignedTo }).subscribe({
+        next: () => {
+          this.loadPendingRequests();
+        },
+        error: (error) => {
+          console.error('Error assigning request:', error);
+          alert('Error al asignar la solicitud');
+        }
+      });
+    }
+  }
+}

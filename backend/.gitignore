@@ -1,0 +1,30 @@
+# Dependencias
+node_modules/
+dist/
+
+# Archivos de entorno
+.env
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+tmp/
+temp/
+*.tmp
+
+# Uploads - ignorar archivos pero mantener estructura
+uploads/**/*
+!uploads/.gitkeep
+!uploads/receipts/.gitkeep

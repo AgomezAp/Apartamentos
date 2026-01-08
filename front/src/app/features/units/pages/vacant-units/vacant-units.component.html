@@ -1,0 +1,51 @@
+<div class="vacant-units-container">
+  <div class="page-header">
+    <div>
+      <h1>Unidades Disponibles</h1>
+      <p class="subtitle">Listado de unidades disponibles para renta</p>
+    </div>
+    <button class="btn btn-primary" (click)="createUnit()">
+      <i class="icon-plus"></i> Nueva Unidad
+    </button>
+  </div>
+
+  <div class="stats-card">
+    <div class="stat-item">
+      <span class="stat-label">Total Disponibles</span>
+      <span class="stat-value">{{ pagination.total }}</span>
+    </div>
+  </div>
+
+  <div class="loading-spinner" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Cargando unidades disponibles...</p>
+  </div>
+
+  <div class="units-grid" *ngIf="!isLoading && units.length > 0">
+    <app-unit-card 
+      *ngFor="let unit of units" 
+      [unit]="unit"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
+    ></app-unit-card>
+  </div>
+
+  <div class="pagination" *ngIf="!isLoading && units.length > 0 && pagination.totalPages > 1">
+    <button class="btn-page" (click)="prevPage()" [disabled]="pagination.page === 1">
+      Anterior
+    </button>
+    <span class="page-info">Página {{ pagination.page }} de {{ pagination.totalPages }}</span>
+    <button class="btn-page" (click)="nextPage()" [disabled]="pagination.page === pagination.totalPages">
+      Siguiente
+    </button>
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && units.length === 0">
+    <div class="empty-icon">🏢</div>
+    <h3>No hay unidades disponibles</h3>
+    <p>Actualmente no hay unidades disponibles para renta.</p>
+    <button class="btn btn-primary" routerLink="/units">
+      Ver todas las unidades
+    </button>
+  </div>
+</div>

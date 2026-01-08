@@ -1,0 +1,29 @@
+<div class="card" [class.hoverable]="hoverable" [class.clickable]="clickable" [class.loading]="loading">
+  <!-- Loading Overlay -->
+  <div *ngIf="loading" class="card-loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Header -->
+  <div *ngIf="title || subtitle" class="card-header" [ngClass]="headerClass">
+    <h3 *ngIf="title" class="card-title">{{ title }}</h3>
+    <p *ngIf="subtitle" class="card-subtitle">{{ subtitle }}</p>
+    <ng-content select="[card-header-actions]"></ng-content>
+  </div>
+
+  <!-- Custom Header Slot -->
+  <ng-content select="[card-header]"></ng-content>
+
+  <!-- Body -->
+  <div class="card-body" [ngClass]="bodyClass">
+    <ng-content></ng-content>
+  </div>
+
+  <!-- Footer -->
+  <div *ngIf="footerClass" class="card-footer" [ngClass]="footerClass">
+    <ng-content select="[card-footer]"></ng-content>
+  </div>
+
+  <!-- Custom Footer Slot -->
+  <ng-content select="[card-footer]"></ng-content>
+</div>

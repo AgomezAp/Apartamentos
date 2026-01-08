@@ -1,0 +1,8 @@
+<span 
+  class="status-badge" 
+  [ngClass]="['badge-' + type, 'badge-' + size, dotOnly ? 'badge-dot' : '']"
+>
+  <span *ngIf="icon" class="badge-icon">{{ icon }}</span>
+  <span *ngIf="!dotOnly" class="badge-label">{{ label }}</span>
+  <span *ngIf="dotOnly" class="badge-dot-indicator"></span>
+</span>

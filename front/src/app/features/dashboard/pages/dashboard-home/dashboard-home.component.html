@@ -1,0 +1,146 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Dashboard</h1>
+      <p class="header-subtitle">Resumen general del sistema</p>
+    </div>
+    <div class="header-actions">
+      <div class="date-filters">
+        <div class="filter-group">
+          <label for="startDate">Desde:</label>
+          <input type="date" id="startDate" [(ngModel)]="startDate" (change)="onDateFilterChange()" class="date-input">
+        </div>
+        <div class="filter-group">
+          <label for="endDate">Hasta:</label>
+          <input type="date" id="endDate" [(ngModel)]="endDate" (change)="onDateFilterChange()" class="date-input">
+        </div>
+      </div>
+      <button
+        class="btn-refresh"
+        (click)="refreshDashboard()"
+        [disabled]="loading"
+      >
+        <span class="btn-icon" [class.spinning]="loading">🔄</span>
+        <span>{{ loading ? "Actualizando..." : "Actualizar" }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando dashboard...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <span class="error-icon">⚠️</span>
+    <p>{{ error }}</p>
+    <button class="btn-retry" (click)="refreshDashboard()">Reintentar</button>
+  </div>
+
+  <!-- Dashboard Content -->
+  <main class="dashboard-content" *ngIf="!loading && !error && stats">
+    <!-- Stats Cards Grid -->
+    <section class="stats-grid">
+      <app-stats-card
+        title="Edificios"
+        [value]="stats.total_buildings"
+        icon="🏢"
+        color="blue"
+        subtitle="Total de edificios"
+      ></app-stats-card>
+
+      <app-stats-card
+        title="Unidades"
+        [value]="stats.total_units"
+        icon="🏠"
+        color="green"
+        [trend]="stats.occupancy_rate"
+        trendLabel="Ocupación"
+        subtitle="Total de unidades"
+      ></app-stats-card>
+
+      <app-stats-card
+        title="Inquilinos"
+        [value]="stats.total_tenants"
+        icon="👥"
+        color="purple"
+        subtitle="Inquilinos activos"
+      ></app-stats-card>
+
+      <app-stats-card
+        title="Contratos Activos"
+        [value]="stats.active_contracts"
+        icon="📝"
+        color="yellow"
+        subtitle="Contratos vigentes"
+      ></app-stats-card>
+
+      <app-stats-card
+        title="Ingresos del Mes"
+        [value]="stats.collected_this_month || 0"
+        icon="💰"
+        color="green"
+        [trend]="stats.revenue_growth_rate"
+        trendLabel="vs mes anterior"
+        subtitle="Ingresos actuales"
+      ></app-stats-card>
+
+      <app-stats-card
+        title="Pagos Pendientes"
+        [value]="stats.pending_payments"
+        icon="⏰"
+        color="red"
+        [subtitle]="
+          'Total: ' +
+          (stats.pending_amount | currency : 'USD' : 'symbol' : '1.0-0')
+        "
+      ></app-stats-card>
+    </section>
+
+    <!-- 🔥 Main Dashboard Grid - REORGANIZADO -->
+    <section class="dashboard-grid">
+      <!-- Revenue Chart - Columna izquierda superior -->
+      <div class="widget-revenue">
+        <app-revenue-chart [startDate]="startDate" [endDate]="endDate"></app-revenue-chart>
+      </div>
+
+      <!-- Tendencia de Gastos - Columna derecha superior -->
+      <div class="widget-trends">
+        <app-expense-trends-chart [startDate]="startDate" [endDate]="endDate"></app-expense-trends-chart>
+      </div>
+
+      <!-- Pagos Recientes Tabla - Ancho completo -->
+      <div class="widget-recent-table">
+        <app-recent-payments-table [startDate]="startDate" [endDate]="endDate"></app-recent-payments-table>
+      </div>
+
+      <!-- Ocupación por Edificio -->
+      <div class="widget-occupancy">
+        <app-occupancy-chart></app-occupancy-chart>
+      </div>
+
+      <!-- Pagos Vencidos -->
+      <div class="widget-overdue">
+        <app-overdue-payments></app-overdue-payments>
+      </div>
+
+      <!-- Historial de Pagos -->
+      <div class="widget-history">
+        <app-payment-history [limit]="5"></app-payment-history>
+      </div>
+
+      <!-- Alertas -->
+      <div class="widget-alerts">
+        <app-alerts-widget></app-alerts-widget>
+      </div>
+
+      <!-- Tareas Pendientes -->
+      <div class="widget-tasks">
+        <app-pending-tasks></app-pending-tasks>
+      </div>
+    </section>
+  </main>
+</div>

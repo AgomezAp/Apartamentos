@@ -1,0 +1,53 @@
+<div class="pending-tasks">
+  <div class="widget-header">
+    <h3>📝 Tareas Pendientes</h3>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando tareas...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="tasks-list" *ngIf="!loading && !error">
+    <div class="task-item" 
+         *ngFor="let task of tasks"
+         [ngClass]="getPriorityClass(task.priority)"
+         [class.overdue]="isOverdue(task.due_date)">
+      <div class="task-header">
+        <div class="task-type">
+          <span class="type-icon">{{ getTypeIcon(task.type) }}</span>
+          <span class="type-label">{{ task.type }}</span>
+        </div>
+        <div class="task-priority">
+          <span class="priority-icon">{{ getPriorityIcon(task.priority) }}</span>
+        </div>
+      </div>
+      
+      <div class="task-content">
+        <div class="task-title">{{ task.title }}</div>
+        <div class="task-description">{{ task.description }}</div>
+      </div>
+
+      <div class="task-footer">
+        <div class="task-entity" *ngIf="task.entity_name">
+          {{ task.entity_name }}
+        </div>
+        <div class="task-due">
+          <span *ngIf="!isOverdue(task.due_date)">
+            Vence: {{ task.due_date | dateFormat:'dd/MM/yyyy' }}
+          </span>
+          <span *ngIf="isOverdue(task.due_date)" class="overdue-label">
+            ⚠️ Vencido: {{ Math.abs(getDaysUntilDue(task.due_date)) }} días
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-tasks" *ngIf="tasks.length === 0">
+      <p>✅ No hay tareas pendientes</p>
+    </div>
+  </div>
+</div>

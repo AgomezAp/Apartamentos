@@ -1,0 +1,78 @@
+<div class="tenant-list-container">
+  <div class="page-header"></div>
+
+  <div class="filters-section">
+    <button class="btn btn-primary" (click)="createTenant()">
+      <i class="icon-plus"></i> Nuevo Inquilino
+    </button>
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Buscar por nombre, email o documento..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearchInput(searchTerm)"
+        class="form-control"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Estado:</label>
+      <select
+        [(ngModel)]="statusFilter"
+        (change)="onStatusChange(statusFilter)"
+        class="form-control"
+      >
+        <option value="all">Todos</option>
+        <option value="active">Activos</option>
+        <option value="inactive">Inactivos</option>
+        <option value="blacklisted">Lista Negra</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="loading-spinner" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Cargando inquilinos...</p>
+  </div>
+
+  <div class="tenants-grid" *ngIf="!isLoading && tenants.length > 0">
+    <app-tenant-card
+      *ngFor="let tenant of tenants"
+      [tenant]="tenant"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
+    ></app-tenant-card>
+  </div>
+
+  <div
+    class="pagination"
+    *ngIf="!isLoading && tenants.length > 0 && pagination.totalPages > 1"
+  >
+    <button
+      class="btn-page"
+      (click)="prevPage()"
+      [disabled]="pagination.page === 1"
+    >
+      Anterior
+    </button>
+    <span class="page-info"
+      >Página {{ pagination.page }} de {{ pagination.totalPages }}</span
+    >
+    <button
+      class="btn-page"
+      (click)="nextPage()"
+      [disabled]="pagination.page === pagination.totalPages"
+    >
+      Siguiente
+    </button>
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && tenants.length === 0">
+    <i class="icon-empty"></i>
+    <h3>No se encontraron inquilinos</h3>
+    <p>Intenta ajustar tus filtros o crea un nuevo inquilino.</p>
+    <button class="btn btn-primary" (click)="createTenant()">
+      Crear Primer Inquilino
+    </button>
+  </div>
+</div>

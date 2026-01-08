@@ -1,0 +1,29 @@
+<nav aria-label="breadcrumb" class="breadcrumb-container">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/']" class="breadcrumb-link">
+        <span class="breadcrumb-icon">🏠</span>
+        Inicio
+      </a>
+    </li>
+    <li 
+      *ngFor="let item of items; let last = last" 
+      class="breadcrumb-item"
+      [class.active]="last"
+    >
+      <span class="breadcrumb-separator">{{ separator }}</span>
+      <a 
+        *ngIf="item.url && !last" 
+        [routerLink]="item.url" 
+        class="breadcrumb-link"
+      >
+        <span *ngIf="item.icon" class="breadcrumb-icon">{{ item.icon }}</span>
+        {{ item.label }}
+      </a>
+      <span *ngIf="!item.url || last" class="breadcrumb-current">
+        <span *ngIf="item.icon" class="breadcrumb-icon">{{ item.icon }}</span>
+        {{ item.label }}
+      </span>
+    </li>
+  </ol>
+</nav>

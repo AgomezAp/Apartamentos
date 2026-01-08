@@ -1,0 +1,148 @@
+<div class="maintenance-list-container">
+  <!-- Modal para asignar técnico -->
+  <app-assign-technician-modal 
+    (submit)="handleAssign($event)"
+    (cancel)="handleCancelAssign()"
+  ></app-assign-technician-modal>
+
+  <!-- Modal para resolver -->
+  <app-resolve-maintenance-modal 
+    (submit)="handleResolveSubmit($event)"
+    (cancel)="handleResolveCancel()"
+  ></app-resolve-maintenance-modal>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <button class="btn btn-primary" [routerLink]="['/maintenance/create']">
+        ➕ Nueva Solicitud
+      </button>
+      <div class="filter-group">
+        <label>📊 Categoría</label>
+        <select
+          [(ngModel)]="filter.category"
+          (change)="applyFilters()"
+          class="filter-control"
+        >
+          <option value="">Todas</option>
+          <option *ngFor="let cat of categories" [value]="cat.value">
+            {{ cat.icon }} {{ cat.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>⚠️ Prioridad</label>
+        <select
+          [(ngModel)]="filter.priority"
+          (change)="applyFilters()"
+          class="filter-control"
+        >
+          <option value="">Todas</option>
+          <option *ngFor="let p of priorities" [value]="p.value">
+            {{ p.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>📊 Estado</label>
+        <select
+          [(ngModel)]="filter.status"
+          (change)="applyFilters()"
+          class="filter-control"
+        >
+          <option value="">Todos</option>
+          <option *ngFor="let s of statuses" [value]="s.value">
+            {{ s.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn btn-filter" (click)="applyFilters()">
+          🔍 Filtrar
+        </button>
+        <button class="btn btn-clear" (click)="clearFilters()">
+          ❌ Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Bar -->
+  <div class="summary-bar">
+    <div class="summary-item">
+      <span class="summary-label">Total Solicitudes:</span>
+      <span class="summary-value">{{ totalItems }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Gasto Estimado:</span>
+      <span class="summary-value" style="color: #3498db;">${{ totalEstimatedCost | number:'1.0-0' }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Gasto Real:</span>
+      <span class="summary-value" style="color: #27ae60;">${{ totalActualCost | number:'1.0-0' }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Página:</span>
+      <span class="summary-value">{{ currentPage }} de {{ totalPages }}</span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando solicitudes...</p>
+  </div>
+
+  <!-- Requests Grid -->
+  <div class="requests-grid" *ngIf="!loading && paginatedRequests.length > 0">
+    <app-maintenance-card
+      *ngFor="let request of paginatedRequests"
+      [request]="request"
+      (delete)="onDelete(request.request_id)"
+      (resolve)="onResolve(request.request_id)"
+      (assign)="onAssign(request.request_id)"
+    >
+    </app-maintenance-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && paginatedRequests.length === 0">
+    <p>💭 No se encontraron solicitudes de mantenimiento</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="!loading && totalPages > 1">
+    <button
+      class="pagination-btn"
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)"
+    >
+      ◀ Anterior
+    </button>
+
+    <button
+      *ngFor="let page of pages"
+      class="pagination-btn"
+      [class.active]="page === currentPage"
+      (click)="changePage(page)"
+    >
+      {{ page }}
+    </button>
+
+    <button
+      class="pagination-btn"
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)"
+    >
+      Siguiente ▶
+    </button>
+  </div>
+</div>
+
+<!-- Modal de Asignación de Técnico -->
+<app-assign-technician-modal
+  (assign)="handleAssign($event)"
+  (cancel)="handleCancelAssign()"
+></app-assign-technician-modal>

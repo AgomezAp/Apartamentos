@@ -1,0 +1,111 @@
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MaintenanceRequest, MaintenanceFormData, MaintenanceCategories, MaintenancePriorities } from '../../models/miantenance.model';
+import { Unit } from '../../../units/models/unit.model';
+import { Tenant } from '../../../tenants/models/tenant.model';
+import { Building } from '../../../buildings/models/building.model';
+
+@Component({
+  selector: 'app-maintenance-form',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './maintenance-form.component.html',
+  styleUrl: './maintenance-form.component.css'
+})
+export class MaintenanceFormComponent implements OnInit {
+  @Input() request?: MaintenanceRequest;
+  @Input() buildings: Building[] = [];
+  @Input() units: Unit[] = [];
+  @Input() tenants: Tenant[] = [];
+  @Output() buildingChange = new EventEmitter<number>();
+  @Output() unitChange = new EventEmitter<number>();
+  @Output() submit = new EventEmitter<MaintenanceFormData>();
+  @Output() cancel = new EventEmitter<void>();
+
+  maintenanceForm!: FormGroup;
+  categories = MaintenanceCategories;
+  priorities = MaintenancePriorities;
+  loading = false;
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.initForm();
+  }
+
+  initForm(): void {
+    const today = new Date().toISOString().split('T')[0];
+
+    this.maintenanceForm = this.fb.group({
+      building_id: [this.request?.building_name || '', Validators.required],
+      unit_id: [this.request?.unit_id || '', Validators.required],
+      tenant_id: [this.request?.tenant_id || '', []], // No requiere validación, puede estar vacío
+      category: [this.request?.category || 'other', Validators.required],
+      priority: [this.request?.priority || 'medium', Validators.required],
+      title: [this.request?.title || '', [Validators.required, Validators.minLength(3)]],
+      description: [this.request?.description || '', [Validators.required, Validators.minLength(10)]],
+      scheduled_date: [this.request?.scheduled_date?.split('T')[0] || ''],
+      estimated_cost: [this.request?.estimated_cost || ''],
+      assigned_to: [this.request?.assigned_to || '']
+    });
+  }
+
+  onBuildingChange(buildingId: string): void {
+    if (buildingId) {
+      this.buildingChange.emit(parseInt(buildingId));
+    }
+  }
+
+  onUnitChange(unitId: string): void {
+    if (unitId) {
+      this.unitChange.emit(parseInt(unitId));
+    }
+  }
+
+  onSubmit(): void {
+    if (this.maintenanceForm.valid) {
+      this.loading = true;
+      const formValue = this.maintenanceForm.value;
+      
+      // Convertir valores a números
+      const formData: MaintenanceFormData = {
+        building_id: parseInt(formValue.building_id),
+        unit_id: parseInt(formValue.unit_id),
+        tenant_id: formValue.tenant_id ? parseInt(formValue.tenant_id) : undefined,
+        category: formValue.category,
+        priority: formValue.priority,
+        title: formValue.title,
+        description: formValue.description,
+        scheduled_date: formValue.scheduled_date || undefined,
+        estimated_cost: formValue.estimated_cost ? parseFloat(formValue.estimated_cost) : undefined,
+        assigned_to: formValue.assigned_to || undefined
+      };
+      
+      this.submit.emit(formData);
+    } else {
+      this.markFormGroupTouched(this.maintenanceForm);
+    }
+  }
+
+  onCancel(): void {
+    this.cancel.emit();
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      control?.markAsTouched();
+    });
+  }
+
+  getFieldError(fieldName: string): string {
+    const control = this.maintenanceForm.get(fieldName);
+    if (control?.hasError('required')) return 'Este campo es requerido';
+    if (control?.hasError('minlength')) {
+      const minLength = control.errors?.['minlength'].requiredLength;
+      return `Mínimo ${minLength} caracteres`;
+    }
+    return '';
+  }
+}

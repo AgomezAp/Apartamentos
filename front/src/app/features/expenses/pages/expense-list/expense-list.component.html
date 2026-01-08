@@ -1,0 +1,301 @@
+<div class="expense-list-container">
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filters-header">
+      <h1 class="filters-title">💰 Gestión de Gastos</h1>
+      <div class="filters-header-actions">
+        <button class="btn btn-analytics" routerLink="/expenses/analytics">
+          📈 Análisis
+        </button>
+        <button class="btn btn-primary" routerLink="/expenses/create">
+          ➕ Nuevo Gasto
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="building">🏢 Edificio</label>
+        <select
+          id="building"
+          [(ngModel)]="filter.building_id"
+          (change)="onFilterChange()"
+          class="filter-control"
+        >
+          <option value="">Todos los edificios</option>
+          <option *ngFor="let building of buildings" [value]="building.id">
+            {{ building.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="category">📊 Categoría</label>
+        <select
+          id="category"
+          [(ngModel)]="filter.category_id"
+          (change)="onFilterChange()"
+          class="filter-control"
+        >
+          <option value="">Todas las categorías</option>
+          <option
+            *ngFor="let category of categories"
+            [value]="category.category_id"
+          >
+            {{ category.category_name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="start_date">📅 Fecha Inicio</label>
+        <input
+          type="date"
+          id="start_date"
+          [(ngModel)]="startDate"
+          (change)="onDateChange()"
+          class="filter-control"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label for="end_date">📅 Fecha Fin</label>
+        <input
+          type="date"
+          id="end_date"
+          [(ngModel)]="endDate"
+          (change)="onDateChange()"
+          class="filter-control"
+        />
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn btn-clear" (click)="clearFilters()">
+          🗑️ Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-bar" *ngIf="!loading && expenses.length > 0">
+    <div class="summary-item">
+      <span class="summary-label">Total de gastos:</span>
+      <span class="summary-value">{{ totalExpenses }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Monto total:</span>
+      <span class="summary-value highlight">{{
+        getTotalAmount() | currency : "USD" : "symbol" : "1.2-2"
+      }}</span>
+    </div>
+    <!-- Mostrar monto de página actual cuando hay paginación -->
+    <div
+      class="summary-item"
+      *ngIf="showPagination && viewMode === 'grid'"
+    >
+      <span class="summary-label">Monto en página:</span>
+      <span class="summary-value page-amount">{{
+        getPageTotalAmount() | currency : "USD" : "symbol" : "1.2-2"
+      }}</span>
+    </div>
+  </div>
+
+  <!-- View Controls -->
+  <div class="view-controls" *ngIf="!loading && !error && expenses.length > 0">
+    <div class="control-group">
+      <label for="items-per-page">Resultados por página:</label>
+      <select
+        id="items-per-page"
+        [(ngModel)]="filter.limit"
+        (change)="onItemsPerPageChange()"
+        class="control-select"
+      >
+        <option *ngFor="let option of itemsPerPageOptions" [value]="option">
+          {{ getItemsPerPageLabel(option) }}
+        </option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Vista:</label>
+      <div class="view-buttons">
+        <button
+          class="btn-view"
+          [class.active]="viewMode === 'grid'"
+          (click)="toggleViewMode('grid')"
+          title="Vista de tarjetas"
+        >
+          ▦▦ Grid
+        </button>
+        <button
+          class="btn-view"
+          [class.active]="viewMode === 'list'"
+          (click)="toggleViewMode('list')"
+          title="Vista de lista"
+        >
+          ≡ Lista
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando gastos...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <p>{{ error }}</p>
+    <button class="btn btn-retry" (click)="loadExpenses()">Reintentar</button>
+  </div>
+
+  <!-- Expenses Grid View -->
+  <div
+    class="expenses-grid"
+    *ngIf="!loading && !error && expenses.length > 0 && viewMode === 'grid'"
+  >
+    <!-- ✅ Usar paginatedExpenses en lugar de expenses -->
+    <app-expense-card
+      *ngFor="let expense of paginatedExpenses"
+      [expense]="expense"
+      (delete)="onDeleteExpense($event)"
+      (edit)="onEditExpense($event)"
+    >
+    </app-expense-card>
+  </div>
+
+  <!-- Expenses List View -->
+  <div
+    class="expenses-list"
+    *ngIf="!loading && !error && expenses.length > 0 && viewMode === 'list'"
+  >
+    <div class="list-header">
+      <div class="list-col list-col-date">📅 Fecha</div>
+      <div class="list-col list-col-category">📊 Categoría</div>
+      <div class="list-col list-col-building">🏢 Edificio</div>
+      <div class="list-col list-col-description">📝 Descripción</div>
+      <div class="list-col list-col-amount">💰 Monto</div>
+      <div class="list-col list-col-method">💳 Método</div>
+      <div class="list-col list-col-actions">⚙️ Acciones</div>
+    </div>
+    <div class="list-body">
+      <div class="list-row" *ngFor="let expense of expenses">
+        <div class="list-col list-col-date">
+          {{ expense.expense_date | date : "dd/MM/yyyy" }}
+        </div>
+        <div class="list-col list-col-category">
+          <span class="badge">{{ expense.category_name }}</span>
+        </div>
+        <div class="list-col list-col-building">
+          {{ expense.building_name }}
+        </div>
+        <div class="list-col list-col-description">
+          {{ expense.description }}
+        </div>
+        <div class="list-col list-col-amount">
+          <strong>{{
+            expense.amount | currency : "USD" : "symbol" : "1.2-2"
+          }}</strong>
+        </div>
+        <div class="list-col list-col-method">
+          {{ expense.payment_method || "-" }}
+        </div>
+        <div class="list-col list-col-actions">
+          <button
+            class="btn-small btn-view-small"
+            title="Ver"
+            (click)="onEditExpense(getExpenseId(expense))"
+          >
+            👁️
+          </button>
+          <button
+            class="btn-small btn-edit-small"
+            title="Editar"
+            (click)="onEditExpense(getExpenseId(expense))"
+          >
+            ✏️
+          </button>
+          <button
+            class="btn-small btn-delete-small"
+            title="Eliminar"
+            (click)="onDeleteExpense(getExpenseId(expense))"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Data -->
+  <div class="no-data" *ngIf="!loading && !error && expenses.length === 0">
+    <p>📄 No se encontraron gastos</p>
+    <button class="btn btn-primary" routerLink="/expenses/create">
+      Crear primer gasto
+    </button>
+  </div>
+  <!-- ✅ PAGINATION - Funciona para Grid y List -->
+  <div
+    class="pagination"
+    *ngIf="!loading && !error && expenses.length > 0 && showPagination"
+  >
+    <!-- Info de registros -->
+    <div class="pagination-info">
+      <span>
+        Mostrando {{ ((filter.page || 1) - 1) * ((filter.limit) || 25) + 1 }} -
+        {{
+          (filter.page || 1) * ((filter.limit) || 25) > totalExpenses
+            ? totalExpenses
+            : (filter.page || 1) * ((filter.limit) || 25)
+        }}
+        de {{ totalExpenses }} gastos
+      </span>
+    </div>
+
+    <div class="pagination-controls">
+      <!-- Botón Anterior -->
+      <button
+        class="btn-page"
+        [disabled]="(filter.page || 1) === 1"
+        (click)="onPageChange((filter.page || 1) - 1)"
+      >
+        ← Anterior
+      </button>
+
+      <!-- Números de página (mostrar máximo 5) -->
+      <div class="page-numbers">
+        <ng-container
+          *ngFor="let page of [].constructor(totalPages); let i = index"
+        >
+          <button
+            *ngIf="shouldShowPageNumber(i + 1)"
+            class="btn-page-number"
+            [class.active]="(filter.page || 1) === i + 1"
+            (click)="onPageChange(i + 1)"
+          >
+            {{ i + 1 }}
+          </button>
+          <span *ngIf="shouldShowEllipsis(i + 1)" class="page-ellipsis"
+            >...</span
+          >
+        </ng-container>
+      </div>
+
+      <!-- Info de página -->
+      <span class="page-info">
+        Página {{ filter.page || 1 }} de {{ totalPages }}
+      </span>
+
+      <!-- Botón Siguiente -->
+      <button
+        class="btn-page"
+        [disabled]="(filter.page || 1) === totalPages"
+        (click)="onPageChange((filter.page || 1) + 1)"
+      >
+        Siguiente →
+      </button>
+    </div>
+  </div>

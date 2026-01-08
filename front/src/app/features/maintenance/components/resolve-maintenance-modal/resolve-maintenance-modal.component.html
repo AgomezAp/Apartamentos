@@ -1,0 +1,78 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onCancel()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>✅ Marcar como Resuelto</h2>
+      <button class="close-btn" (click)="onCancel()" type="button">✕</button>
+    </div>
+
+    <form [formGroup]="resolveForm" (ngSubmit)="onSubmit()">
+      <div class="modal-body">
+        <p class="modal-description">
+          Complete la información de resolución de esta solicitud de mantenimiento
+        </p>
+
+        <!-- Resuelto por -->
+        <div class="form-group">
+          <label for="resolved_by">
+            <span class="required">*</span> Resuelto por
+          </label>
+          <input
+            type="text"
+            id="resolved_by"
+            formControlName="resolved_by"
+            placeholder="Ej: Carlos Martínez"
+            [class.error]="resolveForm.get('resolved_by')?.invalid && resolveForm.get('resolved_by')?.touched"
+          />
+          <span class="error-message" *ngIf="resolveForm.get('resolved_by')?.invalid && resolveForm.get('resolved_by')?.touched">
+            {{ getFieldError('resolved_by') }}
+          </span>
+        </div>
+
+        <!-- Costo real -->
+        <div class="form-group">
+          <label for="actual_cost">
+            💰 Costo Real
+          </label>
+          <input
+            type="text"
+            id="actual_cost"
+            [value]="formattedCost"
+            (input)="onCostInput($event)"
+            (blur)="onCostBlur()"
+            placeholder="Ej: 150,000.00"
+            [class.error]="resolveForm.get('actual_cost')?.invalid && resolveForm.get('actual_cost')?.touched"
+          />
+          <span class="error-message" *ngIf="resolveForm.get('actual_cost')?.invalid && resolveForm.get('actual_cost')?.touched">
+            {{ getFieldError('actual_cost') }}
+          </span>
+        </div>
+
+        <!-- Notas -->
+        <div class="form-group">
+          <label for="notes">
+            📝 Notas de Resolución
+          </label>
+          <textarea
+            id="notes"
+            formControlName="notes"
+            placeholder="Ej: Se reparó la tubería, se reemplazó el sello..."
+            rows="4"
+            maxlength="500"
+          ></textarea>
+          <span class="char-count">
+            {{ resolveForm.get('notes')?.value?.length || 0 }}/500
+          </span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-success" [disabled]="resolveForm.invalid">
+          ✅ Marcar Resuelto
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+import { Router } from 'express';
+import { body } from 'express-validator';
+import AuthController from '../controllers/AuthController';
+import { handleValidationErrors, authenticate } from '../middleware';
+
+const router = Router();
+
+/**
+ * @route   POST /api/auth/register
+ * @desc    Registrar un nuevo usuario
+ * @access  Public
+ */
+router.post(
+  '/register',
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Email inválido')
+      .normalizeEmail(),
+    body('password')
+      .isLength({ min: 6 })
+      .withMessage('La contraseña debe tener al menos 6 caracteres'),
+    body('full_name')
+      .notEmpty()
+      .withMessage('El nombre completo es requerido')
+      .trim(),
+    body('phone')
+      .optional()
+      .isMobilePhone('any')
+      .withMessage('Número de teléfono inválido'),
+    handleValidationErrors,
+  ],
+  AuthController.register
+);
+
+/**
+ * @route   POST /api/auth/login
+ * @desc    Iniciar sesión
+ * @access  Public
+ */
+router.post(
+  '/login',
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Email inválido')
+      .normalizeEmail(),
+    body('password')
+      .notEmpty()
+      .withMessage('La contraseña es requerida'),
+    handleValidationErrors,
+  ],
+  AuthController.login
+);
+
+/**
+ * @route   GET /api/auth/profile
+ * @desc    Obtener perfil del usuario autenticado
+ * @access  Private
+ */
+router.get('/profile', authenticate, AuthController.getProfile);
+
+/**
+ * @route   PUT /api/auth/profile
+ * @desc    Actualizar perfil del usuario
+ * @access  Private
+ */
+router.put(
+  '/profile',
+  [
+    authenticate,
+    body('full_name')
+      .optional()
+      .notEmpty()
+      .withMessage('El nombre completo no puede estar vacío')
+      .trim(),
+    body('phone')
+      .optional()
+      .isMobilePhone('any')
+      .withMessage('Número de teléfono inválido'),
+    handleValidationErrors,
+  ],
+  AuthController.updateProfile
+);
+
+/**
+ * @route   PUT /api/auth/change-password
+ * @desc    Cambiar contraseña
+ * @access  Private
+ */
+router.put(
+  '/change-password',
+  [
+    authenticate,
+    body('current_password')
+      .notEmpty()
+      .withMessage('La contraseña actual es requerida'),
+    body('new_password')
+      .isLength({ min: 6 })
+      .withMessage('La nueva contraseña debe tener al menos 6 caracteres'),
+    handleValidationErrors,
+  ],
+  AuthController.changePassword
+);
+
+export default router;

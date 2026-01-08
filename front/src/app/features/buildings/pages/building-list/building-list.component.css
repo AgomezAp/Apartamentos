@@ -1,0 +1,490 @@
+/* =====================================================
+   BUILDINGS LIST PAGE - COLORES CORPORATIVOS
+   #141414 (Negro) y #FFD600 (Amarillo)
+   Tipografías: Century Gothic y Fira Sans
+   ===================================================== */
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+.page-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #fafafa 0%, #f4f4f5 100%);
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding: 32px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-container {
+    padding: 40px;
+  }
+}
+
+/* =====================================================
+   HEADER DE LA PÁGINA
+   ===================================================== */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 3px solid #ffd600;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.page-header-content {
+  flex: 1;
+}
+
+.page-header h1 {
+  font-family: "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #141414;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-header h1::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 32px;
+  background: #ffd600;
+  border-radius: 3px;
+}
+
+.page-header p {
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  color: #71717a;
+  margin: 0;
+  padding-left: 18px;
+}
+
+@media (min-width: 768px) {
+  .page-header h1 {
+    font-size: 32px;
+  }
+}
+
+/* =====================================================
+   BOTÓN PRINCIPAL
+   ===================================================== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #141414;
+  background: #ffd600;
+  border: 2px solid #ffd600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de brillo */
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  background: #141414;
+  color: #ffd600;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(20, 20, 20, 0.25);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 214, 0, 0.4);
+}
+
+.btn-primary i {
+  font-size: 14px;
+}
+
+/* =====================================================
+   SECCIÓN DE BÚSQUEDA
+   ===================================================== */
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .search-section {
+    flex-direction: row;
+    gap: 16px;
+  }
+}
+
+.search-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #ffffff;
+  border: 2px solid #e4e4e7;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.search-bar:focus-within {
+  border-color: #ffd600;
+  box-shadow: 0 0 0 4px rgba(255, 214, 0, 0.15);
+}
+
+.search-bar i.fa-search {
+  color: #a1a1aa;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.search-bar:focus-within i.fa-search {
+  color: #ffd600;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  color: #141414;
+  background: transparent;
+}
+
+.search-bar input::placeholder {
+  color: #a1a1aa;
+}
+
+.btn-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #f4f4f5;
+  border: none;
+  border-radius: 50%;
+  color: #71717a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-clear:hover {
+  background: #141414;
+  color: #ffd600;
+}
+
+.btn-search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #141414;
+  background: #ffd600;
+  border: 2px solid #ffd600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-search:hover {
+  background: #141414;
+  color: #ffd600;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(20, 20, 20, 0.2);
+}
+
+.btn-search:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 214, 0, 0.4);
+}
+
+/* =====================================================
+   ESTADO DE CARGA
+   ===================================================== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+  color: #71717a;
+}
+
+.loading-container i {
+  font-size: 48px;
+  color: #ffd600;
+}
+
+.loading-container span {
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  color: #71717a;
+}
+
+/* =====================================================
+   GRID DE EDIFICIOS
+   ===================================================== */
+.buildings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+@media (min-width: 576px) {
+  .buildings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .buildings-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1400px) {
+  .buildings-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* =====================================================
+   ESTADO VACÍO
+   ===================================================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 60px 40px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 2px dashed #e4e4e7;
+  text-align: center;
+}
+
+.empty-state i {
+  font-size: 80px;
+  color: #e4e4e7;
+  margin-bottom: 24px;
+}
+
+.empty-state h3 {
+  font-family: "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #141414;
+  margin: 0 0 12px 0;
+}
+
+.empty-state p {
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  color: #71717a;
+  margin: 0 0 28px 0;
+  max-width: 400px;
+}
+
+.empty-state .btn-primary {
+  margin-top: 8px;
+}
+
+/* =====================================================
+   PAGINACIÓN
+   ===================================================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-page {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #141414;
+  background: #ffffff;
+  border: 2px solid #e4e4e7;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-page:hover:not(:disabled) {
+  border-color: #ffd600;
+  background: #ffd600;
+  color: #141414;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 214, 0, 0.25);
+}
+
+.btn-page:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f4f4f5;
+}
+
+.btn-page:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.3);
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-page-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #141414;
+  background: #ffffff;
+  border: 2px solid #e4e4e7;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-page-number:hover:not(.active) {
+  border-color: #ffd600;
+  background: rgba(255, 214, 0, 0.1);
+}
+
+.btn-page-number.active {
+  background: #141414;
+  border-color: #141414;
+  color: #ffd600;
+  box-shadow: 0 4px 12px rgba(20, 20, 20, 0.2);
+}
+
+.btn-page-number:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.3);
+}
+
+/* =====================================================
+   INFORMACIÓN DE PAGINACIÓN
+   ===================================================== */
+.pagination-info {
+  text-align: center;
+  padding: 16px;
+}
+
+.pagination-info span {
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  color: #71717a;
+}
+
+/* =====================================================
+   RESPONSIVE MÓVIL
+   ===================================================== */
+@media (max-width: 576px) {
+  .page-container {
+    padding: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .btn-primary,
+  .btn-search {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pagination {
+    gap: 8px;
+  }
+
+  .btn-page {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .btn-page span {
+    display: none;
+  }
+
+  .btn-page-number {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+  }
+}

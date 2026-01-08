@@ -1,0 +1,110 @@
+/* =====================================================
+   PAGE CONTAINER - BUILDING EDIT
+   ===================================================== */
+
+.page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+/* =====================================================
+   PAGE HEADER
+   ===================================================== */
+.page-header {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.header-content h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.header-content h1 i {
+  color: var(--color-secondary);
+  font-size: 1.75rem;
+}
+
+.header-content p {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-gray-500);
+  margin: 0;
+  padding-left: calc(1.75rem + var(--spacing-md)); /* Alineado con el título */
+}
+
+/* =====================================================
+   LOADING CONTAINER
+   ===================================================== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-2xl);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  min-height: 300px;
+}
+
+.loading-container i {
+  font-size: 2.5rem;
+  color: var(--color-secondary);
+}
+
+.loading-container span {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-gray-500);
+}
+
+/* =====================================================
+   FORM CONTAINER
+   ===================================================== */
+.form-container {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-gray-200);
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+@media (max-width: 768px) {
+  .page-container {
+    padding: var(--spacing-md);
+  }
+
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-content h1 i {
+    font-size: 1.35rem;
+  }
+
+  .header-content p {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: var(--spacing-sm);
+  }
+
+  .header-content h1 {
+    font-size: 1.35rem;
+    flex-wrap: wrap;
+  }
+}

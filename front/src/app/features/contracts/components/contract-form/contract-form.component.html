@@ -1,0 +1,139 @@
+<form [formGroup]="contractForm" (ngSubmit)="submit()" class="contract-form">
+  <div class="form-header">
+    <h2>{{ isEditMode ? 'Editar Contrato' : 'Nuevo Contrato' }}</h2>
+  </div>
+
+  <div class="form-body">
+    <!-- Edificio, Unidad y Inquilino -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="building_id">Edificio <span class="required">*</span></label>
+        <select id="building_id" formControlName="building_id" class="form-control">
+          <option value="">Seleccione un edificio</option>
+          <option *ngFor="let building of buildings" [value]="building.id">{{ building.name }}</option>
+        </select>
+        <span class="error" *ngIf="contractForm.get('building_id')?.invalid && contractForm.get('building_id')?.touched">
+          El edificio es requerido
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="unit_id">Unidad <span class="required">*</span></label>
+        <select id="unit_id" formControlName="unit_id" class="form-control" [disabled]="!contractForm.get('building_id')?.value">
+          <option value="">{{ contractForm.get('building_id')?.value ? 'Seleccione una unidad' : 'Primero seleccione un edificio' }}</option>
+          <option *ngFor="let unit of filteredUnits" [value]="unit.id">{{ unit.unit_number }}</option>
+        </select>
+        <span class="error" *ngIf="contractForm.get('unit_id')?.invalid && contractForm.get('unit_id')?.touched">
+          La unidad es requerida
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="tenant_id">Inquilino <span class="required">*</span></label>
+        <select id="tenant_id" formControlName="tenant_id" class="form-control">
+          <option value="">Seleccione un inquilino</option>
+          <option *ngFor="let tenant of tenants" [value]="tenant.id">{{ tenant.full_name }}</option>
+        </select>
+        <span class="error" *ngIf="contractForm.get('tenant_id')?.invalid && contractForm.get('tenant_id')?.touched">
+          El inquilino es requerido
+        </span>
+      </div>
+    </div>
+
+    <!-- Fechas -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="start_date">Fecha de inicio <span class="required">*</span></label>
+        <input type="date" id="start_date" formControlName="start_date" class="form-control">
+        <span class="error" *ngIf="contractForm.get('start_date')?.invalid && contractForm.get('start_date')?.touched">
+          La fecha de inicio es requerida
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="end_date">Fecha de fin <span class="required">*</span></label>
+        <input type="date" id="end_date" formControlName="end_date" class="form-control">
+        <span class="error" *ngIf="contractForm.get('end_date')?.invalid && contractForm.get('end_date')?.touched">
+          La fecha de fin es requerida
+        </span>
+      </div>
+    </div>
+
+    <!-- Montos -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="monthly_rent">Renta mensual <span class="required">*</span></label>
+        <input type="number" id="monthly_rent" formControlName="monthly_rent" class="form-control" 
+               min="0" step="0.01" appNumberOnly [allowDecimals]="true">
+        <span class="error" *ngIf="contractForm.get('monthly_rent')?.invalid && contractForm.get('monthly_rent')?.touched">
+          La renta mensual es requerida y debe ser mayor a 0
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="deposit_amount">Depósito</label>
+        <input type="number" id="deposit_amount" formControlName="deposit_amount" class="form-control" 
+               min="0" step="0.01" appNumberOnly [allowDecimals]="true">
+      </div>
+    </div>
+
+    <!-- Día de pago y Estado -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="payment_day">Día de pago <span class="required">*</span></label>
+        <input type="number" id="payment_day" formControlName="payment_day" class="form-control" 
+               min="1" max="31" appNumberOnly>
+        <span class="error" *ngIf="contractForm.get('payment_day')?.invalid && contractForm.get('payment_day')?.touched">
+          Día de pago debe estar entre 1 y 31
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="status">Estado</label>
+        <select id="status" formControlName="status" class="form-control">
+          <option value="pending">Pendiente</option>
+          <option value="active">Activo</option>
+          <option value="finished">Finalizado</option>
+          <option value="cancelled">Cancelado</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Incremento de renta -->
+    <div class="form-section">
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" formControlName="has_rent_increase">
+          <span>Incremento de renta automático</span>
+        </label>
+      </div>
+
+      <div class="form-row" *ngIf="hasRentIncrease">
+        <div class="form-group">
+          <label for="rent_increase_percentage">Porcentaje de incremento (%)</label>
+          <input type="number" id="rent_increase_percentage" formControlName="rent_increase_percentage" 
+                 class="form-control" min="0" max="100" step="0.1" appNumberOnly [allowDecimals]="true">
+        </div>
+
+        <div class="form-group">
+          <label for="rent_increase_frequency_months">Frecuencia (meses)</label>
+          <input type="number" id="rent_increase_frequency_months" formControlName="rent_increase_frequency_months" 
+                 class="form-control" min="1" appNumberOnly>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    <div class="form-group full-width">
+      <label for="notes">Notas</label>
+      <textarea id="notes" formControlName="notes" class="form-control" rows="4"></textarea>
+    </div>
+  </div>
+
+  <div class="form-footer">
+    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="contractForm.invalid">
+      {{ isEditMode ? 'Actualizar' : 'Crear' }} Contrato
+    </button>
+  </div>
+</form>

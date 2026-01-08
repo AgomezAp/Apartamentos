@@ -1,0 +1,40 @@
+<header class="header">
+  <div class="header-left">
+    <button class="menu-toggle" (click)="onToggleSidebar()" aria-label="Toggle menu">
+      ☰
+    </button>
+    <div class="brand">
+      <span class="brand-icon">🏢</span>
+      <h1 class="brand-title">{{ appTitle }}</h1>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <!-- User Menu -->
+    <div class="user-menu" *ngIf="userName">
+      <button class="user-button" (click)="toggleUserMenu()">
+        <span class="user-avatar">👤</span>
+        <span class="user-name">{{ userName }}</span>
+        <span class="user-chevron">{{ showUserMenu ? '▲' : '▼' }}</span>
+      </button>
+      
+      <div class="user-dropdown" *ngIf="showUserMenu">
+        <div class="user-info">
+          <strong>{{ userName }}</strong>
+          <span *ngIf="userRole" class="user-role">{{ userRole }}</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a [routerLink]="['/settings']" class="dropdown-item">
+          ⚙️ Configuración
+        </a>
+        <a [routerLink]="['/profile']" class="dropdown-item">
+          👤 Mi Perfil
+        </a>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item logout" (click)="onLogout()">
+          🚪 Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

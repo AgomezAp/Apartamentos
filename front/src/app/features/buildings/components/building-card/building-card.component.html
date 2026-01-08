@@ -1,0 +1,61 @@
+<div class="building-card" [class.inactive]="!building.is_active">
+  <div class="card-image">
+    <img 
+      [src]="building.photo_url || 'assets/images/building-placeholder.jpg'" 
+      [alt]="building.name"
+      (error)="onImageError($event)"
+    />
+    <span class="status-badge" [ngClass]="getStatusClass()">
+      {{ getStatusText() }}
+    </span>
+  </div>
+
+  <div class="card-content">
+    <h3 class="building-name">{{ building.name }}</h3>
+    
+    <div class="building-info">
+      <div class="info-item">
+        <i class="fa-solid fa-location-dot"></i>
+        <span>{{ building.city }}, {{ building.state }}</span>
+      </div>
+      <div class="info-item">
+        <i class="fa-solid fa-building"></i>
+        <span>{{ building.total_units }} unidades</span>
+      </div>
+    </div>
+
+    <div class="occupancy-bar">
+      <div class="occupancy-label">
+        <span>Ocupación</span>
+        <span class="occupancy-percentage" [ngClass]="getOccupancyClass()">
+          {{ getOccupancyPercentage() }}%
+        </span>
+      </div>
+      <div class="progress-bar">
+        <div 
+          class="progress-fill" 
+          [ngClass]="getOccupancyClass()"
+          [style.width.%]="getOccupancyPercentage()"
+        ></div>
+      </div>
+      <div class="occupancy-details">
+        <span>{{ building.occupied_units || 0 }} ocupadas</span>
+        <span>{{ building.vacant_units || 0 }} vacantes</span>
+      </div>
+    </div>
+
+    <div class="card-actions" *ngIf="showActions">
+      <button class="btn-secondary" (click)="viewBuilding()" title="Ver detalles">
+        <i class="fa-solid fa-eye"></i>
+        Ver
+      </button>
+      <button class="btn-primary" (click)="editBuilding()" title="Editar">
+        <i class="fa-solid fa-edit"></i>
+        Editar
+      </button>
+      <button class="btn-danger" (click)="deleteBuilding()" title="Eliminar">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>

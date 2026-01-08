@@ -1,0 +1,87 @@
+<div class="expense-summary">
+  <div class="loading" *ngIf="loading">
+    <p>Cargando resumen...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="summary-content" *ngIf="!loading && !error && summary">
+    <!-- Header -->
+    <div class="summary-header">
+      <h3>📊 Resumen de Gastos</h3>
+      <p class="building-name">{{ summary.building_name }}</p>
+    </div>
+
+    <!-- Total Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total de Gastos</div>
+        <div class="stat-value">{{ summary.total_expenses }}</div>
+        <div class="stat-icon">📊</div>
+      </div>
+
+      <div class="stat-card primary">
+        <div class="stat-label">Monto Total</div>
+        <div class="stat-value">{{ summary.total_amount | currencyFormat }}</div>
+        <div class="stat-icon">💰</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Promedio por Gasto</div>
+        <div class="stat-value">{{ getAverageExpense() | currencyFormat }}</div>
+        <div class="stat-icon">📈</div>
+      </div>
+    </div>
+
+    <!-- By Category -->
+    <div class="categories-section" *ngIf="summary.by_category && summary.by_category.length > 0">
+      <h4>📊 Por Categoría</h4>
+      
+      <div class="category-list">
+        <div class="category-item" *ngFor="let category of summary.by_category; let i = index">
+          <div class="category-header">
+            <div class="category-name">
+              <span class="category-dot" [style.background-color]="getCategoryColor(i)"></span>
+              {{ category.category_name }}
+            </div>
+            <div class="category-amount">{{ category.total_amount | currencyFormat }}</div>
+          </div>
+
+          <div class="category-bar-container">
+            <div 
+              class="category-bar" 
+              [style.width.%]="getPercentageWidth(category)"
+              [style.background-color]="getCategoryColor(i)">
+            </div>
+          </div>
+
+          <div class="category-footer">
+            <span class="category-count">{{ category.count }} gasto(s)</span>
+            <span class="category-percentage">{{ category.percentage | number:'1.1-1' }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- By Month -->
+    <div class="months-section" *ngIf="summary.by_month && summary.by_month.length > 0">
+      <h4>📅 Por Mes</h4>
+      
+      <div class="month-list">
+        <div class="month-item" *ngFor="let month of summary.by_month">
+          <div class="month-name">{{ month.month_name }}</div>
+          <div class="month-stats">
+            <span class="month-amount">{{ month.total | currencyFormat }}</span>
+            <span class="month-count">({{ month.count }} gastos)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-data" *ngIf="!loading && !error && !summary">
+    <p>No hay datos de resumen disponibles</p>
+  </div>
+</div>

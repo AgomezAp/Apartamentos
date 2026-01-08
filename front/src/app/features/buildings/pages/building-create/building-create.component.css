@@ -1,0 +1,281 @@
+/* ============================================
+   CREATE BUILDING PAGE COMPONENT
+   Página contenedora para crear nuevo edificio
+   ============================================ */
+
+/* --------------------------------------------
+   1. VARIABLES CSS (Compartidas)
+   -------------------------------------------- */
+:host {
+  /* Colores Corporativos */
+  --color-primary: #141414;
+  --color-accent: #ffd600;
+
+  /* Colores de Estado */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Colores Neutros */
+  --color-bg-page: #fafafa;
+  --color-bg-card: #ffffff;
+  --color-border: #e4e4e7;
+  --color-text-primary: #141414;
+  --color-text-secondary: #71717a;
+  --color-text-muted: #a1a1aa;
+
+  /* Tipografías */
+  --font-headings: "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
+  --font-body: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Espaciado */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Bordes */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+
+  /* Transiciones */
+  --transition-base: 0.3s ease;
+
+  display: block;
+}
+
+/* --------------------------------------------
+   2. PAGE CONTAINER
+   -------------------------------------------- */
+.page-container {
+  min-height: 100vh;
+  background-color: var(--color-bg-page);
+  padding: var(--spacing-lg);
+  font-family: var(--font-body);
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding: var(--spacing-xl);
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-container {
+    padding: var(--spacing-2xl);
+  }
+}
+
+/* --------------------------------------------
+   3. PAGE HEADER
+   -------------------------------------------- */
+.page-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #2a2a2a 100%);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 3px solid var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+/* Efecto decorativo de brillo */
+.page-header::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 0, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* Segundo efecto decorativo */
+.page-header::after {
+  content: "";
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 0, 0.05) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+}
+
+.page-header h1 {
+  font-family: var(--font-headings);
+  color: #ffffff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 var(--spacing-sm) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  line-height: 1.3;
+}
+
+.page-header h1 i {
+  color: var(--color-accent);
+  font-size: 1.5rem;
+  background: rgba(255, 214, 0, 0.15);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.page-header p {
+  font-family: var(--font-body);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin: 0;
+  margin-left: calc(44px + var(--spacing-md));
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    padding: var(--spacing-xl) var(--spacing-2xl);
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .page-header h1 i {
+    font-size: 1.75rem;
+    padding: var(--spacing-md);
+    min-width: 56px;
+    min-height: 56px;
+  }
+
+  .page-header p {
+    margin-left: calc(56px + var(--spacing-md));
+    font-size: 1.05rem;
+  }
+}
+
+/* --------------------------------------------
+   4. FORM CONTAINER (CARD)
+   -------------------------------------------- */
+.form-container {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-lg);
+  transition: all var(--transition-base);
+}
+
+.form-container:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (min-width: 768px) {
+  .form-container {
+    padding: var(--spacing-xl);
+  }
+}
+
+@media (min-width: 1200px) {
+  .form-container {
+    padding: var(--spacing-2xl);
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+}
+
+/* --------------------------------------------
+   5. RESPONSIVE - MOBILE
+   -------------------------------------------- */
+@media (max-width: 575.98px) {
+  .page-container {
+    padding: var(--spacing-md);
+  }
+
+  .page-header {
+    padding: var(--spacing-lg) var(--spacing-md);
+    border-radius: var(--radius-lg);
+  }
+
+  .page-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .page-header h1 i {
+    font-size: 1.1rem;
+    padding: var(--spacing-sm);
+    min-width: 38px;
+    min-height: 38px;
+  }
+
+  .page-header p {
+    margin-left: calc(38px + var(--spacing-md));
+    font-size: 0.9rem;
+  }
+
+  .form-container {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* --------------------------------------------
+   6. ACCESSIBILITY
+   -------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .form-container {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------
+   7. PRINT STYLES
+   -------------------------------------------- */
+@media print {
+  .page-container {
+    background: white;
+    padding: 20px;
+    min-height: auto;
+  }
+
+  .page-header {
+    background: var(--color-primary) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    box-shadow: none;
+  }
+
+  .form-container {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}

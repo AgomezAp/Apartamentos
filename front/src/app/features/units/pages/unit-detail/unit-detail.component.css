@@ -1,0 +1,385 @@
+.unit-detail-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  color: #1f2937;
+  margin: 0;
+}
+
+.btn-back {
+  padding: 0.5rem 1rem;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.btn-back:hover {
+  background-color: #4b5563;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: #6b7280;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-spinner-inline {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  color: #6b7280;
+}
+
+.spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.unit-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.unit-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.building-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.building-label {
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.building-info h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.status-label {
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-occupied {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-vacant {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-available {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-maintenance {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-reserved {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.unit-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.detail-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.detail-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-card h3 {
+  margin: 0 0 1rem 0;
+  color: #1f2937;
+  font-size: 1.125rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  align-items: center;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.detail-row .value {
+  color: #1f2937;
+  font-weight: 600;
+  text-align: right;
+}
+
+.detail-row .value.price {
+  color: #059669;
+  font-size: 1.125rem;
+}
+
+.detail-row .value.empty {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: #9ca3af;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  border: 1px dashed #e5e7eb;
+}
+
+/* TABLA DE PAGOS */
+.payments-table {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.payments-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payments-table thead {
+  background-color: #f3f4f6;
+}
+
+.payments-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #1f2937;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.payments-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+}
+
+.payments-table tr:hover {
+  background-color: #f9fafb;
+}
+
+.payments-table td.amount {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.payment-paid {
+  background-color: #f0fdf4;
+}
+
+.payment-pending {
+  background-color: #fefce8;
+}
+
+.payment-overdue {
+  background-color: #fef2f2;
+}
+
+.payment-partial {
+  background-color: #f0f9ff;
+}
+
+.payment-paid .status-badge {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.payment-pending .status-badge {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.payment-overdue .status-badge {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.payment-partial .status-badge {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.amenity-tag {
+  background-color: #e0e7ff;
+  color: #3730a3;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+}
+
+.error-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  padding: 0.625rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .unit-detail-container {
+    padding: 1rem;
+  }
+
+  .unit-header {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .payments-table {
+    font-size: 0.875rem;
+  }
+
+  .payments-table th,
+  .payments-table td {
+    padding: 0.5rem;
+  }
+}

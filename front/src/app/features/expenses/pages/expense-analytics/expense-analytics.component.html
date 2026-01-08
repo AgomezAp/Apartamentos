@@ -1,0 +1,195 @@
+<div class="expense-analytics-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>📈 Análisis de Gastos</h1>
+      <p class="header-subtitle">Estadísticas y análisis detallado de gastos</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-back" routerLink="/expenses">
+        ← Volver a Gastos
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="building">🏢 Edificio</label>
+        <select id="building" [(ngModel)]="selectedBuildingId" (change)="onFilterChange()" class="filter-control">
+          <option [value]="undefined">Todos los edificios</option>
+          <option *ngFor="let building of buildings" [value]="building.id">
+            {{ building.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="start_date">📅 Fecha Inicio</label>
+        <input type="date" id="start_date" [(ngModel)]="startDate" (change)="onFilterChange()" class="filter-control">
+      </div>
+
+      <div class="filter-group">
+        <label for="end_date">📅 Fecha Fin</label>
+        <input type="date" id="end_date" [(ngModel)]="endDate" (change)="onFilterChange()" class="filter-control">
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn btn-clear" (click)="clearFilters()">🗑️ Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando estadísticas...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <p>{{ error }}</p>
+    <button class="btn btn-retry" (click)="loadStatistics()">Reintentar</button>
+  </div>
+
+  <!-- Analytics Content -->
+  <div class="analytics-content" *ngIf="!loading && !error && statistics">
+    <!-- Summary Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <div class="stat-label">Total de Gastos</div>
+          <div class="stat-value">{{ statistics.total_expenses }}</div>
+        </div>
+      </div>
+
+      <div class="stat-card primary">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <div class="stat-label">Monto Total</div>
+          <div class="stat-value">{{ statistics.total_amount | currencyFormat }}</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-info">
+          <div class="stat-label">Promedio por Gasto</div>
+          <div class="stat-value">{{ statistics.average_amount | currencyFormat }}</div>
+        </div>
+      </div>
+
+      <div class="stat-card success">
+        <div class="stat-icon">⬆️</div>
+        <div class="stat-info">
+          <div class="stat-label">Gasto Máximo</div>
+          <div class="stat-value">{{ statistics.max_expense | currencyFormat }}</div>
+        </div>
+      </div>
+
+      <div class="stat-card warning">
+        <div class="stat-icon">⬇️</div>
+        <div class="stat-info">
+          <div class="stat-label">Gasto Mínimo</div>
+          <div class="stat-value">{{ statistics.min_expense | currencyFormat }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+      <!-- Monthly Bar Chart -->
+      <div class="chart-container full-width">
+        <div class="chart-header">
+          <h3>📊 Gastos Mes a Mes</h3>
+        </div>
+        <div class="chart-wrapper">
+          <canvas 
+            *ngIf="barChartData && barChartData.labels && barChartData.labels.length > 0"
+            baseChart 
+            [data]="barChartData"
+            type="bar"
+            [options]="barChartOptions">
+          </canvas>
+          <div *ngIf="!barChartData || !barChartData.labels || barChartData.labels.length === 0" class="chart-placeholder">
+            <p>No hay datos disponibles para este período</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Line Chart (Trend) -->
+      <div class="chart-container full-width">
+        <div class="chart-header">
+          <h3>📈 Tendencia de Gastos</h3>
+        </div>
+        <div class="chart-wrapper">
+          <canvas 
+            *ngIf="lineChartData && lineChartData.labels && lineChartData.labels.length > 0"
+            baseChart 
+            [data]="lineChartData"
+            type="line"
+            [options]="lineChartOptions">
+          </canvas>
+          <div *ngIf="!lineChartData || !lineChartData.labels || lineChartData.labels.length === 0" class="chart-placeholder">
+            <p>No hay datos disponibles para este período</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- By Category -->
+      <div class="chart-container" *ngIf="statistics.by_category && statistics.by_category.length > 0">
+        <div class="chart-header">
+          <h3>📊 Gastos por Categoría</h3>
+        </div>
+        <div class="category-list">
+          <div class="category-item" *ngFor="let category of statistics.by_category; let i = index">
+            <div class="category-header">
+              <div class="category-name">
+                <span class="category-dot" [style.background-color]="getCategoryColor(i)"></span>
+                {{ category.category_name }}
+              </div>
+              <div class="category-amount">{{ category.total_amount | currencyFormat }}</div>
+            </div>
+            <div class="category-bar-container">
+              <div 
+                class="category-bar" 
+                [style.width.%]="category.percentage"
+                [style.background-color]="getCategoryColor(i)">
+              </div>
+            </div>
+            <div class="category-footer">
+              <span class="category-count">{{ category.count }} gasto(s)</span>
+              <span class="category-percentage">{{ category.percentage | number:'1.1-1' }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- By Payment Method -->
+      <div class="chart-container" *ngIf="statistics.by_payment_method && statistics.by_payment_method.length > 0">
+        <div class="chart-header">
+          <h3>💳 Gastos por Método de Pago</h3>
+        </div>
+        <div class="payment-method-list">
+          <div class="payment-method-item" *ngFor="let method of statistics.by_payment_method">
+            <div class="method-header">
+              <div class="method-name">{{ getPaymentMethodLabel(method.payment_method) }}</div>
+              <div class="method-amount">{{ method.total_amount | currencyFormat }}</div>
+            </div>
+            <div class="method-stats">
+              <span class="method-count">{{ method.count }} transacciones</span>
+              <span class="method-percentage">{{ method.percentage | number:'1.1-1' }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Data -->
+  <div class="no-data" *ngIf="!loading && !error && !statistics">
+    <p>No hay datos de análisis disponibles</p>
+  </div>
+</div>

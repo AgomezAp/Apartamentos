@@ -1,0 +1,98 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+  </div>
+
+  <!-- Búsqueda -->
+  <div class="search-section">
+    <button class="btn-primary" (click)="createBuilding()">
+      <i class="fa-solid fa-plus"></i>
+      Nuevo Edificio
+    </button>
+    <div class="search-bar">
+      <i class="fa-solid fa-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchInput(searchTerm)"
+        placeholder="Buscar por nombre, ciudad, estado..."
+      />
+      <button class="btn-clear" *ngIf="searchTerm" (click)="clearSearch()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    <span>Cargando edificios...</span>
+  </div>
+
+  <!-- Grid de Edificios -->
+  <div class="buildings-grid" *ngIf="!isLoading && buildings.length > 0">
+    <app-building-card
+      *ngFor="let building of buildings"
+      [building]="building"
+      (onView)="viewBuilding($event)"
+      (onEdit)="editBuilding($event)"
+      (onDelete)="deleteBuilding($event)"
+    ></app-building-card>
+  </div>
+
+  <!-- Estado Vacío -->
+  <div class="empty-state" *ngIf="!isLoading && buildings.length === 0">
+    <i class="fa-solid fa-building"></i>
+    <h3>No hay edificios registrados</h3>
+    <p *ngIf="searchTerm">
+      No se encontraron resultados para "{{ searchTerm }}"
+    </p>
+    <p *ngIf="!searchTerm">
+      Comienza creando tu primer edificio para gestionar tus propiedades
+    </p>
+    <button class="btn-primary" (click)="createBuilding()">
+      <i class="fa-solid fa-plus"></i>
+      Crear Primer Edificio
+    </button>
+  </div>
+
+  <!-- Paginación -->
+  <div class="pagination" *ngIf="!isLoading && buildings.length > 0">
+    <button
+      class="btn-page"
+      [disabled]="!pagination.hasPrevPage"
+      (click)="previousPage()"
+    >
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Anterior</span>
+    </button>
+
+    <div class="page-numbers">
+      <button
+        *ngFor="let page of getPageNumbers()"
+        class="btn-page-number"
+        [class.active]="page === pagination.currentPage"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+
+    <button
+      class="btn-page"
+      [disabled]="!pagination.hasNextPage"
+      (click)="nextPage()"
+    >
+      <span>Siguiente</span>
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Info de Paginación -->
+  <div class="pagination-info" *ngIf="!isLoading && buildings.length > 0">
+    <span>
+      Mostrando {{ getStartIndex() }} - {{ getEndIndex() }} de {{ pagination.totalItems }} edificios
+    </span>
+  </div>
+</div>

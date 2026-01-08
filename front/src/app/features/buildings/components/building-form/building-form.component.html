@@ -1,0 +1,235 @@
+<form
+  [formGroup]="buildingForm"
+  (ngSubmit)="submitForm()"
+  class="building-form"
+>
+  <div class="form-grid">
+    <!-- ============ FILA 1: Identificación ============ -->
+    <!-- Nombre del Edificio (2 columnas) -->
+    <div class="form-group span-2">
+      <label for="name">
+        <i class="fa-solid fa-building"></i>
+        Nombre del Edificio *
+      </label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        placeholder="Ej: Torre Residencial"
+        [class.error]="
+          hasError('name', 'required') || hasError('name', 'minlength')
+        "
+      />
+      <span class="error-message" *ngIf="getErrorMessage('name')">
+        {{ getErrorMessage("name") }}
+      </span>
+    </div>
+
+    <!-- Dirección (2 columnas) -->
+    <div class="form-group span-2">
+      <label for="address">
+        <i class="fa-solid fa-location-dot"></i>
+        Dirección *
+      </label>
+      <input
+        type="text"
+        id="address"
+        formControlName="address"
+        placeholder="Calle y número"
+        [class.error]="hasError('address', 'required')"
+      />
+      <span class="error-message" *ngIf="getErrorMessage('address')">
+        {{ getErrorMessage("address") }}
+      </span>
+    </div>
+
+    <!-- ============ FILA 2: Ubicación ============ -->
+    <!-- Ciudad -->
+    <div class="form-group">
+      <label for="city">
+        <i class="fa-solid fa-city"></i>
+        Ciudad *
+      </label>
+      <input
+        type="text"
+        id="city"
+        formControlName="city"
+        placeholder="Ciudad"
+        [class.error]="hasError('city', 'required')"
+      />
+      <span class="error-message" *ngIf="getErrorMessage('city')">
+        {{ getErrorMessage("city") }}
+      </span>
+    </div>
+
+    <!-- Estado -->
+    <div class="form-group">
+      <label for="state">
+        <i class="fa-solid fa-map"></i>
+        Estado *
+      </label>
+      <input
+        type="text"
+        id="state"
+        formControlName="state"
+        placeholder="Estado"
+        [class.error]="hasError('state', 'required')"
+      />
+      <span class="error-message" *ngIf="getErrorMessage('state')">
+        {{ getErrorMessage("state") }}
+      </span>
+    </div>
+
+    <!-- Código Postal -->
+    <div class="form-group">
+      <label for="zip_code">
+        <i class="fa-solid fa-mailbox"></i>
+        Código Postal
+      </label>
+      <input
+        type="text"
+        id="zip_code"
+        formControlName="zip_code"
+        placeholder="123456"
+        maxlength="6"
+        [class.error]="hasError('zip_code', 'pattern')"
+      />
+      <span class="error-message" *ngIf="getErrorMessage('zip_code')">
+        {{ getErrorMessage("zip_code") }}
+      </span>
+    </div>
+
+    <!-- País -->
+    <div class="form-group">
+      <label for="country">
+        <i class="fa-solid fa-flag"></i>
+        País
+      </label>
+      <input
+        type="text"
+        id="country"
+        formControlName="country"
+        placeholder="México"
+      />
+    </div>
+
+    <!-- ============ FILA 3: Características ============ -->
+    <!-- Total de Unidades -->
+    <div class="form-group">
+      <label for="total_units">
+        <i class="fa-solid fa-door-open"></i>
+        Total de Unidades *
+      </label>
+      <input
+        type="number"
+        id="total_units"
+        formControlName="total_units"
+        min="1"
+        placeholder="0"
+        [class.error]="
+          hasError('total_units', 'required') || hasError('total_units', 'min')
+        "
+      />
+      <span class="error-message" *ngIf="getErrorMessage('total_units')">
+        {{ getErrorMessage("total_units") }}
+      </span>
+    </div>
+
+    <!-- Año de Construcción -->
+    <div class="form-group">
+      <label for="year_built">
+        <i class="fa-solid fa-calendar"></i>
+        Año de Construcción
+      </label>
+      <input
+        type="number"
+        id="year_built"
+        formControlName="year_built"
+        [min]="1900"
+        [max]="currentYear"
+        placeholder="2020"
+        [class.error]="
+          hasError('year_built', 'min') || hasError('year_built', 'max')
+        "
+      />
+      <span class="error-message" *ngIf="getErrorMessage('year_built')">
+        {{ getErrorMessage("year_built") }}
+      </span>
+    </div>
+
+    <!-- Número de Pisos -->
+    <div class="form-group">
+      <label for="floors">
+        <i class="fa-solid fa-layer-group"></i>
+        Número de Pisos
+      </label>
+      <input
+        type="number"
+        id="floors"
+        formControlName="floors"
+        min="1"
+        placeholder="0"
+        [class.error]="hasError('floors', 'min')"
+      />
+      <span class="error-message" *ngIf="getErrorMessage('floors')">
+        {{ getErrorMessage("floors") }}
+      </span>
+    </div>
+
+    <!-- Estado Activo (alineado con los inputs) -->
+    <div class="form-group">
+      <label class="label-spacer">&nbsp;</label>
+      <div class="checkbox-group">
+        <input type="checkbox" id="is_active" formControlName="is_active" />
+        <label for="is_active">Edificio Activo</label>
+      </div>
+    </div>
+
+    <!-- ============ FILA 4: Textos largos ============ -->
+    <!-- Descripción (2 columnas) -->
+    <div class="form-group span-2">
+      <label for="description">
+        <i class="fa-solid fa-align-left"></i>
+        Descripción
+      </label>
+      <textarea
+        id="description"
+        formControlName="description"
+        rows="3"
+        placeholder="Descripción del edificio..."
+      ></textarea>
+    </div>
+
+    <!-- Amenidades (2 columnas) -->
+    <div class="form-group span-2">
+      <label for="amenities">
+        <i class="fa-solid fa-star"></i>
+        Amenidades
+      </label>
+      <textarea
+        id="amenities"
+        formControlName="amenities"
+        rows="3"
+        placeholder="Estacionamiento, Gimnasio, Alberca, etc."
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- ============ ACCIONES ============ -->
+  <div class="form-actions">
+    <button type="button" class="btn-secondary" (click)="cancel()">
+      <i class="fa-solid fa-xmark"></i>
+      Cancelar
+    </button>
+    <button type="submit" class="btn-primary" [disabled]="isLoading">
+      <span *ngIf="!isLoading">
+        <i class="fa-solid fa-save"></i>
+        {{ isEditMode ? "Actualizar" : "Crear" }} Edificio
+      </span>
+      <span *ngIf="isLoading">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Guardando...
+      </span>
+    </button>
+  </div>
+</form>

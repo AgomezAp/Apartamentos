@@ -1,0 +1,673 @@
+/* =====================================================
+   TENANT LIST COMPONENT - COLORES CORPORATIVOS
+   #141414 (Negro) y #FFD600 (Amarillo)
+   Tipografías: Century Gothic y Fira Sans
+   ===================================================== */
+
+:host {
+  display: block;
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+.tenant-list-container {
+  padding: var(--spacing-xl);
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--color-gray-50);
+}
+
+/* =====================================================
+   HEADER DE PÁGINA
+   ===================================================== */
+.page-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.page-header p {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+/* =====================================================
+   SECCIÓN DE FILTROS
+   ===================================================== */
+.filters-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  align-items: center;
+  background: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* =====================================================
+   BOTONES PRINCIPALES
+   ===================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 12px 24px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 2px solid transparent;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn i {
+  font-size: 16px;
+}
+
+/* Botón Primario - Amarillo */
+.btn-primary {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border-color: var(--color-secondary);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary);
+  color: var(--color-secondary);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.4);
+}
+
+/* =====================================================
+   CAJA DE BÚSQUEDA
+   ===================================================== */
+.search-box {
+  display: flex;
+  flex: 1;
+  min-width: 280px;
+  max-width: 500px;
+  position: relative;
+}
+
+.search-box .form-control {
+  flex: 1;
+  padding: 12px 50px 12px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-primary);
+  background: var(--color-gray-50);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+
+.search-box .form-control::placeholder {
+  color: var(--color-gray-400);
+}
+
+.search-box .form-control:hover {
+  border-color: var(--color-gray-300);
+}
+
+.search-box .form-control:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  background: var(--color-white);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-search {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.btn-search:hover {
+  background: var(--color-primary);
+  color: var(--color-secondary);
+}
+
+.btn-search:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 214, 0, 0.4);
+}
+
+.btn-search i {
+  font-size: 16px;
+}
+
+/* =====================================================
+   GRUPO DE FILTROS
+   ===================================================== */
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.filter-group label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.filter-group .form-control {
+  padding: 12px 40px 12px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-primary);
+  background: var(--color-gray-50);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-width: 160px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23141414' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.filter-group .form-control:hover {
+  border-color: var(--color-gray-300);
+}
+
+.filter-group .form-control:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-glow);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FFD600' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+}
+
+/* =====================================================
+   SPINNER DE CARGA
+   ===================================================== */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  gap: var(--spacing-lg);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--color-gray-200);
+  border-top-color: var(--color-secondary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner p {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+/* =====================================================
+   GRID DE INQUILINOS
+   ===================================================== */
+.tenants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* =====================================================
+   PAGINACIÓN
+   ===================================================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-200);
+}
+
+.btn-page {
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-gray-100);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.btn-page:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.btn-page:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-page:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.15);
+}
+
+.page-info {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  padding: 0 var(--spacing-md);
+}
+
+/* =====================================================
+   ESTADO VACÍO
+   ===================================================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background: var(--color-white);
+  border: 2px dashed var(--color-gray-300);
+  border-radius: var(--radius-lg);
+  min-height: 400px;
+}
+
+.empty-state .icon-empty {
+  font-size: 64px;
+  color: var(--color-gray-300);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Icono placeholder si no hay font icon */
+.empty-state .icon-empty::before {
+  content: "👥";
+  font-size: 64px;
+}
+
+.empty-state h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.empty-state p {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-gray-500);
+  margin: 0 0 var(--spacing-xl) 0;
+  max-width: 400px;
+}
+
+.empty-state .btn {
+  margin-top: var(--spacing-md);
+}
+
+/* =====================================================
+   ICONOS PERSONALIZADOS (Si no usas Font Awesome)
+   ===================================================== */
+.icon-plus::before {
+  content: "+";
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.icon-search::before {
+  content: "🔍";
+  font-size: 14px;
+}
+
+/* Si usas Font Awesome, comenta lo anterior y usa: */
+/*
+.icon-plus::before { content: "\f067"; font-family: "Font Awesome 6 Free"; }
+.icon-search::before { content: "\f002"; font-family: "Font Awesome 6 Free"; }
+*/
+
+/* =====================================================
+   RESPONSIVE - 1024px (Tablets Landscape)
+   ===================================================== */
+@media (max-width: 1024px) {
+  .tenant-list-container {
+    padding: var(--spacing-lg);
+  }
+
+  .filters-section {
+    gap: var(--spacing-md);
+  }
+
+  .search-box {
+    min-width: 240px;
+    max-width: 400px;
+  }
+
+  .tenants-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - 768px (Tablets Portrait)
+   ===================================================== */
+@media (max-width: 768px) {
+  .tenant-list-container {
+    padding: var(--spacing-md);
+  }
+
+  .page-header h1 {
+    font-size: 26px;
+  }
+
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--spacing-md);
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .search-box {
+    max-width: 100%;
+    min-width: auto;
+  }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group label {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .filter-group .form-control {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .tenants-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+  }
+
+  .btn-page {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .empty-state {
+    padding: var(--spacing-xl);
+    min-height: 300px;
+  }
+
+  .empty-state h3 {
+    font-size: 20px;
+  }
+
+  .empty-state p {
+    font-size: 14px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - 480px (Móviles)
+   ===================================================== */
+@media (max-width: 480px) {
+  .tenant-list-container {
+    padding: var(--spacing-sm);
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+  }
+
+  .filters-section {
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+  }
+
+  .btn {
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+
+  .search-box .form-control {
+    padding: 10px 44px 10px 12px;
+    font-size: 13px;
+  }
+
+  .btn-search {
+    width: 36px;
+    height: 36px;
+  }
+
+  .filter-group .form-control {
+    padding: 10px 36px 10px 12px;
+    font-size: 13px;
+  }
+
+  .tenants-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .btn-page {
+    width: 100%;
+  }
+
+  .page-info {
+    order: -1;
+    padding: var(--spacing-sm) 0;
+  }
+
+  .empty-state {
+    padding: var(--spacing-lg);
+    min-height: 250px;
+  }
+
+  .empty-state .icon-empty::before {
+    font-size: 48px;
+  }
+
+  .empty-state h3 {
+    font-size: 18px;
+  }
+
+  .empty-state p {
+    font-size: 13px;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - Reduced Motion
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn-primary,
+  .btn-search,
+  .btn-page,
+  .form-control,
+  .search-box .form-control,
+  .filter-group .form-control {
+    transition: none;
+  }
+
+  .spinner {
+    animation: none;
+    border-top-color: var(--color-secondary);
+    border-right-color: var(--color-secondary);
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - Focus Visible
+   ===================================================== */
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-search:focus-visible,
+.btn-page:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+.form-control:focus-visible,
+.search-box .form-control:focus-visible,
+.filter-group .form-control:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   ACCESIBILIDAD - Alto Contraste
+   ===================================================== */
+@media (prefers-contrast: high) {
+  .filters-section {
+    border-width: 2px;
+  }
+
+  .btn {
+    border-width: 3px;
+  }
+
+  .search-box .form-control,
+  .filter-group .form-control {
+    border-width: 3px;
+  }
+
+  .pagination {
+    border-width: 2px;
+  }
+
+  .btn-page {
+    border-width: 3px;
+  }
+
+  .empty-state {
+    border-width: 3px;
+  }
+}
+
+/* =====================================================
+   ANIMACIONES DE ENTRADA
+   ===================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tenants-grid app-tenant-card {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.tenants-grid app-tenant-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.tenants-grid app-tenant-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.tenants-grid app-tenant-card:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.tenants-grid app-tenant-card:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.tenants-grid app-tenant-card:nth-child(5) {
+  animation-delay: 0.25s;
+}
+.tenants-grid app-tenant-card:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tenants-grid app-tenant-card {
+    animation: none;
+  }
+}

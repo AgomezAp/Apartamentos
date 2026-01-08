@@ -1,0 +1,54 @@
+<div class="report-table">
+  <div class="table-header" *ngIf="title">
+    <h3>{{ title }}</h3>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando datos...</p>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper" *ngIf="!loading && displayData.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th 
+            *ngFor="let col of columns" 
+            [class]="'align-' + (col.align || 'left')">
+            {{ col.label }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of displayData">
+          <td 
+            *ngFor="let col of columns"
+            [class]="'align-' + (col.align || 'left')"
+            [class.currency-cell]="col.type === 'currency'"
+            [class.number-cell]="col.type === 'number'">
+            {{ formatValue(getNestedValue(row, col.key), col) }}
+          </td>
+        </tr>
+      </tbody>
+      <tfoot *ngIf="showTotals">
+        <tr class="totals-row">
+          <td *ngFor="let col of columns; let first = first" 
+              [class]="'align-' + (col.align || 'left')"
+              [class.currency-cell]="col.type === 'currency'"
+              [class.number-cell]="col.type === 'number'">
+            <strong *ngIf="first">Totales</strong>
+            <strong *ngIf="!first && totals[col.key] !== undefined">
+              {{ formatValue(totals[col.key], col) }}
+            </strong>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && displayData.length === 0">
+    <p>📭 No hay datos para mostrar</p>
+  </div>
+</div>

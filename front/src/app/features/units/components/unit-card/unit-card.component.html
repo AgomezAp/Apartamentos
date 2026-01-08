@@ -1,0 +1,54 @@
+<div class="unit-card" *ngIf="unit">
+  <div class="card-header">
+    <div class="unit-number">
+      <h3>{{ unit.unit_number }}</h3>
+      <span class="building-name" *ngIf="unit.building_name">{{ unit.building_name }}</span>
+    </div>
+    <span class="status-badge" [ngClass]="getStatusClass()">
+      {{ getStatusLabel() }}
+    </span>
+  </div>
+
+  <div class="card-body">
+    <div class="unit-details">
+      <div class="detail-item" *ngIf="unit.floor !== undefined">
+        <i class="icon-floor"></i>
+        <span>Piso {{ unit.floor }}</span>
+      </div>
+      <div class="detail-item" *ngIf="unit.bedrooms">
+        <i class="icon-bed"></i>
+        <span>{{ unit.bedrooms }} habitaciones</span>
+      </div>
+      <div class="detail-item" *ngIf="unit.bathrooms">
+        <i class="icon-bath"></i>
+        <span>{{ unit.bathrooms }} baños</span>
+      </div>
+      <div class="detail-item" *ngIf="unit.area_sqm">
+        <i class="icon-area"></i>
+        <span>{{ unit.area_sqm }} m²</span>
+      </div>
+    </div>
+
+    <div class="rent-info" *ngIf="unit.monthly_rent">
+      <span class="rent-label">Renta mensual:</span>
+      <span class="rent-amount">${{ unit.monthly_rent | number:'1.2-2' }}</span>
+    </div>
+
+    <div class="tenant-info" *ngIf="unit.current_tenant">
+      <i class="icon-person"></i>
+      <span>{{ unit.current_tenant }}</span>
+    </div>
+  </div>
+
+  <div class="card-actions">
+    <button class="btn btn-primary" [routerLink]="['/units', unit.id || unit.unit_id]">
+      Ver Detalles
+    </button>
+    <button class="btn btn-secondary" (click)="onEdit()">
+      Editar
+    </button>
+    <button class="btn btn-danger" (click)="onDelete()">
+      Eliminar
+    </button>
+  </div>
+</div>

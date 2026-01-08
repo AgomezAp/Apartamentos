@@ -1,0 +1,124 @@
+.payment-report-container {
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.page-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #2c3e50;
+}
+
+.header-content p {
+  margin: 0.5rem 0 0 0;
+  color: #7f8c8d;
+}
+
+.summary-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+}
+
+.summary-card .card-icon {
+  font-size: 2.5rem;
+}
+
+.summary-card.expected .card-icon { color: #3498db; }
+.summary-card.collected .card-icon { color: #27ae60; }
+.summary-card.pending .card-icon { color: #f39c12; }
+.summary-card.overdue .card-icon { color: #e74c3c; }
+.summary-card.rate .card-icon { color: #9b59b6; }
+
+.summary-card .card-content h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.summary-card .card-content p {
+  margin: 0.25rem 0 0 0;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+}
+
+.loading {
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.loading p {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.chart-section {
+  min-height: 300px;
+}
+
+.table-section {
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .payment-report-container {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .summary-section {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card .card-content h3 {
+    font-size: 1.3rem;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}

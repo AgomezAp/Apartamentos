@@ -1,0 +1,771 @@
+/* =====================================================
+   DASHBOARD LAYOUT - OPTIMIZADO
+   Sistema de Gestión de Arrendamiento
+   ===================================================== */
+
+/* =====================================================
+   VARIABLES LOCALES DEL DASHBOARD
+   ===================================================== */
+.dashboard-container {
+  --dashboard-gap: var(--spacing-lg);
+  --widget-min-height: 280px;
+  --widget-compact-height: 240px;
+  --header-height: 80px;
+  --stats-height: 100px;
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+.dashboard-container {
+  min-height: 100vh;
+  background-color: var(--color-gray-50);
+  font-family: var(--font-body);
+  padding: var(--spacing-lg);
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* =====================================================
+   DASHBOARD HEADER
+   ===================================================== */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-light) 100%
+  );
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.header-content h1 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.header-content h1::before {
+  content: "📊";
+}
+
+.header-subtitle {
+  color: var(--color-gray-400);
+  font-size: 0.9rem;
+  margin: var(--spacing-xs) 0 0 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+/* Date Filters */
+.date-filters {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.filter-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-gray-300);
+  white-space: nowrap;
+}
+
+.date-input {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  border: 2px solid var(--color-gray-600);
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-lighter);
+  color: var(--color-white);
+  transition: all var(--transition-normal);
+  min-height: 40px;
+}
+
+.date-input:hover {
+  border-color: var(--color-gray-500);
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Refresh Button */
+.btn-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-secondary);
+  border: 2px solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-height: 40px;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background-color: var(--color-secondary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  font-size: 1rem;
+  display: inline-block;
+}
+
+.btn-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================
+   LOADING & ERROR STATES
+   ===================================================== */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--color-gray-200);
+  border-top-color: var(--color-secondary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-container p,
+.error-container p {
+  margin-top: var(--spacing-lg);
+  font-size: 1rem;
+  color: var(--color-gray-500);
+}
+
+.error-container {
+  background-color: var(--color-error-bg);
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.error-container p {
+  color: var(--color-error);
+  font-weight: 500;
+}
+
+.btn-retry {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: var(--color-error);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.btn-retry:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+/* =====================================================
+   DASHBOARD CONTENT
+   ===================================================== */
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* =====================================================
+   STATS GRID - 6 Cards en una fila
+   ===================================================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--spacing-md);
+}
+
+/* Asegurar que las stats cards sean compactas */
+.stats-grid ::ng-deep .stats-card,
+.stats-grid > * {
+  min-height: auto;
+}
+
+/* =====================================================
+   🔥 DASHBOARD GRID - LAYOUT PRINCIPAL OPTIMIZADO
+   ===================================================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows:
+    minmax(280px, auto) /* Fila 1: Charts principales */
+    minmax(250px, 320px) /* Fila 2: Tabla pagos recientes */
+    minmax(240px, auto) /* Fila 3: Widgets medianos */
+    minmax(200px, auto); /* Fila 4: Alertas y Tareas */
+  gap: var(--spacing-lg);
+  grid-template-areas:
+    "revenue  revenue  revenue  revenue  revenue  revenue  revenue  trends  trends  trends  trends  trends"
+    "recent   recent   recent   recent   recent   recent   recent   recent  recent  recent  recent  recent"
+    "occupancy occupancy occupancy occupancy overdue overdue overdue overdue history history history history"
+    "alerts   alerts   alerts   alerts   alerts   alerts   tasks    tasks   tasks   tasks   tasks   tasks";
+}
+
+/* Widget Areas */
+.widget-revenue {
+  grid-area: revenue;
+}
+
+.widget-trends {
+  grid-area: trends;
+}
+
+.widget-recent-table {
+  grid-area: recent;
+}
+
+.widget-occupancy {
+  grid-area: occupancy;
+}
+
+.widget-overdue {
+  grid-area: overdue;
+}
+
+.widget-history {
+  grid-area: history;
+}
+
+.widget-alerts {
+  grid-area: alerts;
+}
+
+.widget-tasks {
+  grid-area: tasks;
+}
+
+/* =====================================================
+   ESTILOS BASE PARA TODOS LOS WIDGETS
+   ===================================================== */
+.widget-revenue,
+.widget-trends,
+.widget-recent-table,
+.widget-occupancy,
+.widget-overdue,
+.widget-history,
+.widget-alerts,
+.widget-tasks {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-revenue:hover,
+.widget-trends:hover,
+.widget-recent-table:hover,
+.widget-occupancy:hover,
+.widget-overdue:hover,
+.widget-history:hover,
+.widget-alerts:hover,
+.widget-tasks:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-secondary);
+}
+
+/* Asegurar que los componentes internos llenen el espacio */
+.widget-revenue > *,
+.widget-trends > *,
+.widget-recent-table > *,
+.widget-occupancy > *,
+.widget-overdue > *,
+.widget-history > *,
+.widget-alerts > *,
+.widget-tasks > * {
+  flex: 1;
+  min-height: 0;
+}
+
+/* =====================================================
+   AJUSTES ESPECÍFICOS POR WIDGET
+   ===================================================== */
+
+/* Widget de tabla con altura limitada y scroll interno */
+.widget-recent-table {
+  max-height: 320px;
+}
+
+/* Widgets más compactos en la fila inferior */
+.widget-alerts,
+.widget-tasks {
+  max-height: 260px;
+}
+
+/* Override para que los componentes internos manejen su propio scroll */
+.widget-recent-table ::ng-deep .table-responsive,
+.widget-overdue ::ng-deep .table-responsive,
+.widget-history ::ng-deep .payment-list {
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.widget-alerts ::ng-deep .alerts-list,
+.widget-tasks ::ng-deep .tasks-list {
+  overflow-y: auto;
+  max-height: 180px;
+}
+
+/* =====================================================
+   RESPONSIVE - PANTALLAS GRANDES (1400px+)
+   ===================================================== */
+@media (min-width: 1400px) {
+  .dashboard-container {
+    padding: var(--spacing-xl);
+  }
+
+  .dashboard-grid {
+    gap: var(--spacing-xl);
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - TABLETS LANDSCAPE (1024px - 1200px)
+   ===================================================== */
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      "revenue  revenue  revenue  trends   trends   trends"
+      "recent   recent   recent   recent   recent   recent"
+      "occupancy occupancy overdue  overdue  history  history"
+      "alerts   alerts   alerts   tasks    tasks    tasks";
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - TABLETS PORTRAIT (768px - 1024px)
+   ===================================================== */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    padding: var(--spacing-md);
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-md);
+  }
+
+  .date-filters {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .filter-group {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .date-input {
+    width: 100%;
+  }
+
+  .btn-refresh {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "revenue  revenue"
+      "trends   trends"
+      "recent   recent"
+      "occupancy overdue"
+      "history  history"
+      "alerts   alerts"
+      "tasks    tasks";
+    gap: var(--spacing-md);
+  }
+
+  .widget-recent-table,
+  .widget-alerts,
+  .widget-tasks {
+    max-height: none;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES (480px - 768px)
+   ===================================================== */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: var(--spacing-sm);
+  }
+
+  .dashboard-header {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+  }
+
+  .header-content h1 {
+    font-size: 1.4rem;
+  }
+
+  .date-filters {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "revenue"
+      "trends"
+      "recent"
+      "occupancy"
+      "overdue"
+      "history"
+      "alerts"
+      "tasks";
+    gap: var(--spacing-md);
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES PEQUEÑOS (< 480px)
+   ===================================================== */
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: var(--spacing-xs);
+  }
+
+  .dashboard-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .header-content h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-group label {
+    font-size: 0.8rem;
+  }
+
+  .date-input {
+    font-size: 0.85rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .btn-refresh {
+    font-size: 0.85rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  /* Widgets sin hover en móvil */
+  .widget-revenue:hover,
+  .widget-trends:hover,
+  .widget-recent-table:hover,
+  .widget-occupancy:hover,
+  .widget-overdue:hover,
+  .widget-history:hover,
+  .widget-alerts:hover,
+  .widget-tasks:hover {
+    transform: none;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - REDUCED MOTION
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .btn-icon.spinning {
+    animation: none;
+  }
+
+  .spinner {
+    animation: none;
+  }
+
+  .widget-revenue,
+  .widget-trends,
+  .widget-recent-table,
+  .widget-occupancy,
+  .widget-overdue,
+  .widget-history,
+  .widget-alerts,
+  .widget-tasks,
+  .btn-refresh,
+  .btn-retry {
+    transition: none;
+  }
+
+  .widget-revenue:hover,
+  .widget-trends:hover,
+  .widget-recent-table:hover,
+  .widget-occupancy:hover,
+  .widget-overdue:hover,
+  .widget-history:hover,
+  .widget-alerts:hover,
+  .widget-tasks:hover,
+  .btn-refresh:hover,
+  .btn-retry:hover {
+    transform: none;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - HIGH CONTRAST
+   ===================================================== */
+@media (prefers-contrast: high) {
+  .dashboard-header {
+    border: 2px solid var(--color-white);
+  }
+
+  .widget-revenue,
+  .widget-trends,
+  .widget-recent-table,
+  .widget-occupancy,
+  .widget-overdue,
+  .widget-history,
+  .widget-alerts,
+  .widget-tasks {
+    border-width: 2px;
+    border-color: var(--color-primary);
+  }
+
+  .date-input {
+    border-width: 3px;
+  }
+
+  .btn-refresh {
+    border-width: 3px;
+  }
+}
+
+/* =====================================================
+   FOCUS STATES
+   ===================================================== */
+.date-input:focus-visible,
+.btn-refresh:focus-visible,
+.btn-retry:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   PRINT STYLES
+   ===================================================== */
+@media print {
+  .dashboard-container {
+    padding: 0;
+    background: none;
+  }
+
+  .dashboard-header {
+    background: none;
+    color: var(--color-primary);
+    box-shadow: none;
+    border-bottom: 2px solid var(--color-primary);
+    border-radius: 0;
+  }
+
+  .header-content h1 {
+    color: var(--color-primary);
+  }
+
+  .header-actions {
+    display: none;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dashboard-grid {
+    display: block;
+  }
+
+  .widget-revenue,
+  .widget-trends,
+  .widget-recent-table,
+  .widget-occupancy,
+  .widget-overdue,
+  .widget-history,
+  .widget-alerts,
+  .widget-tasks {
+    box-shadow: none;
+    border: 1px solid var(--color-gray-300);
+    break-inside: avoid;
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+/* =====================================================
+   ANIMACIONES DE ENTRADA
+   ===================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-content {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.stats-grid > * {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+.stats-grid > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.stats-grid > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.stats-grid > *:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.stats-grid > *:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.stats-grid > *:nth-child(5) {
+  animation-delay: 0.25s;
+}
+.stats-grid > *:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+.widget-revenue {
+  animation: fadeInUp 0.4s ease 0.35s forwards;
+  opacity: 0;
+}
+.widget-trends {
+  animation: fadeInUp 0.4s ease 0.4s forwards;
+  opacity: 0;
+}
+.widget-recent-table {
+  animation: fadeInUp 0.4s ease 0.45s forwards;
+  opacity: 0;
+}
+.widget-occupancy {
+  animation: fadeInUp 0.4s ease 0.5s forwards;
+  opacity: 0;
+}
+.widget-overdue {
+  animation: fadeInUp 0.4s ease 0.55s forwards;
+  opacity: 0;
+}
+.widget-history {
+  animation: fadeInUp 0.4s ease 0.6s forwards;
+  opacity: 0;
+}
+.widget-alerts {
+  animation: fadeInUp 0.4s ease 0.65s forwards;
+  opacity: 0;
+}
+.widget-tasks {
+  animation: fadeInUp 0.4s ease 0.7s forwards;
+  opacity: 0;
+}

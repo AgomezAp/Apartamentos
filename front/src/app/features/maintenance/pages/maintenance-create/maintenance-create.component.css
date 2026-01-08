@@ -1,0 +1,142 @@
+/* =====================================================
+   MAINTENANCE CREATE CONTAINER
+   ===================================================== */
+
+.maintenance-create-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+/* =====================================================
+   PAGE HEADER
+   ===================================================== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.header-content h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.header-content p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+}
+
+.btn-secondary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+  transform: translateX(-4px);
+}
+
+/* =====================================================
+   FORM WRAPPER
+   ===================================================== */
+.form-wrapper {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-gray-200);
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+@media (max-width: 768px) {
+  .maintenance-create-container {
+    padding: var(--spacing-md);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .maintenance-create-container {
+    padding: var(--spacing-sm);
+  }
+
+  .header-content h1 {
+    font-size: 1.35rem;
+  }
+
+  .header-content p {
+    font-size: 0.85rem;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+.btn:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+
+  .btn-secondary:hover {
+    transform: none;
+  }
+}

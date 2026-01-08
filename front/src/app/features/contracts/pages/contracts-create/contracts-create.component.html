@@ -1,0 +1,15 @@
+<div class="contracts-create-page">
+  <div class="page-content">
+    <app-contract-form
+      [buildings]="buildings"
+      [units]="units"
+      [tenants]="tenants"
+      (onSubmit)="onSubmit($event)"
+      (onCancel)="onCancel()">
+    </app-contract-form>
+  </div>
+
+  <div class="loading-overlay" *ngIf="loading">
+    <p>Creando contrato...</p>
+  </div>
+</div>

@@ -1,0 +1,671 @@
+/* =====================================================
+   SIDEBAR COMPONENT - COLORES CORPORATIVOS
+   #141414 (Negro) y #FFD600 (Amarillo)
+   Tipografías: Century Gothic y Fira Sans
+   ===================================================== */
+
+/* =====================================================
+   SIDEBAR PRINCIPAL
+   ===================================================== */
+.sidebar {
+  width: 280px;
+  background: linear-gradient(180deg, #141414 0%, #1a1a1a 50%, #141414 100%);
+  color: #ffffff;
+  height: calc(100vh - 70px);
+  position: sticky;
+  top: 70px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3), 1px 0 0 rgba(255, 214, 0, 0.1);
+  border-right: 1px solid rgba(255, 214, 0, 0.1);
+}
+
+/* Estado colapsado */
+.sidebar.collapsed {
+  width: 80px;
+}
+
+/* =====================================================
+   SCROLLBAR PERSONALIZADO
+   ===================================================== */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #ffd600;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #ccab00;
+}
+
+/* Firefox */
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: #ffd600 rgba(255, 255, 255, 0.05);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+.sidebar-nav {
+  padding: 20px 0;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  margin-bottom: 4px;
+  padding: 0 12px;
+}
+
+/* =====================================================
+   MENU LINK - ESTADO NORMAL
+   ===================================================== */
+.menu-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Efecto de fondo en hover */
+.menu-link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 214, 0, 0.1) 0%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.menu-link:hover::before {
+  opacity: 1;
+}
+
+/* =====================================================
+   MENU LINK - ESTADO HOVER
+   ===================================================== */
+.menu-link:hover {
+  color: #ffffff;
+  background: rgba(255, 214, 0, 0.1);
+  transform: translateX(4px);
+}
+
+.menu-link:hover .menu-icon {
+  color: #ffd600;
+  transform: scale(1.1);
+}
+
+/* =====================================================
+   MENU LINK - ESTADO ACTIVO
+   ===================================================== */
+.menu-link.active {
+  color: #141414;
+  background: #ffd600;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(255, 214, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.menu-link.active::before {
+  display: none;
+}
+
+.menu-link.active::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: #141414;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.2);
+}
+
+.menu-link.active .menu-icon {
+  color: #141414;
+}
+
+.menu-link.active:hover {
+  transform: none;
+  background: #ffd600;
+}
+
+/* =====================================================
+   MENU LINK - ESTADO FOCUS
+   ===================================================== */
+.menu-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 214, 0, 0.5);
+}
+
+.menu-link:focus-visible {
+  outline: 2px solid #ffd600;
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   ICONO DEL MENÚ
+   ===================================================== */
+.menu-icon {
+  font-size: 22px;
+  min-width: 28px;
+  text-align: center;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 3px rgba(255, 214, 0, 0.2));
+}
+
+/* =====================================================
+   LABEL DEL MENÚ
+   ===================================================== */
+.menu-label {
+  flex: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s ease;
+}
+
+/* =====================================================
+   BADGE DE NOTIFICACIÓN
+   ===================================================== */
+.menu-badge {
+  background: #ef4444;
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: "Fira Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 22px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.menu-link.active .menu-badge {
+  background: #141414;
+  color: #ffd600;
+  box-shadow: 0 2px 8px rgba(20, 20, 20, 0.3);
+}
+
+/* =====================================================
+   CHEVRON (FLECHA)
+   ===================================================== */
+.menu-chevron {
+  font-size: 10px;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  color: #ffd600;
+}
+
+.menu-link:hover .menu-chevron {
+  opacity: 1;
+}
+
+/* =====================================================
+   SUBMENU
+   ===================================================== */
+.submenu {
+  list-style: none;
+  padding: 8px 0 8px 20px;
+  margin: 4px 0 0 0;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border-left: 3px solid #ffd600;
+  animation: submenuSlide 0.3s ease;
+}
+
+@keyframes submenuSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.submenu-item {
+  margin: 2px 0;
+}
+
+/* =====================================================
+   SUBMENU LINK
+   ===================================================== */
+.submenu-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 8px;
+  position: relative;
+}
+
+.submenu-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 214, 0, 0.3);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.submenu-link:hover {
+  color: #ffffff;
+  background: rgba(255, 214, 0, 0.1);
+  padding-left: 20px;
+}
+
+.submenu-link:hover::before {
+  background: #ffd600;
+  box-shadow: 0 0 8px rgba(255, 214, 0, 0.5);
+}
+
+/* Submenu activo */
+.submenu-link.active {
+  color: #ffd600;
+  background: rgba(255, 214, 0, 0.1);
+  font-weight: 600;
+}
+
+.submenu-link.active::before {
+  background: #ffd600;
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 10px rgba(255, 214, 0, 0.6);
+}
+
+.submenu-icon {
+  font-size: 16px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.submenu-label {
+  flex: 1;
+}
+
+/* =====================================================
+   ESTADO COLAPSADO
+   ===================================================== */
+.sidebar.collapsed .menu-label,
+.sidebar.collapsed .menu-badge,
+.sidebar.collapsed .menu-chevron {
+  display: none;
+}
+
+.sidebar.collapsed .menu-item {
+  padding: 0 8px;
+}
+
+.sidebar.collapsed .menu-link {
+  justify-content: center;
+  padding: 14px 12px;
+  border-radius: 10px;
+}
+
+.sidebar.collapsed .menu-link.active::after {
+  display: none;
+}
+
+.sidebar.collapsed .menu-icon {
+  min-width: auto;
+  font-size: 24px;
+}
+
+/* Tooltip en estado colapsado */
+.sidebar.collapsed .menu-link {
+  position: relative;
+}
+
+.sidebar.collapsed .menu-link::after {
+  content: attr(title);
+  position: absolute;
+  left: calc(100% + 15px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #141414;
+  color: #ffd600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 214, 0, 0.2);
+  z-index: 1000;
+}
+
+.sidebar.collapsed .menu-link::before {
+  content: "";
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-right-color: #141414;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .menu-link:hover::after,
+.sidebar.collapsed .menu-link:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar.collapsed .menu-link.active::after {
+  display: block;
+  content: attr(title);
+  right: auto;
+  width: auto;
+  height: auto;
+  background: #141414;
+  border-radius: 8px;
+}
+
+/* =====================================================
+   SECCIÓN DEL MENÚ (OPCIONAL)
+   ===================================================== */
+.menu-section {
+  padding: 20px 20px 10px;
+}
+
+.menu-section-title {
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 214, 0, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.sidebar.collapsed .menu-section-title {
+  display: none;
+}
+
+/* =====================================================
+   DIVISOR
+   ===================================================== */
+.menu-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 214, 0, 0.2),
+    transparent
+  );
+  margin: 16px 20px;
+}
+
+.sidebar.collapsed .menu-divider {
+  margin: 16px 10px;
+}
+
+/* =====================================================
+   FOOTER DEL SIDEBAR (OPCIONAL)
+   ===================================================== */
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255, 214, 0, 0.1);
+  margin-top: auto;
+}
+
+.sidebar-footer-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 214, 0, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 214, 0, 0.1);
+}
+
+.sidebar-footer-icon {
+  font-size: 20px;
+}
+
+.sidebar-footer-text {
+  font-family: "Fira Sans", sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.sidebar-footer-text strong {
+  display: block;
+  color: #ffd600;
+  font-size: 13px;
+}
+
+.sidebar.collapsed .sidebar-footer-text {
+  display: none;
+}
+
+/* =====================================================
+   RESPONSIVE - TABLETS
+   ===================================================== */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 260px;
+  }
+
+  .sidebar.collapsed {
+    width: 70px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES
+   ===================================================== */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -300px;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    z-index: 1000;
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .sidebar.collapsed {
+    left: 0;
+    width: 280px;
+  }
+
+  /* Overlay cuando el sidebar está abierto */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* En móvil, no mostrar tooltips */
+  .sidebar.collapsed .menu-link::after,
+  .sidebar.collapsed .menu-link::before {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
+    left: -100%;
+  }
+
+  .sidebar.collapsed {
+    width: 100%;
+  }
+
+  .menu-link {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+
+  .menu-icon {
+    font-size: 24px;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .menu-link,
+  .submenu-link,
+  .submenu {
+    transition: none;
+  }
+
+  @keyframes submenuSlide {
+    from,
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes pulse-badge {
+    from,
+    to {
+      transform: none;
+    }
+  }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+  .menu-link {
+    border: 1px solid transparent;
+  }
+
+  .menu-link:hover {
+    border-color: #ffd600;
+  }
+
+  .menu-link.active {
+    border-color: #141414;
+  }
+
+  .submenu {
+    border-left-width: 4px;
+  }
+}
+
+/* =====================================================
+   TEMA CLARO (OPCIONAL)
+   ===================================================== */
+.sidebar.light-theme {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 100%);
+  color: #141414;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.light-theme .menu-link {
+  color: #52525b;
+}
+
+.sidebar.light-theme .menu-link:hover {
+  color: #141414;
+  background: rgba(255, 214, 0, 0.15);
+}
+
+.sidebar.light-theme .menu-link.active {
+  color: #141414;
+  background: #ffd600;
+}
+
+.sidebar.light-theme .submenu {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.sidebar.light-theme .submenu-link {
+  color: #71717a;
+}
+
+.sidebar.light-theme .submenu-link:hover,
+.sidebar.light-theme .submenu-link.active {
+  color: #141414;
+}
+
+.sidebar.light-theme::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}

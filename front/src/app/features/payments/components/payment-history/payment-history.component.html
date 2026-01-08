@@ -1,0 +1,53 @@
+<div class="payment-history-widget">
+  <div class="widget-header">
+    <h3>📊 Historial de Pagos</h3>
+    <div class="total-amount">
+      <span class="label">Total:</span>
+      <span class="amount">{{ totalAmount | currencyFormat }}</span>
+    </div>
+  </div>
+
+  <div class="widget-content">
+    <div class="loading" *ngIf="loading">
+      <p>⏳ Cargando historial...</p>
+    </div>
+
+    <div class="history-table" *ngIf="!loading && payments.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Inquilino</th>
+            <th>Unidad</th>
+            <th>Método</th>
+            <th>Monto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payment of payments">
+            <td>{{ payment.payment_date | dateFormat:'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="tenant-cell">
+                <span class="tenant-icon">👤</span>
+                <span>{{ payment.tenant_name || 'N/A' }}</span>
+              </div>
+            </td>
+            <td>{{ payment.unit_number || 'N/A' }}</td>
+            <td>
+              <div class="method-cell">
+                <span class="method-icon">{{ getPaymentMethodIcon(payment.payment_method) }}</span>
+                <span>{{ getPaymentMethodLabel(payment.payment_method) }}</span>
+              </div>
+            </td>
+            <td class="amount-cell">{{ payment.amount | currencyFormat }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && payments.length === 0">
+      <div class="empty-icon">💭</div>
+      <p>No hay pagos registrados</p>
+    </div>
+  </div>
+</div>

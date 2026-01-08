@@ -1,0 +1,437 @@
+/* =====================================================
+   PAYMENT CARD COMPONENT
+   ===================================================== */
+
+.payment-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--color-gray-200);
+}
+
+.payment-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-secondary);
+}
+
+/* =====================================================
+   CARD HEADER
+   ===================================================== */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-light) 100%
+  );
+  gap: var(--spacing-md);
+}
+
+.header-left {
+  flex: 1;
+}
+
+.amount-badge {
+  display: inline-block;
+}
+
+.amount-badge .amount {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.header-right {
+  flex-shrink: 0;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: var(--radius-xl);
+  white-space: nowrap;
+}
+
+.status-badge.status-pending {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+.status-badge.status-partial {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #1976d2;
+}
+
+.status-badge.status-completed {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.status-badge.status-overdue {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+.status-badge.status-cancelled {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-500);
+  border: 1px solid var(--color-gray-400);
+}
+
+/* =====================================================
+   CARD BODY
+   ===================================================== */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  flex: 1;
+}
+
+/* Tenant Section */
+.tenant-section {
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.tenant-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  background-color: var(--color-secondary-subtle);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.info-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Details Grid */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.detail-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  background-color: var(--color-gray-100);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.detail-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.detail-value {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =====================================================
+   ALERT SECTION
+   ===================================================== */
+.alert-section {
+  margin-top: var(--spacing-sm);
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.alert-danger {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  animation: pulse-alert 2s ease-in-out infinite;
+}
+
+@keyframes pulse-alert {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(0.99);
+  }
+}
+
+/* =====================================================
+   NOTES SECTION
+   ===================================================== */
+.notes-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-secondary);
+}
+
+.notes-label {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gray-600);
+}
+
+.notes-text {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-gray-600);
+  line-height: 1.5;
+  margin: 0;
+  word-break: break-word;
+}
+
+/* =====================================================
+   CARD FOOTER
+   ===================================================== */
+.card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-gray-50);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.card-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex: 1;
+  min-width: fit-content;
+}
+
+/* Button Variants */
+.btn-view {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.btn-view:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+}
+
+.btn-complete {
+  background-color: var(--color-success);
+  color: var(--color-white);
+  border-color: var(--color-success);
+}
+
+.btn-complete:hover {
+  background-color: #0ea574;
+  border-color: #0ea574;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.btn-cancel {
+  background-color: var(--color-warning);
+  color: var(--color-primary);
+  border-color: var(--color-warning);
+}
+
+.btn-cancel:hover {
+  background-color: #e08e0a;
+  border-color: #e08e0a;
+}
+
+.btn-delete {
+  background-color: transparent;
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.btn-delete:hover {
+  background-color: var(--color-error);
+  color: var(--color-white);
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .amount-badge .amount {
+    font-size: 1.25rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .card-footer {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .card-footer .btn {
+    font-size: 0.75rem;
+    padding: var(--spacing-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .card-body {
+    padding: var(--spacing-md);
+  }
+
+  .info-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  .info-value {
+    font-size: 0.9rem;
+  }
+
+  .detail-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+    justify-content: center;
+    padding: var(--spacing-sm);
+  }
+}
+
+/* =====================================================
+   ESTADO HOVER ESPECÍFICO PARA TARJETAS
+   ===================================================== */
+.payment-card.overdue {
+  border-color: var(--color-error);
+  border-width: 2px;
+}
+
+.payment-card.overdue .card-header {
+  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+}
+
+.payment-card.completed {
+  opacity: 0.9;
+}
+
+.payment-card.completed:hover {
+  opacity: 1;
+}
+
+.payment-card.completed .amount-badge .amount {
+  color: var(--color-success);
+}

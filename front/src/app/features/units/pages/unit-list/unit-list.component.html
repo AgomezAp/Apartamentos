@@ -1,0 +1,95 @@
+<div class="unit-list-container">
+  
+  <!-- Sección de filtros -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <!-- Botón Nueva Unidad -->
+      <button class="btn-new" (click)="createUnit()">
+        <i class="fa-solid fa-plus"></i>
+        Nueva Unidad
+      </button>
+
+      <!-- Search Box -->
+      <div class="search-box">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar por número, edificio, inquilino..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchInput(searchTerm)"
+        />
+      </div>
+    </div>
+
+    <!-- Filtros secundarios -->
+    <div class="filters-secondary">
+      <div class="filter-group">
+        <label>Estado:</label>
+        <select
+          [(ngModel)]="statusFilter"
+          (change)="onStatusChange(statusFilter)"
+          class="form-control"
+        >
+          <option value="all">Todos</option>
+          <option value="available">Disponibles</option>
+          <option value="occupied">Ocupadas</option>
+          <option value="maintenance">Mantenimiento</option>
+          <option value="reserved">Reservadas</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-spinner" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Cargando unidades...</p>
+  </div>
+
+  <!-- Grid de unidades -->
+  <div class="units-grid" *ngIf="!isLoading && units.length > 0">
+    <app-unit-card
+      *ngFor="let unit of units"
+      [unit]="unit"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
+    ></app-unit-card>
+  </div>
+
+  <!-- Paginación SIMPLE (sin getPageNumbers) -->
+  <div
+    class="pagination"
+    *ngIf="!isLoading && units.length > 0 && pagination.totalPages > 1"
+  >
+    <button
+      class="btn-page"
+      (click)="prevPage()"
+      [disabled]="pagination.page === 1"
+    >
+      Anterior
+    </button>
+
+    <span class="page-info">
+      Página {{ pagination.page }} de {{ pagination.totalPages }}
+    </span>
+
+    <button
+      class="btn-page"
+      (click)="nextPage()"
+      [disabled]="pagination.page === pagination.totalPages"
+    >
+      Siguiente
+    </button>
+  </div>
+
+  <!-- Estado vacío -->
+  <div class="empty-state" *ngIf="!isLoading && units.length === 0">
+    <i class="fa-solid fa-building-circle-xmark"></i>
+    <h3>No se encontraron unidades</h3>
+    <p>Intenta ajustar tus filtros de búsqueda o crea una nueva unidad.</p>
+    <button class="btn-new" (click)="createUnit()">
+      <i class="fa-solid fa-plus"></i>
+      Crear Primera Unidad
+    </button>
+  </div>
+</div>

@@ -1,0 +1,173 @@
+<div class="unit-detail-container">
+  <div class="page-header">
+    <button class="btn-back" (click)="goBack()">
+      ← Volver
+    </button>
+    <h1 *ngIf="unit">Unidad {{ unit.unit_number }}</h1>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Cargando unidad...</p>
+  </div>
+
+  <div *ngIf="!isLoading && unit" class="unit-content">
+    <!-- UNIT HEADER CON STATUS -->
+    <div class="unit-header">
+      <div class="unit-title-section">
+        <div class="building-info">
+          <span class="building-label">🏢 Edificio:</span>
+          <h2>{{ unit.building_name }}</h2>
+        </div>
+        <div class="status-info">
+          <span class="status-label">Estado:</span>
+          <span class="status-badge" [ngClass]="getOccupationStatusClass()">
+            {{ getOccupationStatusText() }}
+          </span>
+        </div>
+      </div>
+      <div class="unit-actions">
+        <button class="btn btn-primary" (click)="editUnit()">
+          ✏️ Editar
+        </button>
+        <button class="btn btn-danger" (click)="deleteUnit()">
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>
+
+    <!-- GRID DE INFORMACIÓN -->
+    <div class="details-grid">
+      <!-- INFORMACIÓN GENERAL -->
+      <div class="detail-card">
+        <h3>📋 Información General</h3>
+        <div class="detail-row">
+          <span class="label">Número de Unidad:</span>
+          <span class="value">{{ unit.unit_number }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.floor !== undefined">
+          <span class="label">Piso:</span>
+          <span class="value">{{ unit.floor }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.bedrooms">
+          <span class="label">Habitaciones:</span>
+          <span class="value">{{ unit.bedrooms }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.bathrooms">
+          <span class="label">Baños:</span>
+          <span class="value">{{ unit.bathrooms }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.area_sqm">
+          <span class="label">Área:</span>
+          <span class="value">{{ unit.area_sqm }} m²</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Tipo de Unidad:</span>
+          <span class="value">{{ unit.type_name || 'N/A' }}</span>
+        </div>
+      </div>
+
+      <!-- INFORMACIÓN FINANCIERA -->
+      <div class="detail-card">
+        <h3>💰 Información Financiera</h3>
+        <div class="detail-row" *ngIf="unit.rental_price">
+          <span class="label">Renta Mensual:</span>
+          <span class="value price">{{ formatCurrency(unit.rental_price) }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.monthly_rent">
+          <span class="label">Renta Mensual (alt):</span>
+          <span class="value price">{{ formatCurrency(unit.monthly_rent) }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.deposit_required">
+          <span class="label">Depósito de Garantía:</span>
+          <span class="value">{{ formatCurrency(unit.deposit_required) }}</span>
+        </div>
+        <div class="detail-row" *ngIf="!unit.rental_price && !unit.monthly_rent && !unit.deposit_required">
+          <span class="value empty">Sin información financiera</span>
+        </div>
+      </div>
+
+      <!-- INFORMACIÓN DEL INQUILINO -->
+      <div class="detail-card" *ngIf="unit.current_tenant; else noTenant">
+        <h3>👤 Inquilino Actual</h3>
+        <div class="detail-row">
+          <span class="label">Nombre:</span>
+          <span class="value">{{ unit.current_tenant }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.tenant_id">
+          <span class="label">ID Inquilino:</span>
+          <span class="value">{{ unit.tenant_id }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.current_contract_id">
+          <span class="label">Contrato Activo:</span>
+          <span class="value">ID {{ unit.current_contract_id }}</span>
+        </div>
+        <div class="detail-row" *ngIf="unit.contract_end_date">
+          <span class="label">Fin del Contrato:</span>
+          <span class="value">{{ unit.contract_end_date | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+      <ng-template #noTenant>
+        <div class="detail-card">
+          <h3>👤 Inquilino Actual</h3>
+          <div class="empty-state">
+            <p>No hay inquilino asignado a esta unidad</p>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- DESCRIPCIÓN -->
+      <div class="detail-card full-width" *ngIf="unit.description">
+        <h3>📝 Descripción</h3>
+        <p>{{ unit.description }}</p>
+      </div>
+
+      <!-- HISTORIAL DE PAGOS -->
+      <div class="detail-card full-width" *ngIf="unit.current_contract_id">
+        <h3>💳 Historial de Pagos</h3>
+        
+        <div *ngIf="isLoadingPayments" class="loading-spinner-inline">
+          <div class="spinner-small"></div>
+          <span>Cargando pagos...</span>
+        </div>
+
+        <div *ngIf="!isLoadingPayments && payments.length > 0" class="payments-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Período</th>
+                <th>Monto Debido</th>
+                <th>Estado</th>
+                <th>Fecha de Vencimiento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payment of payments" [ngClass]="getPaymentStatusClass(payment.status_name)">
+                <td>{{ payment.period_month }}/{{ payment.period_year }}</td>
+                <td class="amount">{{ formatCurrency(payment.amount_due) }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="'payment-' + (payment.status_name || 'unknown')">
+                    {{ getPaymentStatusText(payment.status_name) }}
+                  </span>
+                </td>
+                <td>{{ payment.due_date | date:'dd/MM/yyyy' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="!isLoadingPayments && payments.length === 0" class="empty-state">
+          <p>No hay registros de pagos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !unit" class="error-state">
+    <h3>Unidad no encontrada</h3>
+    <button class="btn btn-primary" (click)="goBack()">
+      Volver a la lista
+    </button>
+  </div>
+</div>

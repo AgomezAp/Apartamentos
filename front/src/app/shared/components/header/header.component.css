@@ -1,0 +1,586 @@
+/* =====================================================
+   HEADER COMPONENT - COLORES CORPORATIVOS
+   #141414 (Negro) y #FFD600 (Amarillo)
+   Tipografías: Century Gothic y Fira Sans
+   ===================================================== */
+
+/* =====================================================
+   HEADER PRINCIPAL
+   ===================================================== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  padding: 0 24px;
+  background: #141414;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 214, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 3px solid #ffd600;
+}
+
+/* =====================================================
+   SECCIÓN IZQUIERDA
+   ===================================================== */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Botón de menú hamburguesa */
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  color: #ffd600;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 214, 0, 0.1);
+  border-color: rgba(255, 214, 0, 0.3);
+  transform: scale(1.05);
+}
+
+.menu-toggle:focus {
+  outline: none;
+  background: rgba(255, 214, 0, 0.15);
+  border-color: #ffd600;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2);
+}
+
+.menu-toggle:active {
+  transform: scale(0.95);
+}
+
+/* =====================================================
+   MARCA / BRAND
+   ===================================================== */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  font-size: 28px;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(255, 214, 0, 0.3));
+}
+
+.brand-title {
+  font-family: "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+
+/* Efecto de resaltado en el título */
+.brand-title::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #ffd600;
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.brand:hover .brand-title::after {
+  transform: scaleX(1);
+}
+
+/* =====================================================
+   SECCIÓN DERECHA
+   ===================================================== */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* =====================================================
+   MENÚ DE USUARIO
+   ===================================================== */
+.user-menu {
+  position: relative;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 214, 0, 0.1);
+  border: 2px solid rgba(255, 214, 0, 0.2);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-button:hover {
+  background: rgba(255, 214, 0, 0.15);
+  border-color: rgba(255, 214, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 214, 0, 0.2);
+}
+
+.user-button:focus {
+  outline: none;
+  border-color: #ffd600;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2);
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #ffd600;
+  border-radius: 50%;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(255, 214, 0, 0.3);
+}
+
+.user-name {
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-chevron {
+  font-size: 10px;
+  color: #ffd600;
+  transition: transform 0.3s ease;
+}
+
+.user-button:hover .user-chevron {
+  transform: translateY(2px);
+}
+
+/* =====================================================
+   DROPDOWN DE USUARIO
+   ===================================================== */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 220px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(20, 20, 20, 0.05);
+  overflow: hidden;
+  animation: dropdownFadeIn 0.25s ease;
+  z-index: 1001;
+}
+
+/* Flecha del dropdown */
+.user-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 24px;
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  transform: rotate(45deg);
+  box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Información del usuario en dropdown */
+.user-info {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #141414 0%, #2a2a2a 100%);
+}
+
+.user-info strong {
+  display: block;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.user-role {
+  display: inline-block;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #141414;
+  background: #ffd600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Divisor */
+.dropdown-divider {
+  height: 1px;
+  background: #e4e4e7;
+  margin: 0;
+}
+
+/* Items del dropdown */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 20px;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #141414;
+  background: transparent;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 214, 0, 0.1);
+  color: #141414;
+  padding-left: 24px;
+}
+
+.dropdown-item:focus {
+  outline: none;
+  background: rgba(255, 214, 0, 0.15);
+}
+
+/* Botón de logout */
+.dropdown-item.logout {
+  color: #ef4444;
+  border-top: 1px solid #e4e4e7;
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* =====================================================
+   NOTIFICACIONES (Opcional - si lo necesitas)
+   ===================================================== */
+.notifications-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.notifications-button:hover {
+  background: rgba(255, 214, 0, 0.1);
+  border-color: rgba(255, 214, 0, 0.3);
+  color: #ffd600;
+}
+
+.notifications-button:focus {
+  outline: none;
+  border-color: #ffd600;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: #ef4444;
+  border-radius: 10px;
+  font-family: "Fira Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* =====================================================
+   BARRA DE BÚSQUEDA (Opcional - si lo necesitas)
+   ===================================================== */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffd600;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2);
+}
+
+.search-bar input {
+  width: 200px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.search-bar input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-bar button {
+  background: transparent;
+  border: none;
+  color: #ffd600;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.search-bar button:hover {
+  transform: scale(1.1);
+}
+
+/* =====================================================
+   RESPONSIVE - TABLETS
+   ===================================================== */
+@media (max-width: 768px) {
+  .header {
+    height: 64px;
+    padding: 0 16px;
+  }
+
+  .brand-title {
+    font-size: 18px;
+  }
+
+  .brand-icon {
+    font-size: 24px;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .user-button {
+    padding: 6px 10px;
+  }
+
+  .user-chevron {
+    display: none;
+  }
+
+  .search-bar {
+    display: none;
+  }
+
+  .user-dropdown {
+    right: -10px;
+    min-width: 200px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES
+   ===================================================== */
+@media (max-width: 480px) {
+  .header {
+    height: 60px;
+    padding: 0 12px;
+  }
+
+  .header-left {
+    gap: 12px;
+  }
+
+  .menu-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .brand-icon {
+    font-size: 22px;
+  }
+
+  .brand-title {
+    font-size: 16px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .user-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-width: 100%;
+    border-radius: 20px 20px 0 0;
+    animation: slideUp 0.3s ease;
+  }
+
+  .user-dropdown::before {
+    display: none;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .dropdown-item {
+    padding: 16px 24px;
+    font-size: 15px;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus visible para navegación por teclado */
+.menu-toggle:focus-visible,
+.user-button:focus-visible,
+.dropdown-item:focus-visible,
+.notifications-button:focus-visible {
+  outline: 2px solid #ffd600;
+  outline-offset: 2px;
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+  .header {
+    border-bottom-width: 4px;
+  }
+
+  .user-button {
+    border-width: 3px;
+  }
+
+  .dropdown-item:hover {
+    text-decoration: underline;
+  }
+}
+
+/* =====================================================
+   ESTADO ACTIVO DEL MENÚ
+   ===================================================== */
+.user-button.active {
+  background: rgba(255, 214, 0, 0.2);
+  border-color: #ffd600;
+}
+
+.user-button.active .user-chevron {
+  transform: rotate(180deg);
+}
+
+/* =====================================================
+   OVERLAY PARA CERRAR DROPDOWN (móvil)
+   ===================================================== */
+.dropdown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

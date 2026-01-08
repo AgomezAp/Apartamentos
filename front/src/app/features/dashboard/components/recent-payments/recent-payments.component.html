@@ -1,0 +1,54 @@
+<div class="recent-payments">
+  <div class="widget-header">
+    <h3>💵 Pagos Recientes</h3>
+    <button class="btn-refresh" (click)="loadPayments()">🔄</button>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando pagos...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="payments-table" *ngIf="!loading && !error && payments.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Inquilino</th>
+          <th>Unidad</th>
+          <th>Monto</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of payments">
+          <td>
+            <div class="tenant-info">
+              <div class="tenant-name">{{ payment.tenant_name }}</div>
+              <div class="building-name">{{ payment.building_name }}</div>
+            </div>
+          </td>
+          <td>{{ payment.unit_number }}</td>
+          <td class="amount">{{ payment.amount | currencyFormat }}</td>
+          <td class="date">{{ payment.payment_date | dateFormat:'dd/MM/yyyy' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+              {{ getStatusLabel(payment.status) }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="no-payments" *ngIf="!loading && !error && payments.length === 0">
+    <p>No hay pagos recientes</p>
+  </div>
+
+  <div class="widget-footer" *ngIf="payments.length > 0">
+    <a routerLink="/payments" class="link-all">Ver todos los pagos →</a>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="expense-create-container">
+  <!-- Header -->
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando formulario...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Form -->
+  <div class="form-container" *ngIf="!loading && !error">
+    <app-expense-form
+      [buildings]="buildings"
+      [categories]="categories"
+      (submit)="onSubmit($event)"
+      (cancel)="onCancel()">
+    </app-expense-form>
+  </div>
+</div>

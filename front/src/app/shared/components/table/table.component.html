@@ -1,0 +1,71 @@
+<div class="table-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="table-loading">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- Table -->
+  <table 
+    *ngIf="!loading"
+    class="table"
+    [class.striped]="striped"
+    [class.hoverable]="hoverable"
+    [class.bordered]="bordered"
+  >
+    <thead>
+      <tr>
+        <th 
+          *ngFor="let column of columns"
+          [style.width]="column.width"
+          [style.text-align]="column.align || 'left'"
+          [class.sortable]="column.sortable"
+          (click)="onSort(column)"
+        >
+          <div class="th-content">
+            <span>{{ column.label }}</span>
+            <span *ngIf="column.sortable" class="sort-icon">
+              {{ getSortIcon(column) }}
+            </span>
+          </div>
+        </th>
+        <th *ngIf="actions.length > 0" class="actions-column">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data Rows -->
+      <tr *ngFor="let row of data">
+        <td 
+          *ngFor="let column of columns"
+          [style.text-align]="column.align || 'left'"
+        >
+          {{ getValue(row, column) }}
+        </td>
+        <td *ngIf="actions.length > 0" class="actions-cell">
+          <div class="action-buttons">
+            <button
+              *ngFor="let action of actions"
+              [hidden]="!shouldShowAction(action, row)"
+              class="action-btn"
+              [style.color]="action.color"
+              (click)="action.handler(row)"
+              [title]="action.label"
+            >
+              {{ action.icon }}
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Empty State -->
+      <tr *ngIf="data.length === 0">
+        <td [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)" class="empty-cell">
+          <div class="empty-state">
+            <span class="empty-icon">📄</span>
+            <p>{{ emptyMessage }}</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

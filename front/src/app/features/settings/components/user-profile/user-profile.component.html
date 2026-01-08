@@ -1,0 +1,144 @@
+<div class="user-profile-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>👤 Perfil de Usuario</h1>
+      <p>Administra tu información personal y configuración de cuenta</p>
+    </div>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success"><span>✓</span> {{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-error"><span>✕</span> {{ errorMessage }}</div>
+
+  <div *ngIf="loading && !profileForm.dirty" class="loading"><p>Cargando perfil...</p></div>
+
+  <div *ngIf="!loading || profileForm.dirty" class="profile-content">
+    <div class="profile-header-section">
+      <div class="avatar-section">
+        <div class="avatar-preview">
+          <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Avatar" />
+          <div *ngIf="!avatarPreview" class="no-avatar"><span>👤</span></div>
+        </div>
+        <div class="avatar-actions">
+          <input type="file" id="avatar" accept="image/*" (change)="onAvatarSelect($event)" style="display: none" />
+          <label for="avatar" class="btn btn-secondary btn-sm">📁 Cambiar Foto</label>
+          <button *ngIf="selectedFile" type="button" class="btn btn-primary btn-sm" (click)="onUploadAvatar()" [disabled]="loading">{{ loading ? 'Subiendo...' : '⬆️ Subir' }}</button>
+        </div>
+        <small>Tamaño máximo: 1MB</small>
+      </div>
+
+      <div class="user-info" *ngIf="currentUser">
+        <h2>{{ currentUser.full_name }}</h2>
+        <p class="role">{{ currentUser.role }}</p>
+        <p class="username">@{{ currentUser.username }}</p>
+        <div class="meta-info">
+          <span><strong>Último acceso:</strong> {{ currentUser.last_login | date:'medium' }}</span>
+          <span><strong>Miembro desde:</strong> {{ currentUser.created_at | date:'mediumDate' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Información Personal</h3>
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="full_name">Nombre Completo *</label>
+            <input type="text" id="full_name" formControlName="full_name" class="form-control" [class.invalid]="full_name?.invalid && full_name?.touched" />
+            <span *ngIf="full_name?.invalid && full_name?.touched" class="error-message">El nombre es requerido</span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" formControlName="email" class="form-control" [class.invalid]="email?.invalid && email?.touched" />
+            <span *ngIf="email?.invalid && email?.touched" class="error-message">Email válido requerido</span>
+          </div>
+          <div class="form-group">
+            <label for="phone">Teléfono</label>
+            <input type="tel" id="phone" formControlName="phone" class="form-control" placeholder="+1 555-0123" />
+          </div>
+        </div>
+
+        <div formGroupName="preferences">
+          <h4>Preferencias</h4>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="theme">Tema</label>
+              <select id="theme" formControlName="theme" class="form-control">
+                <option value="light">Claro</option>
+                <option value="dark">Oscuro</option>
+                <option value="auto">Automático</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="language">Idioma</label>
+              <select id="language" formControlName="language" class="form-control">
+                <option *ngFor="let lang of languages" [value]="lang.value">{{ lang.label }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="items_per_page">Elementos por Página</label>
+              <select id="items_per_page" formControlName="items_per_page" class="form-control">
+                <option [value]="10">10</option>
+                <option [value]="25">25</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+              </select>
+            </div>
+            <div class="form-group checkbox-group">
+              <label><input type="checkbox" formControlName="notifications_enabled" /> Notificaciones habilitadas</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="loading || profileForm.invalid">{{ loading ? 'Guardando...' : '💾 Guardar Cambios' }}</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="form-section">
+      <h3>Cambiar Contraseña</h3>
+      <div *ngIf="passwordMessage" class="alert" [class.alert-success]="passwordMessage.includes('exitosamente')" [class.alert-error]="!passwordMessage.includes('exitosamente')">{{ passwordMessage }}</div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPassword()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="current_password">Contraseña Actual *</label>
+            <div class="password-input">
+              <input [type]="showCurrentPassword ? 'text' : 'password'" id="current_password" formControlName="current_password" class="form-control" [class.invalid]="current_password?.invalid && current_password?.touched" />
+              <button type="button" class="toggle-password" (click)="togglePasswordVisibility('current')">{{ showCurrentPassword ? '👁️' : '👁️‍🗨️' }}</button>
+            </div>
+            <span *ngIf="current_password?.invalid && current_password?.touched" class="error-message">La contraseña actual es requerida</span>
+          </div>
+
+          <div class="form-group">
+            <label for="new_password">Nueva Contraseña *</label>
+            <div class="password-input">
+              <input [type]="showNewPassword ? 'text' : 'password'" id="new_password" formControlName="new_password" class="form-control" [class.invalid]="new_password?.invalid && new_password?.touched" />
+              <button type="button" class="toggle-password" (click)="togglePasswordVisibility('new')">{{ showNewPassword ? '👁️' : '👁️‍🗨️' }}</button>
+            </div>
+            <span *ngIf="new_password?.invalid && new_password?.touched" class="error-message">
+              <span *ngIf="new_password?.errors?.['required']">La nueva contraseña es requerida</span>
+              <span *ngIf="new_password?.errors?.['minlength']">Mínimo 8 caracteres</span>
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm_password">Confirmar Contraseña *</label>
+            <div class="password-input">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirm_password" formControlName="confirm_password" class="form-control" [class.invalid]="confirm_password?.invalid && confirm_password?.touched" />
+              <button type="button" class="toggle-password" (click)="togglePasswordVisibility('confirm')">{{ showConfirmPassword ? '👁️' : '👁️‍🗨️' }}</button>
+            </div>
+            <span *ngIf="confirm_password?.invalid && confirm_password?.touched" class="error-message">
+              <span *ngIf="confirm_password?.errors?.['required']">Confirma la contraseña</span>
+              <span *ngIf="confirm_password?.errors?.['passwordMismatch']">Las contraseñas no coinciden</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="changingPassword || passwordForm.invalid">{{ changingPassword ? 'Cambiando...' : '🔒 Cambiar Contraseña' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

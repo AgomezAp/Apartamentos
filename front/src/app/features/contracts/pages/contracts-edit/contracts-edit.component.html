@@ -1,0 +1,25 @@
+<div class="contracts-edit-page">
+  <div class="page-header">
+    <h1>✏️ Editar Contrato</h1>
+    <button class="btn btn-secondary" [routerLink]="['/contracts', contractId]">← Volver</button>
+  </div>
+
+  <div class="loading" *ngIf="loading && !contract">
+    <p>Cargando contrato...</p>
+  </div>
+
+  <div class="page-content" *ngIf="!loading && contract">
+    <app-contract-form
+      [contract]="contract"
+      [buildings]="buildings"
+      [units]="units"
+      [tenants]="tenants"
+      (onSubmit)="onSubmit($event)"
+      (onCancel)="onCancel()">
+    </app-contract-form>
+  </div>
+
+  <div class="loading-overlay" *ngIf="loading && contract">
+    <p>Actualizando contrato...</p>
+  </div>
+</div>

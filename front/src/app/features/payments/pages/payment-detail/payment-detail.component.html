@@ -1,0 +1,205 @@
+<div class="payment-detail-container" *ngIf="payment">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>💰 Detalle de Pago</h1>
+      <div class="header-meta">
+        <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+          {{ getStatusLabel(payment.status) }}
+        </span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" [routerLink]="['/payments']">
+        ← Volver
+      </button>
+      <button class="btn btn-primary" (click)="onEdit()" *ngIf="payment.status === 'pending'">
+        ✏️ Editar
+      </button>
+      <button class="btn btn-success" (click)="onMarkCompleted()" *ngIf="payment.status === 'pending' || payment.status === 'overdue'">
+        ✅ Marcar Completado
+      </button>
+      <button class="btn btn-danger" (click)="onDelete()">
+        🗑️ Eliminar
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando pago...</p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-grid" *ngIf="!loading">
+    <!-- Left Column -->
+    <div class="left-column">
+      <!-- Amount Banner -->
+      <div class="amount-banner">
+        <div class="banner-content">
+          <span class="banner-label">Monto del Pago</span>
+          <h2 class="banner-amount">{{ payment.amount | currencyFormat }}</h2>
+        </div>
+        <div class="banner-icon">💵</div>
+      </div>
+
+      <!-- Days Alert -->
+      <div class="alert-section" *ngIf="getDaysUntilDue() !== null">
+        <div class="alert" [ngClass]="{
+          'alert-danger': getDaysUntilDue()! < 0,
+          'alert-warning': getDaysUntilDue()! >= 0 && getDaysUntilDue()! <= 7,
+          'alert-success': getDaysUntilDue()! > 7
+        }">
+          <span *ngIf="getDaysUntilDue()! < 0">
+            ⚠️ Vencido hace {{ getDaysUntilDue()! * -1 }} días
+          </span>
+          <span *ngIf="getDaysUntilDue()! >= 0 && getDaysUntilDue()! <= 7">
+            ⚠️ Vence en {{ getDaysUntilDue() }} días
+          </span>
+          <span *ngIf="getDaysUntilDue()! > 7">
+            ✅ {{ getDaysUntilDue() }} días para vencimiento
+          </span>
+        </div>
+      </div>
+
+      <!-- General Information -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3>📝 Información General</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-icon">👤</span>
+              <div class="info-content">
+                <span class="info-label">Inquilino</span>
+                <span class="info-value">{{ payment.tenant_name || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">🏢</span>
+              <div class="info-content">
+                <span class="info-label">Edificio</span>
+                <span class="info-value">{{ payment.building_name || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">🏠</span>
+              <div class="info-content">
+                <span class="info-label">Unidad</span>
+                <span class="info-value">{{ payment.unit_number || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">📋</span>
+              <div class="info-content">
+                <span class="info-label">Contrato</span>
+                <span class="info-value">#{{ payment.contract_id }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Details -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3>💳 Detalles de Pago</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-icon">{{ getPaymentMethodIcon(payment.payment_method) }}</span>
+              <div class="info-content">
+                <span class="info-label">Método de Pago</span>
+                <span class="info-value">{{ getPaymentMethodLabel(payment.payment_method) }}</span>
+              </div>
+            </div>
+
+            <div class="info-item" *ngIf="payment.reference_number">
+              <span class="info-icon">🔢</span>
+              <div class="info-content">
+                <span class="info-label">Referencia</span>
+                <span class="info-value">{{ payment.reference_number }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">📅</span>
+              <div class="info-content">
+                <span class="info-label">Fecha de Vencimiento</span>
+                <span class="info-value">{{ payment.due_date | dateFormat:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item" *ngIf="payment.payment_date">
+              <span class="info-icon">✅</span>
+              <div class="info-content">
+                <span class="info-label">Fecha de Pago</span>
+                <span class="info-value">{{ payment.payment_date | dateFormat:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="info-card" *ngIf="payment.notes">
+        <div class="card-header">
+          <h3>📝 Notas</h3>
+        </div>
+        <div class="card-body">
+          <p>{{ payment.notes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-column">
+      <!-- Transactions Section -->
+      <div class="transactions-card">
+        <div class="card-header">
+          <h3>📊 Transacciones</h3>
+          <button class="btn btn-small" (click)="toggleTransactionForm()">
+            {{ showTransactionForm ? '❌ Cerrar' : '➕ Nueva' }}
+          </button>
+        </div>
+        <div class="card-body">
+          <!-- Transaction Form -->
+          <div class="transaction-form-section" *ngIf="showTransactionForm">
+            <app-transaction-form
+              [payment]="payment"
+              (submit)="onTransactionSubmit($event)"
+              (cancel)="toggleTransactionForm()">
+            </app-transaction-form>
+          </div>
+
+          <!-- Transactions List -->
+          <div class="transactions-list" *ngIf="transactions.length > 0 && !showTransactionForm">
+            <div class="transaction-item" *ngFor="let transaction of transactions">
+              <div class="transaction-header">
+                <span class="transaction-type">{{ transaction.transaction_type }}</span>
+                <span class="transaction-amount">{{ transaction.amount | currencyFormat }}</span>
+              </div>
+              <div class="transaction-details">
+                <p><strong>Fecha:</strong> {{ transaction.transaction_date | dateFormat:'dd/MM/yyyy' }}</p>
+                <p><strong>Método:</strong> {{ getPaymentMethodLabel(transaction.payment_method) }}</p>
+                <p *ngIf="transaction.reference_number"><strong>Ref:</strong> {{ transaction.reference_number }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-transactions" *ngIf="transactions.length === 0 && !showTransactionForm">
+            <p>💭 No hay transacciones registradas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading" *ngIf="!payment && !loading">
+  <p>💭 Pago no encontrado</p>
+</div>

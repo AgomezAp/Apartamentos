@@ -1,0 +1,48 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <nav class="sidebar-nav">
+    <ul class="menu-list">
+      <li *ngFor="let item of menuItems" class="menu-item">
+        <!-- Item with route -->
+        <a 
+          *ngIf="item.route && !item.children" 
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="menu-link"
+          [title]="collapsed ? item.label : ''"
+        >
+          <span class="menu-icon">{{ item.icon }}</span>
+          <span class="menu-label" *ngIf="!collapsed">{{ item.label }}</span>
+          <span class="menu-badge" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
+        </a>
+
+        <!-- Item with children -->
+        <button 
+          *ngIf="item.children" 
+          class="menu-link"
+          (click)="toggleMenuItem(item)"
+          [title]="collapsed ? item.label : ''"
+        >
+          <span class="menu-icon">{{ item.icon }}</span>
+          <span class="menu-label" *ngIf="!collapsed">{{ item.label }}</span>
+          <span class="menu-chevron" *ngIf="!collapsed">
+            {{ item.expanded ? '▲' : '▼' }}
+          </span>
+        </button>
+
+        <!-- Submenu -->
+        <ul class="submenu" *ngIf="item.children && item.expanded && !collapsed">
+          <li *ngFor="let child of item.children" class="submenu-item">
+            <a 
+              [routerLink]="child.route"
+              routerLinkActive="active"
+              class="submenu-link"
+            >
+              <span class="submenu-icon">{{ child.icon }}</span>
+              <span class="submenu-label">{{ child.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</aside>

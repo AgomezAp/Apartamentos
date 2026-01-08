@@ -1,0 +1,191 @@
+<div class="notification-settings-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>🔔 Configuración de Notificaciones</h1>
+      <p>Personaliza las alertas y notificaciones que deseas recibir</p>
+    </div>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    <span>✓</span> {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <span>✕</span> {{ errorMessage }}
+  </div>
+
+  <div *ngIf="loading && !notificationForm.dirty" class="loading">
+    <p>Cargando configuración...</p>
+  </div>
+
+  <div *ngIf="!loading || notificationForm.dirty">
+    <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-section">
+        <h3>Configuración General</h3>
+        
+        <div class="settings-list">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">📧</div>
+              <div>
+                <h4>Notificaciones por Email</h4>
+                <p>Recibir notificaciones por correo electrónico</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="email_notifications" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">⏰</div>
+              <div>
+                <h4>Frecuencia de Notificaciones</h4>
+                <p>Con qué frecuencia enviar las notificaciones</p>
+              </div>
+            </div>
+            <select formControlName="notification_frequency" class="form-control select-inline">
+              <option *ngFor="let freq of frequencies" [value]="freq.value">{{ freq.label }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Notificaciones de Pagos</h3>
+        
+        <div class="settings-list">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">💳</div>
+              <div>
+                <h4>Recordatorios de Pago</h4>
+                <p>Enviar recordatorios antes de la fecha de vencimiento</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="payment_reminders" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div *ngIf="payment_reminders?.value" class="setting-item nested">
+            <div class="setting-info">
+              <div class="setting-icon">📅</div>
+              <div>
+                <h4>Días de Anticipación</h4>
+                <p>Días antes del vencimiento para enviar recordatorio</p>
+              </div>
+            </div>
+            <input type="number" formControlName="payment_reminder_days" class="form-control input-small" min="1" max="30" />
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">🔴</div>
+              <div>
+                <h4>Alertas de Pagos Vencidos</h4>
+                <p>Notificar cuando hay pagos vencidos</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="overdue_payment_alerts" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Notificaciones de Contratos</h3>
+        
+        <div class="settings-list">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">📄</div>
+              <div>
+                <h4>Alertas de Vencimiento de Contratos</h4>
+                <p>Notificar cuando un contrato está próximo a vencer</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="contract_expiry_alerts" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div *ngIf="contract_expiry_alerts?.value" class="setting-item nested">
+            <div class="setting-info">
+              <div class="setting-icon">📅</div>
+              <div>
+                <h4>Días de Anticipación</h4>
+                <p>Días antes del vencimiento para enviar alerta</p>
+              </div>
+            </div>
+            <input type="number" formControlName="contract_expiry_days" class="form-control input-small" min="1" max="90" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Notificaciones de Mantenimiento</h3>
+        
+        <div class="settings-list">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">🔧</div>
+              <div>
+                <h4>Alertas de Mantenimiento</h4>
+                <p>Notificar sobre nuevas solicitudes de mantenimiento</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="maintenance_alerts" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Notificaciones de Inquilinos y Unidades</h3>
+        
+        <div class="settings-list">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">👤</div>
+              <div>
+                <h4>Nuevos Inquilinos</h4>
+                <p>Notificar cuando se registra un nuevo inquilino</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="new_tenant_alerts" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">🏠</div>
+              <div>
+                <h4>Unidades Vacantes</h4>
+                <p>Notificar cuando una unidad queda vacante</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="unit_vacancy_alerts" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="loading">{{ loading ? 'Guardando...' : '💾 Guardar Configuración' }}</button>
+      </div>
+    </form>
+  </div>
+</div>

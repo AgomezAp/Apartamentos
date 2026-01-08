@@ -1,0 +1,55 @@
+<div class="maintenance-urgent-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>🔴 Solicitudes Urgentes</h1>
+      <p>Solicitudes de mantenimiento con prioridad urgente que requieren atención inmediata</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" [routerLink]="['/maintenance']">
+        ← Volver
+      </button>
+      <button class="btn btn-primary" [routerLink]="['/maintenance/create']">
+        ➕ Nueva Solicitud
+      </button>
+    </div>
+  </div>
+
+  <!-- Alert Banner -->
+  <div class="alert-banner" *ngIf="requests.length > 0">
+    <span class="alert-icon">⚠️</span>
+    <span class="alert-text">
+      <strong>Atención:</strong> Hay {{ requests.length }} solicitud(es) urgente(s) que requieren atención inmediata
+    </span>
+  </div>
+
+  <!-- Summary Bar -->
+  <div class="summary-bar">
+    <div class="summary-item">
+      <span class="summary-label">Total Urgentes:</span>
+      <span class="summary-value urgent">{{ requests.length }}</span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando solicitudes urgentes...</p>
+  </div>
+
+  <!-- Requests Grid -->
+  <div class="requests-grid" *ngIf="!loading && requests.length > 0">
+    <app-maintenance-card
+      *ngFor="let request of requests"
+      [request]="request"
+      (delete)="onDelete(request.request_id)"
+      (resolve)="onResolve(request.request_id)"
+      (assign)="onAssign(request.request_id)">
+    </app-maintenance-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && requests.length === 0">
+    <div class="empty-icon">✅</div>
+    <h3>No hay solicitudes urgentes</h3>
+    <p>Todas las solicitudes urgentes han sido atendidas</p>
+  </div>
+</div>

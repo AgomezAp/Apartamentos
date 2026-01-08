@@ -1,0 +1,54 @@
+<div class="recent-payments-table">
+  <div class="widget-header">
+    <h3>📋 Pagos Recientes</h3>
+    <span class="record-count" *ngIf="!loading">{{ payments.length }} registros</span>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando pagos...</p>
+  </div>
+
+  <div class="error" *ngIf="error && !loading">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="table-container" *ngIf="!loading && !error">
+    <table class="payments-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Inquilino</th>
+          <th>Unidad</th>
+          <th>Método</th>
+          <th class="text-right">Monto</th>
+          <th class="text-center">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of payments">
+          <td class="date-cell">{{ payment.payment_date | date:'dd/MM/yyyy' }}</td>
+          <td class="tenant-cell">
+            <div class="tenant-name">{{ payment.tenant_name }}</div>
+            <div class="building-name">{{ payment.building_name }}</div>
+          </td>
+          <td class="unit-cell">{{ payment.unit_number }}</td>
+          <td class="method-cell">
+            <span class="method-badge">
+              {{ getMethodIcon(payment.payment_method) }} {{ payment.payment_method }}
+            </span>
+          </td>
+          <td class="text-right amount-cell">{{ payment.amount_paid | currencyFormat }}</td>
+          <td class="text-center">
+            <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+              {{ payment.status }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="no-data" *ngIf="payments.length === 0">
+      <p>No hay pagos registrados en este período</p>
+    </div>
+  </div>
+</div>

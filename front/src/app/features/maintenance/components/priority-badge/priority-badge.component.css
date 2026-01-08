@@ -1,0 +1,70 @@
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.badge-icon {
+  display: flex;
+  align-items: center;
+}
+
+.badge-label {
+  font-size: 0.875rem;
+}
+
+/* Priority variants */
+.priority-badge.priority-low {
+  background-color: #d5d8dc;
+  color: #5d6d7e;
+}
+
+.priority-badge.priority-medium {
+  background-color: #d6eaf8;
+  color: #1f618d;
+}
+
+.priority-badge.priority-high {
+  background-color: #fdebd0;
+  color: #9a5e00;
+}
+
+.priority-badge.priority-urgent {
+  background-color: #fadbd8;
+  color: #943126;
+}
+
+/* Size variants */
+.priority-badge.size-small {
+  padding: 0.25rem 0.5rem;
+}
+
+.priority-badge.size-small .badge-label {
+  font-size: 0.75rem;
+}
+
+.priority-badge.size-medium {
+  padding: 0.375rem 0.75rem;
+}
+
+.priority-badge.size-medium .badge-label {
+  font-size: 0.875rem;
+}
+
+.priority-badge.size-large {
+  padding: 0.5rem 1rem;
+}
+
+.priority-badge.size-large .badge-label {
+  font-size: 1rem;
+}
+
+/* Hover effects */
+.priority-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}

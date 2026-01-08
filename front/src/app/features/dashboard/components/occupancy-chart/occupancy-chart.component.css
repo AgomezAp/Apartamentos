@@ -1,0 +1,630 @@
+/* =====================================================
+   OCCUPANCY CHART COMPONENT
+   Sistema de Gestión de Arrendamiento
+   ===================================================== */
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+.occupancy-chart {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+  font-family: var(--font-body);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 240px;
+}
+
+.occupancy-chart:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-secondary);
+}
+
+/* =====================================================
+   WIDGET HEADER
+   ===================================================== */
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-light) 100%
+  );
+  border-bottom: 3px solid var(--color-secondary);
+  flex-shrink: 0;
+}
+
+.widget-header h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  white-space: nowrap;
+}
+
+/* =====================================================
+   LOADING STATE
+   ===================================================== */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--spacing-xl);
+  min-height: 150px;
+}
+
+.loading::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--color-gray-200);
+  border-top-color: var(--color-secondary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: var(--spacing-sm);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-gray-500);
+}
+
+/* =====================================================
+   ERROR STATE
+   ===================================================== */
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--spacing-lg);
+  background-color: var(--color-error-bg);
+  min-height: 150px;
+}
+
+.error::before {
+  content: "⚠️";
+  font-size: 1.25rem;
+  margin-right: var(--spacing-sm);
+}
+
+.error p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-error);
+  font-weight: 500;
+}
+
+/* =====================================================
+   CHART CONTAINER
+   ===================================================== */
+.chart-container {
+  flex: 1;
+  padding: var(--spacing-md);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-height: 0;
+}
+
+/* =====================================================
+   BUILDING ROW
+   ===================================================== */
+.building-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) 2fr minmax(80px, auto);
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-gray-300);
+  transition: all var(--transition-fast);
+}
+
+.building-row:hover {
+  background-color: var(--color-secondary-subtle);
+  border-left-color: var(--color-secondary);
+  transform: translateX(4px);
+}
+
+/* =====================================================
+   BUILDING INFO
+   ===================================================== */
+.building-info {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.building-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.building-units {
+  font-size: 0.7rem;
+  color: var(--color-gray-500);
+  white-space: nowrap;
+}
+
+/* =====================================================
+   PROGRESS BAR
+   ===================================================== */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: width 0.5s ease, background-color 0.3s ease;
+  position: relative;
+  min-width: 2px;
+}
+
+/* Efecto de brillo en la barra */
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  min-width: 45px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   BUILDING REVENUE
+   ===================================================== */
+.building-revenue {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-success);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   NO DATA STATE
+   ===================================================== */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--spacing-xl);
+  text-align: center;
+  min-height: 150px;
+}
+
+.no-data::before {
+  content: "🏚️";
+  font-size: 2rem;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.6;
+}
+
+.no-data p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+
+/* =====================================================
+   SCROLLBAR PERSONALIZADO
+   ===================================================== */
+.chart-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chart-container::-webkit-scrollbar-track {
+  background: var(--color-gray-100);
+  border-radius: 2px;
+}
+
+.chart-container::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300);
+  border-radius: 2px;
+}
+
+.chart-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-400);
+}
+
+/* Firefox */
+.chart-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-300) var(--color-gray-100);
+}
+
+/* =====================================================
+   RESPONSIVE - TABLETS LANDSCAPE (1024px - 1200px)
+   ===================================================== */
+@media (max-width: 1200px) {
+  .occupancy-chart {
+    min-height: 220px;
+  }
+
+  .widget-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .widget-header h3 {
+    font-size: 0.95rem;
+  }
+
+  .chart-container {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-xs);
+  }
+
+  .building-row {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+
+  .building-name {
+    font-size: 0.8rem;
+  }
+
+  .building-units {
+    font-size: 0.65rem;
+  }
+
+  .progress-bar {
+    height: 6px;
+  }
+
+  .progress-label {
+    font-size: 0.75rem;
+    min-width: 40px;
+  }
+
+  .building-revenue {
+    font-size: 0.7rem;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - TABLETS PORTRAIT (768px - 1024px)
+   ===================================================== */
+@media (max-width: 1024px) {
+  .occupancy-chart {
+    min-height: 240px;
+  }
+
+  .building-row {
+    grid-template-columns: minmax(80px, 1fr) 1.5fr minmax(70px, auto);
+  }
+
+  .building-name {
+    font-size: 0.75rem;
+  }
+
+  .building-units {
+    font-size: 0.6rem;
+  }
+
+  .progress-label {
+    font-size: 0.7rem;
+    min-width: 35px;
+  }
+
+  .building-revenue {
+    font-size: 0.65rem;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES (< 768px)
+   ===================================================== */
+@media (max-width: 768px) {
+  .occupancy-chart {
+    border-radius: var(--radius-md);
+    min-height: 220px;
+  }
+
+  .widget-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .widget-header h3 {
+    font-size: 0.9rem;
+  }
+
+  .building-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+  }
+
+  .building-info {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .building-revenue {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .progress-container {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .progress-bar {
+    height: 8px;
+  }
+
+  .no-data::before {
+    font-size: 1.75rem;
+  }
+
+  .no-data p {
+    font-size: 0.8rem;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES PEQUEÑOS (< 480px)
+   ===================================================== */
+@media (max-width: 480px) {
+  .occupancy-chart:hover {
+    transform: none;
+  }
+
+  .widget-header {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .widget-header h3 {
+    font-size: 0.85rem;
+  }
+
+  .chart-container {
+    padding: var(--spacing-xs);
+  }
+
+  .building-row {
+    padding: var(--spacing-xs);
+    border-left-width: 2px;
+  }
+
+  .building-row:hover {
+    transform: none;
+  }
+
+  .building-name {
+    font-size: 0.75rem;
+  }
+
+  .building-units {
+    font-size: 0.6rem;
+  }
+
+  .progress-label {
+    font-size: 0.7rem;
+  }
+
+  .building-revenue {
+    font-size: 0.65rem;
+  }
+}
+
+/* =====================================================
+   COLORES POR NIVEL DE OCUPACIÓN
+   Definidos via style binding en el componente
+   ===================================================== */
+
+/* Ocupación Alta (>= 80%) - Verde */
+.building-row.high-occupancy {
+  border-left-color: var(--color-success);
+}
+
+/* Ocupación Media (50-79%) - Amarillo */
+.building-row.medium-occupancy {
+  border-left-color: var(--color-warning);
+}
+
+/* Ocupación Baja (< 50%) - Rojo */
+.building-row.low-occupancy {
+  border-left-color: var(--color-error);
+}
+
+/* =====================================================
+   ACCESIBILIDAD - REDUCED MOTION
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .occupancy-chart,
+  .building-row {
+    transition: none;
+  }
+
+  .building-row:hover {
+    transform: none;
+  }
+
+  .progress-fill {
+    transition: none;
+  }
+
+  .progress-fill::after {
+    animation: none;
+  }
+
+  .loading::before {
+    animation: none;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - HIGH CONTRAST
+   ===================================================== */
+@media (prefers-contrast: high) {
+  .occupancy-chart {
+    border-width: 2px;
+    border-color: var(--color-primary);
+  }
+
+  .building-row {
+    border-left-width: 4px;
+    border: 1px solid var(--color-gray-400);
+  }
+
+  .progress-bar {
+    border: 1px solid var(--color-gray-400);
+  }
+}
+
+/* =====================================================
+   FOCUS STATES
+   ===================================================== */
+.building-row:focus-within {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   ROW ANIMATIONS
+   ===================================================== */
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.building-row {
+  animation: fadeInRow 0.3s ease forwards;
+}
+
+.building-row:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.building-row:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.building-row:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.building-row:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.building-row:nth-child(5) {
+  animation-delay: 0.25s;
+}
+.building-row:nth-child(6) {
+  animation-delay: 0.3s;
+}
+.building-row:nth-child(7) {
+  animation-delay: 0.35s;
+}
+.building-row:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+/* =====================================================
+   PRINT STYLES
+   ===================================================== */
+@media print {
+  .occupancy-chart {
+    box-shadow: none;
+    border: 1px solid var(--color-gray-300);
+    break-inside: avoid;
+  }
+
+  .widget-header {
+    background: none;
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+  }
+
+  .widget-header h3 {
+    color: var(--color-primary);
+  }
+
+  .building-row:hover {
+    background-color: transparent;
+    transform: none;
+  }
+
+  .progress-fill::after {
+    display: none;
+  }
+
+  .chart-container {
+    overflow: visible;
+  }
+}

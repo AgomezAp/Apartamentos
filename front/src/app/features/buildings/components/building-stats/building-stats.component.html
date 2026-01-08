@@ -1,0 +1,58 @@
+<div class="stats-container" *ngIf="!loading && building">
+  <div class="stats-grid">
+    <!-- Unidades Totales (capacidad del edificio) -->
+    <div class="stat-card primary">
+      <div class="stat-icon">
+        <i class="fa-solid fa-building"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Unidades Totales</span>
+        <span class="stat-value">{{ building.total_units || 0 }}</span>
+      </div>
+    </div>
+
+    <!-- Ocupación -->
+    <div class="stat-card" [ngClass]="getOccupancyClass()">
+      <div class="stat-icon">
+        <i class="fa-solid fa-door-open"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Ocupación</span>
+        <span class="stat-value">{{ getOccupancyPercentage() }}%</span>
+        <span class="stat-sublabel">{{ building.occupied_units || 0 }} / {{ building.total_units || 0 }}</span>
+      </div>
+    </div>
+
+    <!-- Unidades Vacantes -->
+    <div class="stat-card warning">
+      <div class="stat-icon">
+        <i class="fa-solid fa-door-closed"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Unidades Vacantes</span>
+        <span class="stat-value">{{ building.vacant_units || 0 }}</span>
+      </div>
+    </div>
+
+    <!-- Contratos Activos -->
+    <div class="stat-card info">
+      <div class="stat-icon">
+        <i class="fa-solid fa-file-contract"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Contratos Activos</span>
+        <span class="stat-value">{{ building.active_contracts_count || 0 }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <i class="fa-solid fa-spinner fa-spin"></i>
+  <span>Cargando estadísticas...</span>
+</div>
+
+<div class="no-data" *ngIf="!loading && !building">
+  <i class="fa-solid fa-chart-simple"></i>
+  <p>No hay estadísticas disponibles</p>
+</div>

@@ -1,0 +1,1597 @@
+{
+    "info":  {
+                 "_postman_id":  "apartamentos-api-2025",
+                 "name":  "Sistema Gestión Apartamentos - API",
+                 "description":  "Colección completa para probar todos los endpoints del sistema de gestión inmobiliaria",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "item":  [
+                 {
+                     "name":  "Health Check",
+                     "request":  {
+                                     "method":  "GET",
+                                     "header":  [
+
+                                                ],
+                                     "url":  {
+                                                 "raw":  "{{base_url}}/api/health",
+                                                 "host":  [
+                                                              "{{base_url}}"
+                                                          ],
+                                                 "path":  [
+                                                              "api",
+                                                              "health"
+                                                          ]
+                                             },
+                                     "description":  "Verificar que la API está funcionando"
+                                 }
+                 },
+                 {
+                     "name":  "Buildings (Edificios)",
+                     "item":  [
+                                  {
+                                      "name":  "Obtener todos los edificios",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/buildings?page=1\u0026limit=10",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "buildings"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "1",
+                                                                                    "description":  "Número de página"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "limit",
+                                                                                    "value":  "10",
+                                                                                    "description":  "Registros por página"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista todos los edificios con paginación"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener edificio por ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/buildings/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "buildings",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "description":  "Obtiene un edificio específico con estadísticas (total unidades, ocupadas, vacantes)"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Crear edificio",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"Torre Central\",\n  \"address\": \"Calle 123 #45-67\",\n  \"city\": \"Bogotá\",\n  \"state\": \"Cundinamarca\",\n  \"postal_code\": \"110111\",\n  \"total_floors\": 15,\n  \"total_units\": 60,\n  \"max_capacity\": 60,\n  \"construction_year\": 2020,\n  \"description\": \"Edificio moderno en zona norte\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/buildings",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "buildings"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Actualizar edificio",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"Torre Central - Actualizado\",\n  \"total_floors\": 16,\n  \"description\": \"Edificio con piso adicional\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/buildings/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "buildings",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Eliminar edificio",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/buildings/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "buildings",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "description":  "Soft delete - marca el edificio como inactivo"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Units (Unidades/Apartamentos)",
+                     "item":  [
+                                  {
+                                      "name":  "Obtener todas las unidades",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/units?page=1\u0026limit=10",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "units"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "1"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "limit",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "building_id",
+                                                                                    "value":  "1",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por edificio (opcional)"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener unidades vacantes",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/units/vacant",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "units",
+                                                                               "vacant"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "building_id",
+                                                                                    "value":  "1",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por edificio (opcional)"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista solo unidades con status \u0027vacant\u0027"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Reporte de vacancia",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/units/reports/vacancy",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "units",
+                                                                               "reports",
+                                                                               "vacancy"
+                                                                           ]
+                                                              },
+                                                      "description":  "Reporte de unidades vacantes con días de vacancia"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener unidad por ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/units/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "units",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Crear unidad",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"building_id\": 1,\n  \"unit_type_id\": 1,\n  \"unit_number\": \"101\",\n  \"floor\": 1,\n  \"area_sqm\": 65.5,\n  \"bedrooms\": 2,\n  \"bathrooms\": 2,\n  \"rental_price\": 1200000,\n  \"occupation_status\": \"vacant\",\n  \"features\": {\n    \"balcony\": true,\n    \"view\": \"city\",\n    \"furnished\": false\n  },\n  \"description\": \"Apartamento amplio con vista a la ciudad\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/units",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "units"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Actualizar unidad",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"rental_price\": 1300000,\n  \"occupation_status\": \"occupied\",\n  \"features\": {\n    \"balcony\": true,\n    \"view\": \"city\",\n    \"furnished\": true,\n    \"renovated\": true\n  }\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/units/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "units",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Eliminar unidad",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/units/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "units",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Tenants (Inquilinos)",
+                     "item":  [
+                                  {
+                                      "name":  "Obtener todos los inquilinos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/tenants?page=1\u0026limit=10",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "tenants"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "1"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "limit",
+                                                                                    "value":  "10"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista todos los inquilinos con paginación"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener inquilino por ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/tenants/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "tenants",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Crear inquilino",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"document_type\": \"CC\",\n  \"document_number\": \"1234567890\",\n  \"first_name\": \"Juan\",\n  \"last_name\": \"Pérez\",\n  \"email\": \"juan.perez@email.com\",\n  \"phone\": \"6012345678\",\n  \"mobile_phone\": \"3101234567\",\n  \"emergency_contact_name\": \"María Pérez\",\n  \"emergency_contact_phone\": \"3109876543\",\n  \"occupation\": \"Ingeniero de Software\",\n  \"company_name\": \"Tech Corp SAS\",\n  \"monthly_income\": 5000000,\n  \"notes\": \"Cliente confiable, referencias verificadas\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/tenants",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "tenants"
+                                                                           ]
+                                                              },
+                                                      "description":  "Crea un nuevo inquilino. document_number, first_name y last_name son obligatorios"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Actualizar inquilino",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"email\": \"juan.perez.nuevo@email.com\",\n  \"mobile_phone\": \"3201234567\",\n  \"monthly_income\": 6000000,\n  \"notes\": \"Actualizado ingreso por promoción\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/tenants/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "tenants",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "description":  "Actualiza datos del inquilino. Solo envía los campos que quieres modificar"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Eliminar inquilino",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/tenants/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "tenants",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "description":  "Soft delete - marca el inquilino como inactivo"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Contracts (Contratos)",
+                     "item":  [
+                                  {
+                                      "name":  "Obtener todos los contratos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/contracts?page=1\u0026limit=10",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "contracts"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "1"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "limit",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "status",
+                                                                                    "value":  "active",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por estado: active, finished, cancelled, pending"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "unit_id",
+                                                                                    "value":  "1",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por unidad"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "tenant_id",
+                                                                                    "value":  "1",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por arrendatario"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener contratos por vencer",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/contracts/expiring?days=30",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "contracts",
+                                                                               "expiring"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "days",
+                                                                                    "value":  "30",
+                                                                                    "description":  "Días de anticipación (default: 30)"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Contratos que vencen en los próximos X días"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener contrato por ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/contracts/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "contracts",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Crear contrato",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"unit_id\": 1,\n  \"tenant_id\": 1,\n  \"start_date\": \"2025-01-01\",\n  \"end_date\": \"2025-12-31\",\n  \"monthly_rent\": 1200000,\n  \"deposit_amount\": 1200000,\n  \"payment_day\": 5,\n  \"status\": \"active\",\n  \"rent_increase_percentage\": 3.5,\n  \"rent_increase_frequency_months\": 12,\n  \"notes\": \"Contrato incluye parqueadero #12\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/contracts",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "contracts"
+                                                                           ]
+                                                              },
+                                                      "description":  "Crea contrato y genera pagos mensuales automáticamente si status=active"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Actualizar contrato",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"monthly_rent\": 1300000,\n  \"end_date\": \"2026-06-30\",\n  \"notes\": \"Renovación con incremento IPC\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/contracts/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "contracts",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Finalizar contrato",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/contracts/1/finish",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "contracts",
+                                                                               "1",
+                                                                               "finish"
+                                                                           ]
+                                                              },
+                                                      "description":  "Cambia status a \u0027finished\u0027 y actualiza end_date a hoy"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Payments (Pagos)",
+                     "item":  [
+                                  {
+                                      "name":  "Obtener todos los pagos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/payments",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "contract_id",
+                                                                                    "value":  "1",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por contrato"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "status",
+                                                                                    "value":  "Pendiente",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por estado: Pendiente, Pagado, Vencido, etc."
+                                                                                },
+                                                                                {
+                                                                                    "key":  "year",
+                                                                                    "value":  "2025",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por año"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "month",
+                                                                                    "value":  "1",
+                                                                                    "disabled":  true,
+                                                                                    "description":  "Filtrar por mes (1-12)"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener pagos vencidos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/payments/overdue",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "overdue"
+                                                                           ]
+                                                              },
+                                                      "description":  "Pagos con due_date \u003c hoy y amount_paid \u003c amount_due"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener pago por ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/payments/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "description":  "Incluye datos del pago y sus transacciones"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Crear pago manualmente",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"contract_id\": 1,\n  \"period_month\": 1,\n  \"period_year\": 2025,\n  \"amount_due\": 1200000,\n  \"due_date\": \"2025-01-05\",\n  \"payment_status_id\": 1,\n  \"notes\": \"Pago canon enero 2025\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/payments",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Generar pago mensual automático",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"contract_id\": 1,\n  \"year\": 2025,\n  \"month\": 2\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/payments/generate-monthly",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "generate-monthly"
+                                                                           ]
+                                                              },
+                                                      "description":  "Genera pago mensual basado en monthly_rent del contrato"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Actualizar pago",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"amount_paid\": 1200000,\n  \"payment_date\": \"2025-01-05\",\n  \"payment_status_id\": 2,\n  \"notes\": \"Pago recibido completo\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/payments/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Agregar transacción de pago",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"amount\": 600000,\n  \"transaction_date\": \"2025-01-05\",\n  \"payment_method\": \"transferencia\",\n  \"reference_number\": \"TRX-20250105-001\",\n  \"receipt_file_path\": \"/uploads/receipts/2025/01/comprobante_pago_enero.pdf\",\n  \"notes\": \"Abono parcial 50% con comprobante adjunto\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/payments/1/transactions",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "1",
+                                                                               "transactions"
+                                                                           ]
+                                                              },
+                                                      "description":  "Registra un abono al pago con comprobante. Actualiza amount_paid automáticamente. El campo receipt_file_path guarda la ruta del comprobante de transferencia/pago."
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Uploads (Subida de Archivos)",
+                     "item":  [
+                                  {
+                                      "name":  "Subir comprobante de pago",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "formdata",
+                                                                   "formdata":  [
+                                                                                    {
+                                                                                        "key":  "receipt",
+                                                                                        "type":  "file",
+                                                                                        "src":  [
+
+                                                                                                ],
+                                                                                        "description":  "Archivo del comprobante (JPG, PNG, GIF o PDF - Máx 5MB)"
+                                                                                    }
+                                                                                ]
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/uploads/receipt",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "uploads",
+                                                                               "receipt"
+                                                                           ]
+                                                              },
+                                                      "description":  "Sube un comprobante de pago. Retorna la ruta que debes usar en el campo receipt_file_path de la transacción. El archivo se guarda automáticamente en uploads/receipts/YYYY/MM/"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Ver/Descargar comprobante",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/uploads/receipt/2025/01/comprobante_ejemplo.pdf",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "uploads",
+                                                                               "receipt",
+                                                                               "2025",
+                                                                               "01",
+                                                                               "comprobante_ejemplo.pdf"
+                                                                           ]
+                                                              },
+                                                      "description":  "Descarga o visualiza un comprobante previamente subido. Usa la ruta completa retornada al subir el archivo."
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Dashboard (Estadísticas)",
+                     "item":  [
+                                  {
+                                      "name":  "Estadísticas Generales",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/dashboard/stats",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "dashboard",
+                                                                               "stats"
+                                                                           ]
+                                                              },
+                                                      "description":  "Obtiene métricas principales: total edificios, unidades, ocupación, ingresos, contratos venciendo, pagos vencidos, etc. (13 métricas totales)"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Estadísticas por Edificio",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/dashboard/buildings",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "dashboard",
+                                                                               "buildings"
+                                                                           ]
+                                                              },
+                                                      "description":  "Obtiene métricas detalladas por cada edificio: ocupación, unidades vacantes, valor total arriendo, tasa de ocupación (%)"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Ingresos por Mes",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/dashboard/revenue?months=12",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "dashboard",
+                                                                               "revenue"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "months",
+                                                                                    "value":  "12",
+                                                                                    "description":  "Número de meses a consultar (1-24). Default: 12"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Tendencia de ingresos de los últimos N meses con comparación: ingresos esperados vs recibidos y tasa de recaudo (%)"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Top Inquilinos Puntuales",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/dashboard/top-tenants?limit=10",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "dashboard",
+                                                                               "top-tenants"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "limit",
+                                                                                    "value":  "10",
+                                                                                    "description":  "Número de inquilinos a retornar (1-50). Default: 10"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista los inquilinos más puntuales en pagos, ordenados por tasa de puntualidad (%). Solo incluye inquilinos con mínimo 3 pagos registrados."
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Reports (Reportes)",
+                     "item":  [
+                                  {
+                                      "name":  "Resumen Financiero",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/financial-summary?startDate=2024-01-01\u0026endDate=2024-12-31",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "financial-summary"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2024-01-01",
+                                                                                    "description":  "Fecha inicio (YYYY-MM-DD) - Opcional"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2024-12-31",
+                                                                                    "description":  "Fecha fin (YYYY-MM-DD) - Opcional"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Análisis financiero completo: ingresos esperados vs recibidos, tasa de recaudo, desglose por estado de pago (Completado, Pendiente, Parcial)"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Reporte de Ocupación",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/occupancy-rate",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "occupancy-rate"
+                                                                           ]
+                                                              },
+                                                      "description":  "Análisis detallado de ocupación por edificio con cálculo de ingresos potenciales vs actuales y revenue perdido por vacancia"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Estado de Pagos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/payment-status?year=2024\u0026month=12",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "payment-status"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "year",
+                                                                                    "value":  "2024",
+                                                                                    "description":  "Año (2000-2100) - Opcional"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "month",
+                                                                                    "value":  "12",
+                                                                                    "description":  "Mes (1-12) - Opcional"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista detallada de pagos con estado actual, días de mora, edificio, unidad e inquilino. Identifica pagos vencidos automáticamente."
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Historial de Inquilino",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/tenant-history/1",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "tenant-history",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "description":  "Perfil completo del inquilino: datos personales, historial de contratos, todos los pagos, transacciones, estadísticas de puntualidad y total pagado"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Unidades Vacantes",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/vacant-units",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "vacant-units"
+                                                                           ]
+                                                              },
+                                                      "description":  "Reporte de unidades vacantes con cálculo de días vacantes, ingresos perdidos estimados y resumen total (totalVacant, totalLostRevenue, averageDaysVacant)"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Resumen Financiero PDF",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/financial-summary/pdf?startDate=2024-01-01\u0026endDate=2024-12-31",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "financial-summary",
+                                                                               "pdf"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2024-01-01",
+                                                                                    "description":  "Fecha inicio (YYYY-MM-DD) - Opcional"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2024-12-31",
+                                                                                    "description":  "Fecha fin (YYYY-MM-DD) - Opcional"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Descarga el resumen financiero en formato PDF con tablas formateadas"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Ocupación PDF",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/occupancy-rate/pdf",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "occupancy-rate",
+                                                                               "pdf"
+                                                                           ]
+                                                              },
+                                                      "description":  "Descarga el reporte de ocupación en formato PDF"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Estado de Pagos PDF",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/payment-status/pdf?year=2024\u0026month=12",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "payment-status",
+                                                                               "pdf"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "year",
+                                                                                    "value":  "2024",
+                                                                                    "description":  "Año - Opcional"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "month",
+                                                                                    "value":  "12",
+                                                                                    "description":  "Mes (1-12) - Opcional"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Descarga el estado de pagos en formato PDF con resaltado de vencidos"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Unidades Vacantes PDF",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/vacant-units/pdf",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "vacant-units",
+                                                                               "pdf"
+                                                                           ]
+                                                              },
+                                                      "description":  "Descarga el reporte de unidades vacantes en formato PDF"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Resumen Financiero Excel",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/financial-summary/excel?startDate=2024-01-01\u0026endDate=2024-12-31",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "financial-summary",
+                                                                               "excel"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2024-01-01",
+                                                                                    "description":  "Fecha inicio (YYYY-MM-DD) - Opcional"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2024-12-31",
+                                                                                    "description":  "Fecha fin (YYYY-MM-DD) - Opcional"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Descarga el resumen financiero en formato Excel (.xlsx) con formatos y colores"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Ocupación Excel",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/occupancy-rate/excel",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "occupancy-rate",
+                                                                               "excel"
+                                                                           ]
+                                                              },
+                                                      "description":  "Descarga el reporte de ocupación en formato Excel con indicadores de color"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Estado de Pagos Excel",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/payment-status/excel?year=2024\u0026month=12",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "payment-status",
+                                                                               "excel"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "year",
+                                                                                    "value":  "2024",
+                                                                                    "description":  "Año - Opcional"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "month",
+                                                                                    "value":  "12",
+                                                                                    "description":  "Mes (1-12) - Opcional"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Descarga el estado de pagos en formato Excel con formato condicional"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Unidades Vacantes Excel",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/reports/vacant-units/excel",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "reports",
+                                                                               "vacant-units",
+                                                                               "excel"
+                                                                           ]
+                                                              },
+                                                      "description":  "Descarga el reporte de unidades vacantes en formato Excel con alertas por días vacantes"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Settings (Configuración)",
+                     "item":  [
+                                  {
+                                      "name":  "Obtener todas las configuraciones",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/settings",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "settings"
+                                                                           ]
+                                                              },
+                                                      "description":  "Obtiene todas las configuraciones del sistema en formato plano: { key: value }"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener configuraciones agrupadas",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/settings?grouped=true",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "settings"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "grouped",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Agrupar por categoría"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Obtiene configuraciones agrupadas por categoría con metadatos (description, is_editable, data_type)"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener configuraciones por categoría",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/settings?category=contracts",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "settings"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "category",
+                                                                                    "value":  "contracts",
+                                                                                    "description":  "Categorías: general, contracts, payments, uploads, notifications"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Filtra configuraciones por categoría específica"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener configuración individual",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/settings/alert_contract_expiry_days",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "settings",
+                                                                               "alert_contract_expiry_days"
+                                                                           ]
+                                                              },
+                                                      "description":  "Obtiene una configuración específica por su key. Retorna solo el valor."
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener configuración con metadatos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/settings/alert_contract_expiry_days?full=true",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "settings",
+                                                                               "alert_contract_expiry_days"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "full",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Incluir metadatos completos"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Obtiene configuración con todos sus metadatos: value, data_type, description, category, is_editable"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Actualizar configuración individual",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"value\": 45\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/settings/alert_contract_expiry_days",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "settings",
+                                                                               "alert_contract_expiry_days"
+                                                                           ]
+                                                              },
+                                                      "description":  "Actualiza una configuración específica. Solo permite modificar configuraciones con is_editable=true"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Actualizar múltiples configuraciones",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"alert_contract_expiry_days\": 45,\n  \"late_payment_penalty_rate\": 0.05,\n  \"default_contract_duration\": 24,\n  \"payment_grace_period_days\": 7\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/settings",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "settings"
+                                                                           ]
+                                                              },
+                                                      "description":  "Actualiza múltiples configuraciones en una sola petición. Retorna número de actualizadas y errores si los hay."
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Crear nueva configuración",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"key\": \"custom_setting\",\n  \"value\": \"custom_value\",\n  \"data_type\": \"string\",\n  \"description\": \"Configuración personalizada\",\n  \"category\": \"general\",\n  \"is_editable\": true\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/api/settings",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "settings"
+                                                                           ]
+                                                              },
+                                                      "description":  "Crea una nueva configuración (solo admin). Requiere: key, value, data_type (string/number/boolean/json), category"
+                                                  }
+                                  }
+                              ]
+                 }
+             ],
+    "variable":  [
+                     {
+                         "key":  "base_url",
+                         "value":  "http://localhost:3010",
+                         "type":  "string"
+                     }
+                 ]
+}

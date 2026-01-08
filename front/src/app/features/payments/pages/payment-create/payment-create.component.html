@@ -1,0 +1,11 @@
+<div class="payment-create-container">
+  <div class="form-wrapper">
+    <app-payment-form
+      [contracts]="contracts"
+      [tenants]="tenants"
+      [units]="units"
+      (submit)="onSubmit($event)"
+      (cancel)="onCancel()">
+    </app-payment-form>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="edit-tenant-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando información del inquilino...</p>
+  </div>
+
+  <!-- Edit Form -->
+  <div *ngIf="!isLoading && tenant" class="edit-content">
+    <div class="page-header">
+      <h1>✏️ Editar Inquilino</h1>
+      <p class="subtitle">Actualiza la información de {{ tenant.full_name }}</p>
+    </div>
+
+    <div class="form-container">
+      <app-tenant-form
+        [tenant]="tenant"
+        submitButtonText="Guardar Cambios"
+        (formSubmit)="onFormSubmit($event)"
+        (formCancel)="onFormCancel()"
+      ></app-tenant-form>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isSubmitting" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p>Actualizando inquilino...</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,90 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onCancel()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>🔧 Asignar Técnico</h2>
+      <button class="close-btn" (click)="onCancel()" type="button">✕</button>
+    </div>
+
+    <form [formGroup]="technicianForm" (ngSubmit)="onSubmit()">
+      <div class="modal-body">
+        <p class="modal-description">
+          Ingrese la información del técnico o persona que se encargará de esta solicitud
+        </p>
+
+        <!-- Nombre -->
+        <div class="form-group">
+          <label for="assigned_to_name">
+            <span class="required">*</span> Nombre Completo
+          </label>
+          <input
+            type="text"
+            id="assigned_to_name"
+            formControlName="assigned_to_name"
+            placeholder="Ej: Juan Pérez"
+            [class.error]="technicianForm.get('assigned_to_name')?.invalid && technicianForm.get('assigned_to_name')?.touched"
+          />
+          <span class="error-message" *ngIf="technicianForm.get('assigned_to_name')?.invalid && technicianForm.get('assigned_to_name')?.touched">
+            {{ getFieldError('assigned_to_name') }}
+          </span>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-group">
+          <label for="assigned_to_phone">
+            📱 Teléfono
+          </label>
+          <input
+            type="tel"
+            id="assigned_to_phone"
+            formControlName="assigned_to_phone"
+            placeholder="Ej: 3001234567"
+            maxlength="10"
+            [class.error]="technicianForm.get('assigned_to_phone')?.invalid && technicianForm.get('assigned_to_phone')?.touched"
+          />
+          <span class="error-message" *ngIf="technicianForm.get('assigned_to_phone')?.invalid && technicianForm.get('assigned_to_phone')?.touched">
+            {{ getFieldError('assigned_to_phone') }}
+          </span>
+        </div>
+
+        <!-- Empresa -->
+        <div class="form-group">
+          <label for="assigned_to_company">
+            🏢 Empresa
+          </label>
+          <input
+            type="text"
+            id="assigned_to_company"
+            formControlName="assigned_to_company"
+            placeholder="Ej: Servicios Técnicos SAS"
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="assigned_to_email">
+            📧 Email
+          </label>
+          <input
+            type="email"
+            id="assigned_to_email"
+            formControlName="assigned_to_email"
+            placeholder="Ej: tecnico@empresa.com"
+            [class.error]="technicianForm.get('assigned_to_email')?.invalid && technicianForm.get('assigned_to_email')?.touched"
+          />
+          <span class="error-message" *ngIf="technicianForm.get('assigned_to_email')?.invalid && technicianForm.get('assigned_to_email')?.touched">
+            {{ getFieldError('assigned_to_email') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="technicianForm.invalid">
+          ✅ Asignar Técnico
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

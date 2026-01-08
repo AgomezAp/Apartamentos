@@ -1,0 +1,211 @@
+/* =====================================================
+   REPORT FILTER COMPONENT
+   ===================================================== */
+
+.report-filter {
+  background-color: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-xl);
+  border: 1px solid var(--color-gray-200);
+}
+
+/* =====================================================
+   FILTER GRID
+   ===================================================== */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-md);
+  align-items: end;
+}
+
+/* =====================================================
+   FILTER GROUP
+   ===================================================== */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.filter-group label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* =====================================================
+   FILTER CONTROL
+   ===================================================== */
+.filter-control {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  background-color: var(--color-gray-50);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.filter-control:hover {
+  border-color: var(--color-gray-300);
+  background-color: var(--color-white);
+}
+
+.filter-control:focus {
+  border-color: var(--color-secondary);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 3px var(--color-secondary-subtle);
+}
+
+/* Select específico */
+select.filter-control {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23141414' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-md) center;
+  padding-right: var(--spacing-2xl);
+}
+
+select.filter-control:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FFD600' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
+/* Input date */
+input[type="date"].filter-control {
+  cursor: pointer;
+}
+
+input[type="date"].filter-control::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+}
+
+input[type="date"].filter-control:hover::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}
+
+input[type="date"].filter-control:focus::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  background-color: var(--color-secondary-subtle);
+}
+
+/* =====================================================
+   FILTER ACTIONS
+   ===================================================== */
+.filter-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: end;
+}
+
+.filter-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-apply {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  border-color: var(--color-secondary);
+}
+
+.btn-apply:hover {
+  background-color: var(--color-secondary-dark);
+  border-color: var(--color-secondary-dark);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-clear {
+  background-color: transparent;
+  color: var(--color-gray-500);
+  border-color: var(--color-gray-300);
+}
+
+.btn-clear:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+@media (max-width: 1024px) {
+  .filter-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .report-filter {
+    padding: var(--spacing-md);
+  }
+
+  .filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-actions {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+
+  .filter-actions .btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+  }
+
+  .filter-actions .btn {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+.filter-control:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-control,
+  .btn {
+    transition: none;
+  }
+}

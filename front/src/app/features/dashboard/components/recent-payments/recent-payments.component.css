@@ -1,0 +1,180 @@
+/* =====================================================
+   RECENT PAYMENTS WIDGET - CORREGIDO
+   ===================================================== */
+:host {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.recent-payments {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e4e4e7;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 450px;
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e4e4e7;
+  flex-shrink: 0;
+}
+
+.widget-header h3 {
+  font-family: "Century Gothic", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #141414;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.widget-header h3::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: #ffd600;
+  border-radius: 2px;
+}
+
+.view-all {
+  font-family: "Fira Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #141414;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.view-all:hover {
+  color: #ffd600;
+}
+
+/* Tabla de pagos */
+.payments-table {
+  width: 100%;
+  overflow-x: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.payments-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Fira Sans", sans-serif;
+  font-size: 13px;
+}
+
+.payments-table thead {
+  position: sticky;
+  top: 0;
+  background: #f8f8f8;
+  z-index: 1;
+}
+
+.payments-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #71717a;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e4e4e7;
+  white-space: nowrap;
+}
+
+.payments-table tbody {
+  overflow-y: auto;
+}
+
+.payments-table td {
+  padding: 12px 16px;
+  color: #141414;
+  border-bottom: 1px solid #f4f4f5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.payments-table tr:hover td {
+  background: rgba(255, 214, 0, 0.05);
+}
+
+/* Columnas específicas */
+.payments-table .tenant-cell {
+  max-width: 100px;
+}
+
+.payments-table .tenant-name {
+  font-weight: 600;
+  color: #141414;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.payments-table .tenant-building {
+  font-size: 11px;
+  color: #71717a;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.payments-table .amount {
+  font-weight: 700;
+  color: #10b981;
+}
+
+.payments-table .status-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.payments-table .status-badge.completed {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.payments-table .status-badge.pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+/* Scroll para la tabla */
+.payments-table::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.payments-table::-webkit-scrollbar-track {
+  background: #f4f4f5;
+}
+
+.payments-table::-webkit-scrollbar-thumb {
+  background: #ffd600;
+  border-radius: 3px;
+}
+
+/* Footer */
+.widget-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #e4e4e7;
+  text-align: center;
+  flex-shrink: 0;
+}

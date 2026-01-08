@@ -1,0 +1,126 @@
+<div class="general-settings-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>⚙️ Configuración General</h1>
+      <p>Configura la información básica de tu empresa y preferencias del sistema</p>
+    </div>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    <span>✓</span> {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <span>✕</span> {{ errorMessage }}
+  </div>
+
+  <div *ngIf="loading && !generalForm.dirty" class="loading">
+    <p>Cargando configuración...</p>
+  </div>
+
+  <div *ngIf="!loading || generalForm.dirty">
+    <form [formGroup]="generalForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-section">
+        <h3>Información de la Empresa</h3>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="company_name">Nombre de la Empresa *</label>
+            <input type="text" id="company_name" formControlName="company_name" class="form-control" placeholder="Mi Empresa" [class.invalid]="company_name?.invalid && company_name?.touched" />
+            <span *ngIf="company_name?.invalid && company_name?.touched" class="error-message">El nombre de la empresa es requerido</span>
+          </div>
+
+          <div class="form-group">
+            <label for="company_email">Email de la Empresa *</label>
+            <input type="email" id="company_email" formControlName="company_email" class="form-control" placeholder="info@miempresa.com" [class.invalid]="company_email?.invalid && company_email?.touched" />
+            <span *ngIf="company_email?.invalid && company_email?.touched" class="error-message">Email válido requerido</span>
+          </div>
+
+          <div class="form-group">
+            <label for="company_phone">Teléfono *</label>
+            <input type="tel" id="company_phone" formControlName="company_phone" class="form-control" placeholder="+1 555-0123" [class.invalid]="company_phone?.invalid && company_phone?.touched" />
+            <span *ngIf="company_phone?.invalid && company_phone?.touched" class="error-message">El teléfono es requerido</span>
+          </div>
+
+          <div class="form-group">
+            <label for="tax_id">RFC / NIT / Tax ID *</label>
+            <input type="text" id="tax_id" formControlName="tax_id" class="form-control" placeholder="ABC123456789" [class.invalid]="tax_id?.invalid && tax_id?.touched" />
+            <span *ngIf="tax_id?.invalid && tax_id?.touched" class="error-message">El identificador fiscal es requerido</span>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="company_address">Dirección *</label>
+            <textarea id="company_address" formControlName="company_address" class="form-control" rows="3" placeholder="Calle, número, colonia, ciudad, estado, código postal" [class.invalid]="company_address?.invalid && company_address?.touched"></textarea>
+            <span *ngIf="company_address?.invalid && company_address?.touched" class="error-message">La dirección es requerida</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Preferencias Regionales</h3>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="currency">Moneda *</label>
+            <select id="currency" formControlName="currency" class="form-control">
+              <option *ngFor="let curr of currencies" [value]="curr.value">{{ curr.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="language">Idioma *</label>
+            <select id="language" formControlName="language" class="form-control">
+              <option *ngFor="let lang of languages" [value]="lang.value">{{ lang.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="timezone">Zona Horaria *</label>
+            <select id="timezone" formControlName="timezone" class="form-control">
+              <option *ngFor="let tz of timezones" [value]="tz.value">{{ tz.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="date_format">Formato de Fecha *</label>
+            <select id="date_format" formControlName="date_format" class="form-control">
+              <option *ngFor="let format of dateFormats" [value]="format.value">{{ format.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="time_format">Formato de Hora *</label>
+            <select id="time_format" formControlName="time_format" class="form-control">
+              <option *ngFor="let format of timeFormats" [value]="format.value">{{ format.label }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Logo de la Empresa</h3>
+        
+        <div class="logo-section">
+          <div class="logo-preview">
+            <img *ngIf="logoPreview" [src]="logoPreview" alt="Logo" />
+            <div *ngIf="!logoPreview" class="no-logo">
+              <span>📷</span>
+              <p>Sin logo</p>
+            </div>
+          </div>
+
+          <div class="logo-actions">
+            <input type="file" id="logo" accept="image/*" (change)="onLogoSelect($event)" style="display: none" />
+            <label for="logo" class="btn btn-secondary">📁 Seleccionar Archivo</label>
+            <button *ngIf="selectedFile" type="button" class="btn btn-primary" (click)="onUploadLogo()" [disabled]="loading">{{ loading ? 'Subiendo...' : '⬆️ Subir Logo' }}</button>
+          </div>
+          <small>Tamaño máximo: 2MB. Formatos: JPG, PNG, GIF</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="loading || generalForm.invalid">{{ loading ? 'Guardando...' : '💾 Guardar Configuración' }}</button>
+      </div>
+    </form>
+  </div>
+</div>

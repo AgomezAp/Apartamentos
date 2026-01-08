@@ -1,0 +1,67 @@
+<div class="contract-payments">
+  <h3>Información de Pagos</h3>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando información de pagos...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="payments-info" *ngIf="!loading && !error && paymentInfo">
+    <!-- Resumen de pagos -->
+    <div class="payment-stats">
+      <div class="stat-card">
+        <div class="stat-label">Total de pagos</div>
+        <div class="stat-value">{{ paymentInfo.total_payments }}</div>
+      </div>
+
+      <div class="stat-card success">
+        <div class="stat-label">Pagos realizados</div>
+        <div class="stat-value">{{ paymentInfo.paid_payments }}</div>
+      </div>
+
+      <div class="stat-card warning">
+        <div class="stat-label">Pagos pendientes</div>
+        <div class="stat-value">{{ paymentInfo.pending_payments }}</div>
+      </div>
+
+      <div class="stat-card danger">
+        <div class="stat-label">Pagos vencidos</div>
+        <div class="stat-value">{{ paymentInfo.overdue_payments }}</div>
+      </div>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="payment-progress">
+      <div class="progress-label">
+        <span>Progreso de pagos</span>
+        <span>{{ getPaymentProgress().toFixed(0) }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getPaymentProgress()"></div>
+      </div>
+    </div>
+
+    <!-- Montos -->
+    <div class="payment-amounts">
+      <div class="amount-row">
+        <span class="amount-label">Monto total:</span>
+        <span class="amount-value">{{ formatAmount(paymentInfo.total_amount) }}</span>
+      </div>
+      <div class="amount-row success">
+        <span class="amount-label">Monto pagado:</span>
+        <span class="amount-value">{{ formatAmount(paymentInfo.paid_amount) }}</span>
+      </div>
+      <div class="amount-row warning">
+        <span class="amount-label">Monto pendiente:</span>
+        <span class="amount-value">{{ formatAmount(paymentInfo.pending_amount) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-data" *ngIf="!loading && !error && !paymentInfo">
+    <p>No hay información de pagos disponible</p>
+  </div>
+</div>

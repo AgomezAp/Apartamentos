@@ -1,0 +1,27 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>
+        <i class="fa-solid fa-edit"></i>
+        Editar Edificio
+      </h1>
+      <p *ngIf="building">{{ building.name }}</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading && !building">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    <span>Cargando edificio...</span>
+  </div>
+
+  <!-- Form -->
+  <div class="form-container" *ngIf="building">
+    <app-building-form
+      [building]="building"
+      [isEditMode]="true"
+      (onSubmit)="onSubmit($event)"
+      (onCancel)="onCancel()"
+    ></app-building-form>
+  </div>
+</div>

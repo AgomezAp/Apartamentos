@@ -1,0 +1,279 @@
+<div class="income-report-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>💰 Reporte de Ingresos</h1>
+      <p class="header-subtitle">Pagos completados y parciales</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="exportToExcel()" [disabled]="loading || payments.length === 0">
+        📊 Exportar Excel
+      </button>
+      <button class="btn btn-secondary" (click)="exportToPDF()" [disabled]="loading || payments.length === 0">
+        📄 Exportar PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-card">
+    <h3>📅 Seleccionar Período</h3>
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>📅 Fecha Inicio</label>
+        <input type="date" [(ngModel)]="startDate" (change)="onFilterChange()" class="filter-control">
+      </div>
+      <div class="filter-group">
+        <label>📅 Fecha Fin</label>
+        <input type="date" [(ngModel)]="endDate" (change)="onFilterChange()" class="filter-control">
+      </div>
+      <div class="filter-group">
+        <button class="btn btn-apply" (click)="onFilterChange()">
+          🔍 Aplicar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards" *ngIf="!loading">
+    <div class="summary-card total">
+      <div class="card-icon">💵</div>
+      <div class="card-content">
+        <span class="card-label">Total Ingresos</span>
+        <span class="card-value">{{ totalIncome | currencyFormat }}</span>
+        <span class="card-detail">{{ completedCount + partialCount }} pagos</span>
+      </div>
+    </div>
+
+    <div class="summary-card completed">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <span class="card-label">Pagos Completados</span>
+        <span class="card-value">{{ totalCompleted | currencyFormat }}</span>
+        <span class="card-detail">{{ completedCount }} pagos</span>
+      </div>
+    </div>
+
+    <div class="summary-card partial">
+      <div class="card-icon">⚠️</div>
+      <div class="card-content">
+        <span class="card-label">Pagos Parciales</span>
+        <span class="card-value">{{ totalPartial | currencyFormat }}</span>
+        <span class="card-detail">{{ partialCount }} pagos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Balance Card -->
+  <div class="balance-summary" *ngIf="!loading && balanceData">
+    <div class="balance-card">
+      <h3>💰 Balance del Período</h3>
+      <div class="balance-grid">
+        <div class="balance-item income">
+          <span class="balance-label">Total Ingresos</span>
+          <span class="balance-value">{{ balanceData.income.total | currencyFormat }}</span>
+        </div>
+        <div class="balance-item expense">
+          <span class="balance-label">Total Egresos</span>
+          <span class="balance-value">{{ balanceData.expenses.total | currencyFormat }}</span>
+          <span class="balance-detail">
+            Gastos: {{ balanceData.expenses.regular | currencyFormat }} | 
+            Mantenimiento: {{ balanceData.expenses.maintenance | currencyFormat }}
+          </span>
+        </div>
+        <div class="balance-item net" [class.positive]="balanceData.balance.netIncome >= 0" [class.negative]="balanceData.balance.netIncome < 0">
+          <span class="balance-label">Balance Neto</span>
+          <span class="balance-value">{{ balanceData.balance.netIncome | currencyFormat }}</span>
+          <span class="balance-detail">Margen: {{ balanceData.balance.profitMargin }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="charts-section" *ngIf="!loading && payments.length > 0">
+    <div class="charts-grid">
+      <!-- Gráfico de Distribución -->
+      <div class="chart-card" *ngIf="distributionChartData && distributionChartData.labels && distributionChartData.labels.length > 0">
+        <h3>📊 Distribución de Ingresos</h3>
+        <div class="chart-wrapper">
+          <canvas 
+            baseChart 
+            [data]="distributionChartData"
+            type="doughnut"
+            [options]="doughnutChartOptions">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico de Balance -->
+      <div class="chart-card" *ngIf="balanceChartData && balanceChartData.labels && balanceChartData.labels.length > 0">
+        <h3>💼 Composición de Ingresos y Gastos</h3>
+        <div class="chart-wrapper">
+          <canvas 
+            baseChart 
+            [data]="balanceChartData"
+            type="doughnut"
+            [options]="doughnutChartOptions">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico de Tendencia (solo si hay datos) -->
+      <div class="chart-card" *ngIf="trendChartData && trendChartData.labels && trendChartData.labels.length > 0">
+        <h3>📈 Tendencia de Ingresos (Últimos 6 Meses)</h3>
+        <div class="chart-wrapper">
+          <canvas 
+            baseChart 
+            [data]="trendChartData"
+            type="bar"
+            [options]="barChartOptions">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico de Ingresos vs Egresos -->
+      <div class="chart-card" *ngIf="incomeVsExpensesChartData && incomeVsExpensesChartData.labels && incomeVsExpensesChartData.labels.length > 0">
+        <h3>💰 Ingresos vs Egresos (Período Seleccionado)</h3>
+        <div class="chart-wrapper">
+          <canvas 
+            baseChart 
+            [data]="incomeVsExpensesChartData"
+            type="bar"
+            [options]="barChartOptions">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Tendencia de Ingresos vs Gastos -->
+  <div class="trend-table-card" *ngIf="!loading && balanceTrendData.length > 0">
+    <h3>📊 Tabla de Tendencia - Ingresos vs Gastos (Período Seleccionado)</h3>
+    <div class="table-responsive">
+      <table class="trend-table">
+        <thead>
+          <tr>
+            <th>Período</th>
+            <th class="text-right">Ingresos</th>
+            <th class="text-right">Gastos Regulares</th>
+            <th class="text-right">Mantenimiento</th>
+            <th class="text-right">Total Egresos</th>
+            <th class="text-right">Balance Neto</th>
+            <th class="text-center">Margen %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of balanceTrendData">
+            <td class="period-cell">{{ months[item.month - 1].label }} {{ item.year }}</td>
+            <td class="text-right amount income">{{ item.income | currencyFormat }}</td>
+            <td class="text-right amount expense">{{ (item.expenses - (item.maintenanceExpenses || 0)) | currencyFormat }}</td>
+            <td class="text-right amount maintenance">{{ (item.maintenanceExpenses || 0) | currencyFormat }}</td>
+            <td class="text-right amount expense-total">{{ item.expenses | currencyFormat }}</td>
+            <td class="text-right amount" [class.positive]="item.netIncome >= 0" [class.negative]="item.netIncome < 0">
+              {{ item.netIncome | currencyFormat }}
+            </td>
+            <td class="text-center">
+              <span class="margin-badge" [class.positive]="item.profitMargin >= 0" [class.negative]="item.profitMargin < 0">
+                {{ item.profitMargin }}%
+              </span>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td><strong>TOTAL</strong></td>
+            <td class="text-right amount income"><strong>{{ getTotalIncome() | currencyFormat }}</strong></td>
+            <td class="text-right amount expense"><strong>{{ getTotalRegularExpenses() | currencyFormat }}</strong></td>
+            <td class="text-right amount maintenance"><strong>{{ getTotalMaintenance() | currencyFormat }}</strong></td>
+            <td class="text-right amount expense-total"><strong>{{ getTotalExpenses() | currencyFormat }}</strong></td>
+            <td class="text-right amount" [class.positive]="getTotalBalance() >= 0" [class.negative]="getTotalBalance() < 0">
+              <strong>{{ getTotalBalance() | currencyFormat }}</strong>
+            </td>
+            <td class="text-center">
+              <span class="margin-badge" [class.positive]="getAverageMargin() >= 0" [class.negative]="getAverageMargin() < 0">
+                <strong>{{ getAverageMargin() }}%</strong>
+              </span>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando reporte de ingresos...</p>
+  </div>
+
+  <!-- Tabla de pagos con paginación -->
+  <div class="payments-table-card" *ngIf="!loading && payments.length > 0">
+    <h3>📋 Detalle de Pagos ({{ payments.length }} registros)</h3>
+    <div class="table-responsive">
+      <table class="payments-table">
+        <thead>
+          <tr>
+            <th>Fecha Venc.</th>
+            <th>Edificio</th>
+            <th>Unidad</th>
+            <th>Inquilino</th>
+            <th>Estado</th>
+            <th class="text-right">Monto Debido</th>
+            <th class="text-right">Monto Pagado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payment of paginatedPayments" [class.partial-row]="payment.status === 'Parcial'">
+            <td>{{ payment.dueDate | dateFormat:'dd/MM/yyyy' }}</td>
+            <td>{{ payment.building }}</td>
+            <td class="unit-cell">{{ payment.unit }}</td>
+            <td>
+              <div class="tenant-info">
+                <span class="tenant-name">{{ payment.tenant }}</span>
+                <span class="tenant-email">{{ payment.tenantEmail }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="status-badge" [class.status-completed]="payment.status === 'Completado'" [class.status-partial]="payment.status === 'Parcial'">
+                {{ payment.status }}
+              </span>
+            </td>
+            <td class="text-right amount">{{ payment.amountDue | currencyFormat }}</td>
+            <td class="text-right amount income">{{ payment.amountPaid | currencyFormat }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="6" class="text-right"><strong>Total Ingresos:</strong></td>
+            <td class="text-right amount total"><strong>{{ totalIncome | currencyFormat }}</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    
+    <!-- Paginación -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+        ‹ Anterior
+      </button>
+      <button 
+        *ngFor="let page of pageNumbers" 
+        class="page-btn" 
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+        Siguiente ›
+      </button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && payments.length === 0">
+    <div class="empty-icon">📭</div>
+    <h3>No hay ingresos registrados</h3>
+    <p>No se encontraron pagos completados o parciales para el período seleccionado ({{ startDate }} - {{ endDate }})</p>
+  </div>
+</div>

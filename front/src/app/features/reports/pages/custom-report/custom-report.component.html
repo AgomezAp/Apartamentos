@@ -1,0 +1,91 @@
+<div class="custom-report-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>📊 Reporte Personalizado</h1>
+      <p>Configure y genere reportes personalizados</p>
+    </div>
+  </div>
+
+  <!-- Configuration Form -->
+  <div class="config-section">
+    <h3>⚙️ Configuración</h3>
+    <form [formGroup]="configForm" (ngSubmit)="onGenerateReport()" class="config-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tipo de Reporte *</label>
+          <select formControlName="report_type" class="form-control">
+            <option value="">Seleccione...</option>
+            <option *ngFor="let type of reportTypes" [value]="type.value">
+              {{ type.icon }} {{ type.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha Inicio *</label>
+          <input type="date" formControlName="start_date" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label>Fecha Fin *</label>
+          <input type="date" formControlName="end_date" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label>Agrupar Por</label>
+          <select formControlName="group_by" class="form-control">
+            <option value="month">Mes</option>
+            <option value="quarter">Trimestre</option>
+            <option value="year">Año</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="include_details">
+            Incluir detalles
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="configForm.invalid || loading">
+            🔍 {{ loading ? 'Generando...' : 'Generar Reporte' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Generando reporte...</p>
+  </div>
+
+  <!-- Results -->
+  <div class="results-section" *ngIf="!loading && reportData.length > 0">
+    <div class="results-header">
+      <h3>📄 Resultados</h3>
+      <app-export-buttons [data]="reportData" [filename]="'reporte_' + selectedReportType"></app-export-buttons>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-section" *ngIf="chartData">
+      <app-chart-viewer [chartData]="chartData" [title]="'Visualización de Datos'" [height]="350"></app-chart-viewer>
+    </div>
+
+    <!-- Table -->
+    <div class="table-section" *ngIf="tableColumns.length > 0">
+      <app-report-table 
+        [data]="reportData" 
+        [columns]="tableColumns" 
+        [title]="'Datos del Reporte'"
+        [showTotals]="true">
+      </app-report-table>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && reportData.length === 0 && configForm.touched">
+    <p>📭 No se encontraron datos para el reporte configurado</p>
+  </div>
+</div>

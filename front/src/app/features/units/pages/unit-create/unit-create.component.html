@@ -1,0 +1,12 @@
+<div class="unit-create-container">
+  <app-unit-form
+    submitButtonText="Crear Unidad"
+    (formSubmit)="onFormSubmit($event)"
+    (formCancel)="onFormCancel()"
+  ></app-unit-form>
+
+  <div *ngIf="isSubmitting" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Creando unidad...</p>
+  </div>
+</div>

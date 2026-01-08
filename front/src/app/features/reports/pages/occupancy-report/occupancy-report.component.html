@@ -1,0 +1,78 @@
+<div class="occupancy-report-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>🏢 Reporte de Ocupación</h1>
+      <p>Estado de ocupación de unidades por edificio</p>
+    </div>
+    <div class="header-actions">
+      <app-export-buttons [data]="occupancyData" filename="reporte_ocupacion"></app-export-buttons>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-section">
+    <div class="summary-card total">
+      <div class="card-icon">🏠</div>
+      <div class="card-content">
+        <h3>{{ summary.totalUnits }}</h3>
+        <p>Total Unidades</p>
+      </div>
+    </div>
+    <div class="summary-card occupied">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <h3>{{ summary.occupiedUnits }}</h3>
+        <p>Ocupadas</p>
+      </div>
+    </div>
+    <div class="summary-card vacant">
+      <div class="card-icon">🚪</div>
+      <div class="card-content">
+        <h3>{{ summary.vacantUnits }}</h3>
+        <p>Vacantes</p>
+      </div>
+    </div>
+    <div class="summary-card rate">
+      <div class="card-icon">📈</div>
+      <div class="card-content">
+        <h3>{{ formatPercentage(summary.occupancyRate) }}</h3>
+        <p>Tasa de Ocupación</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <p>⏳ Cargando reporte de ocupación...</p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-grid" *ngIf="!loading">
+    <!-- Overall Chart -->
+    <div class="chart-section" *ngIf="overallChartData">
+      <app-chart-viewer 
+        [chartData]="overallChartData" 
+        [title]="'Ocupación General'" 
+        [height]="300">
+      </app-chart-viewer>
+    </div>
+
+    <!-- Building Chart -->
+    <div class="chart-section" *ngIf="buildingChartData">
+      <app-chart-viewer 
+        [chartData]="buildingChartData" 
+        [title]="'Ocupación por Edificio'" 
+        [height]="350">
+      </app-chart-viewer>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-section" *ngIf="!loading">
+    <app-report-table 
+      [data]="occupancyData" 
+      [columns]="tableColumns" 
+      [title]="'Detalle por Edificio'">
+    </app-report-table>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="report-filter">
+  <div class="filter-grid">
+    <!-- Report Type -->
+    <div class="filter-group" *ngIf="showReportTypeFilter">
+      <label>📊 Tipo de Reporte</label>
+      <select [(ngModel)]="filter.report_type" class="filter-control">
+        <option value="">Todos</option>
+        <option *ngFor="let type of reportTypes" [value]="type.value">
+          {{ type.icon }} {{ type.label }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Date Range -->
+    <div class="filter-group" *ngIf="showDateFilters">
+      <label>📅 Desde</label>
+      <input type="date" [(ngModel)]="filter.start_date" class="filter-control">
+    </div>
+
+    <div class="filter-group" *ngIf="showDateFilters">
+      <label>📅 Hasta</label>
+      <input type="date" [(ngModel)]="filter.end_date" class="filter-control">
+    </div>
+
+    <!-- Building -->
+    <div class="filter-group" *ngIf="showBuildingFilter && buildings.length > 0">
+      <label>🏢 Edificio</label>
+      <select [(ngModel)]="filter.building_id" class="filter-control">
+        <option [value]="undefined">Todos</option>
+        <option *ngFor="let building of buildings" [value]="building.building_id">
+          {{ building.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Unit -->
+    <div class="filter-group" *ngIf="showUnitFilter && units.length > 0">
+      <label>🏠 Unidad</label>
+      <select [(ngModel)]="filter.unit_id" class="filter-control">
+        <option [value]="undefined">Todas</option>
+        <option *ngFor="let unit of units" [value]="unit.unit_id">
+          {{ unit.unit_number }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Tenant -->
+    <div class="filter-group" *ngIf="showTenantFilter && tenants.length > 0">
+      <label>👤 Inquilino</label>
+      <select [(ngModel)]="filter.tenant_id" class="filter-control">
+        <option [value]="undefined">Todos</option>
+        <option *ngFor="let tenant of tenants" [value]="tenant.tenant_id">
+          {{ tenant.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Status -->
+    <div class="filter-group" *ngIf="showStatusFilter">
+      <label>📌 Estado</label>
+      <select [(ngModel)]="filter.status" class="filter-control">
+        <option value="">Todos</option>
+        <option value="active">Activo</option>
+        <option value="inactive">Inactivo</option>
+        <option value="pending">Pendiente</option>
+      </select>
+    </div>
+
+    <!-- Actions -->
+    <div class="filter-actions">
+      <button class="btn btn-apply" (click)="onApplyFilter()">
+        🔍 Aplicar
+      </button>
+      <button class="btn btn-clear" (click)="onClearFilter()">
+        ❌ Limpiar
+      </button>
+    </div>
+  </div>
+</div>

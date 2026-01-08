@@ -1,0 +1,53 @@
+<div class="expiring-contracts">
+  <div class="header">
+    <h3>Contratos por Vencer (próximos {{ days }} días)</h3>
+    <button class="btn btn-sm" (click)="loadExpiringContracts()">🔄 Actualizar</button>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Cargando contratos...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="contracts-table" *ngIf="!loading && !error && expiringContracts.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Contrato</th>
+          <th>Inquilino</th>
+          <th>Unidad</th>
+          <th>Edificio</th>
+          <th>Fecha de Fin</th>
+          <th>Días Restantes</th>
+          <th>Renta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contract of expiringContracts" [ngClass]="getUrgencyClass(contract.days_until_expiry)">
+          <td>{{ contract.contract_number }}</td>
+          <td>{{ contract.tenant_name }}</td>
+          <td>{{ contract.unit_number }}</td>
+          <td>{{ contract.building_name }}</td>
+          <td>{{ formatDate(contract.end_date) }}</td>
+          <td>
+            <span class="days-badge" [ngClass]="getUrgencyClass(contract.days_until_expiry)">
+              {{ contract.days_until_expiry }} días
+            </span>
+          </td>
+          <td>{{ formatAmount(contract.monthly_rent) }}</td>
+          <td>
+            <button class="btn-link" [routerLink]="['/contracts', contract.id]">Ver</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="no-contracts" *ngIf="!loading && !error && expiringContracts.length === 0">
+    <p>✅ No hay contratos próximos a vencer</p>
+  </div>
+</div>

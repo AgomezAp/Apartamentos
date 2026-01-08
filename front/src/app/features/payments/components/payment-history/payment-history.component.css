@@ -1,0 +1,649 @@
+/* =====================================================
+   PAYMENT HISTORY WIDGET COMPONENT - FIXED
+   Sistema de Gestión de Arrendamiento
+   ===================================================== */
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+.payment-history-widget {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+  font-family: var(--font-body);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 280px; /* Aumentado */
+}
+
+.payment-history-widget:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-secondary);
+}
+
+/* =====================================================
+   WIDGET HEADER
+   ===================================================== */
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-light) 100%
+  );
+  border-bottom: 3px solid var(--color-secondary);
+  flex-shrink: 0;
+  gap: var(--spacing-sm);
+}
+
+.widget-header h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  white-space: nowrap;
+}
+
+/* Total Amount Badge */
+.total-amount {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: var(--color-success-bg);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-success);
+  flex-shrink: 0;
+}
+
+.total-amount .label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-success);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.total-amount .amount {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+/* =====================================================
+   WIDGET CONTENT
+   ===================================================== */
+.widget-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* =====================================================
+   LOADING STATE
+   ===================================================== */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--spacing-xl);
+}
+
+.loading p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+
+/* =====================================================
+   HISTORY TABLE - MEJORADO
+   ===================================================== */
+.history-table {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  table-layout: auto; /* CAMBIO: auto en lugar de fixed */
+}
+
+/* Table Header */
+.history-table thead {
+  background-color: var(--color-gray-100);
+  flex-shrink: 0;
+}
+
+.history-table th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: var(--color-gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--color-gray-200);
+}
+
+/* Alineación específica de columnas del header */
+.history-table th:last-child {
+  text-align: right;
+}
+
+/* Table Body - Scrollable */
+.history-table tbody {
+  display: block;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.history-table thead,
+.history-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Fixed solo para el layout interno */
+}
+
+/* =====================================================
+   DISTRIBUCIÓN DE COLUMNAS - AJUSTADA
+   ===================================================== */
+.history-table th:nth-child(1),
+.history-table td:nth-child(1) {
+  width: 18%; /* Fecha - más espacio */
+}
+
+.history-table th:nth-child(2),
+.history-table td:nth-child(2) {
+  width: 28%; /* Inquilino - más espacio */
+}
+
+.history-table th:nth-child(3),
+.history-table td:nth-child(3) {
+  width: 12%; /* Unidad */
+}
+
+.history-table th:nth-child(4),
+.history-table td:nth-child(4) {
+  width: 18%; /* Método */
+}
+
+.history-table th:nth-child(5),
+.history-table td:nth-child(5) {
+  width: 24%; /* Monto - más espacio para montos grandes */
+  text-align: right;
+}
+
+/* Table Rows */
+.history-table tbody tr {
+  border-bottom: 1px solid var(--color-gray-100);
+  transition: all var(--transition-fast);
+}
+
+.history-table tbody tr:hover {
+  background-color: var(--color-secondary-subtle);
+}
+
+.history-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Table Cells */
+.history-table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-gray-600);
+  vertical-align: middle;
+}
+
+/* =====================================================
+   CELL STYLES - MEJORADO
+   ===================================================== */
+
+/* Date Cell */
+.history-table td:nth-child(1) {
+  font-size: 0.8rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Tenant Cell */
+.tenant-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.tenant-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.tenant-cell span:last-child {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Unit Cell */
+.history-table td:nth-child(3) {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+}
+
+/* Method Cell */
+.method-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.method-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.method-cell span:last-child {
+  font-size: 0.8rem;
+  color: var(--color-gray-600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Amount Cell */
+.amount-cell {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-success) !important;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   EMPTY STATE
+   ===================================================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.6;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+
+/* =====================================================
+   SCROLLBAR PERSONALIZADO
+   ===================================================== */
+.history-table tbody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.history-table tbody::-webkit-scrollbar-track {
+  background: var(--color-gray-100);
+  border-radius: 3px;
+}
+
+.history-table tbody::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300);
+  border-radius: 3px;
+}
+
+.history-table tbody::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+/* Firefox */
+.history-table tbody {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-300) var(--color-gray-100);
+}
+
+/* =====================================================
+   RESPONSIVE - TABLETS LANDSCAPE (1024px - 1200px)
+   ===================================================== */
+@media (max-width: 1200px) {
+  .history-table th,
+  .history-table td {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .history-table th {
+    font-size: 0.65rem;
+  }
+
+  .history-table table {
+    font-size: 0.8rem;
+  }
+
+  /* Redistribuir columnas */
+  .history-table th:nth-child(1),
+  .history-table td:nth-child(1) {
+    width: 20%;
+  }
+
+  .history-table th:nth-child(2),
+  .history-table td:nth-child(2) {
+    width: 30%;
+  }
+
+  .history-table th:nth-child(3),
+  .history-table td:nth-child(3) {
+    width: 12%;
+  }
+
+  .history-table th:nth-child(4),
+  .history-table td:nth-child(4) {
+    width: 15%;
+  }
+
+  .history-table th:nth-child(5),
+  .history-table td:nth-child(5) {
+    width: 23%;
+  }
+
+  .tenant-cell span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .amount-cell {
+    font-size: 0.85rem;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - TABLETS PORTRAIT (768px - 1024px)
+   ===================================================== */
+@media (max-width: 1024px) {
+  .payment-history-widget {
+    min-height: 260px;
+  }
+
+  .widget-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .widget-header h3 {
+    font-size: 0.95rem;
+  }
+
+  /* Ocultar columna de MÉTODO para dar más espacio */
+  .history-table th:nth-child(4),
+  .history-table td:nth-child(4) {
+    display: none;
+  }
+
+  /* Redistribuir el espacio ganado */
+  .history-table th:nth-child(1),
+  .history-table td:nth-child(1) {
+    width: 20%;
+  }
+
+  .history-table th:nth-child(2),
+  .history-table td:nth-child(2) {
+    width: 35%;
+  }
+
+  .history-table th:nth-child(3),
+  .history-table td:nth-child(3) {
+    width: 15%;
+  }
+
+  .history-table th:nth-child(5),
+  .history-table td:nth-child(5) {
+    width: 30%;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES (< 768px)
+   ===================================================== */
+@media (max-width: 768px) {
+  .payment-history-widget {
+    border-radius: var(--radius-md);
+    min-height: 240px;
+  }
+
+  .widget-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .widget-header h3 {
+    font-size: 0.9rem;
+  }
+
+  .total-amount {
+    padding: var(--spacing-xs);
+  }
+
+  .total-amount .label {
+    font-size: 0.6rem;
+  }
+
+  .total-amount .amount {
+    font-size: 0.75rem;
+  }
+
+  .history-table th,
+  .history-table td {
+    padding: var(--spacing-xs);
+  }
+
+  .history-table th {
+    font-size: 0.6rem;
+  }
+
+  .history-table table {
+    font-size: 0.75rem;
+  }
+
+  /* Ocultar UNIDAD y MÉTODO en móvil */
+  .history-table th:nth-child(3),
+  .history-table td:nth-child(3),
+  .history-table th:nth-child(4),
+  .history-table td:nth-child(4) {
+    display: none;
+  }
+
+  /* Redistribuir a 3 columnas */
+  .history-table th:nth-child(1),
+  .history-table td:nth-child(1) {
+    width: 25%;
+  }
+
+  .history-table th:nth-child(2),
+  .history-table td:nth-child(2) {
+    width: 40%;
+  }
+
+  .history-table th:nth-child(5),
+  .history-table td:nth-child(5) {
+    width: 35%;
+  }
+
+  .tenant-icon {
+    font-size: 0.85rem;
+  }
+
+  .tenant-cell span:last-child {
+    font-size: 0.75rem;
+  }
+
+  .amount-cell {
+    font-size: 0.8rem;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES PEQUEÑOS (< 480px)
+   ===================================================== */
+@media (max-width: 480px) {
+  .payment-history-widget:hover {
+    transform: none;
+  }
+
+  .widget-header {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .widget-header h3 {
+    font-size: 0.85rem;
+  }
+
+  .total-amount .label {
+    display: none;
+  }
+
+  .history-table th {
+    font-size: 0.55rem;
+    letter-spacing: 0.2px;
+  }
+
+  .history-table td {
+    font-size: 0.7rem;
+  }
+
+  .tenant-icon {
+    display: none; /* Ocultar icono para ganar espacio */
+  }
+
+  .tenant-cell span:last-child {
+    font-size: 0.7rem;
+  }
+
+  .amount-cell {
+    font-size: 0.75rem;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - REDUCED MOTION
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .payment-history-widget,
+  .history-table tbody tr {
+    transition: none;
+  }
+}
+
+/* =====================================================
+   ACCESIBILIDAD - HIGH CONTRAST
+   ===================================================== */
+@media (prefers-contrast: high) {
+  .payment-history-widget {
+    border-width: 2px;
+    border-color: var(--color-primary);
+  }
+
+  .history-table th {
+    border-bottom-width: 3px;
+  }
+
+  .history-table tbody tr {
+    border-bottom-width: 2px;
+  }
+}
+
+/* =====================================================
+   ROW ANIMATIONS
+   ===================================================== */
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.history-table tbody tr {
+  animation: fadeInRow 0.3s ease forwards;
+}
+
+.history-table tbody tr:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.history-table tbody tr:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.history-table tbody tr:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.history-table tbody tr:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.history-table tbody tr:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+/* =====================================================
+   PRINT STYLES
+   ===================================================== */
+@media print {
+  .payment-history-widget {
+    box-shadow: none;
+    border: 1px solid var(--color-gray-300);
+  }
+
+  .widget-header {
+    background: none;
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-secondary);
+  }
+
+  .widget-header h3 {
+    color: var(--color-primary);
+  }
+
+  .history-table tbody {
+    overflow: visible;
+  }
+
+  .history-table tbody tr:hover {
+    background-color: transparent;
+  }
+}

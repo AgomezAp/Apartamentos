@@ -1,0 +1,182 @@
+<div class="tenant-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando información del inquilino...</p>
+  </div>
+
+  <!-- Tenant Details -->
+  <div *ngIf="!isLoading && tenant" class="detail-content">
+    <!-- Header Principal -->
+    <div class="detail-header">
+      <button class="btn-back" (click)="goBack()">
+        <i class="fa-solid fa-arrow-left"></i>
+        Volver
+      </button>
+
+      <div class="header-main">
+        <div class="tenant-avatar">
+          <span class="avatar-initials">{{
+            getInitials(tenant.full_name)
+          }}</span>
+        </div>
+        <div class="tenant-info">
+          <h1 class="tenant-name">{{ tenant.full_name }}</h1>
+          <div class="tenant-meta">
+            <span class="meta-item">
+              <i class="fa-solid fa-envelope"></i>
+              {{ tenant.email }}
+            </span>
+            <span class="meta-item">
+              <i class="fa-solid fa-phone"></i>
+              {{ tenant.phone }}
+            </span>
+          </div>
+        </div>
+        <span
+          class="status-badge"
+          [ngClass]="'status-' + (tenant.status || 'active')"
+        >
+          <span class="status-dot"></span>
+          {{ getStatusConfig(tenant.status || "active").label }}
+        </span>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="editTenant()">
+          <i class="fa-solid fa-pen"></i>
+          Editar
+        </button>
+        <button class="btn btn-danger" (click)="deleteTenant()">
+          <i class="fa-solid fa-trash"></i>
+          Eliminar
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid de Información -->
+    <div class="info-grid">
+      <!-- Información Personal -->
+      <div class="info-card">
+        <div class="card-header">
+          <i class="fa-solid fa-user"></i>
+          <h3>Información Personal</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-row">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ tenant.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Teléfono</span>
+            <span class="info-value">{{ tenant.phone }}</span>
+          </div>
+          <div class="info-row" *ngIf="tenant.date_of_birth">
+            <span class="info-label">Fecha de Nacimiento</span>
+            <span class="info-value">{{
+              tenant.date_of_birth | dateFormat : "dd/MM/yyyy"
+            }}</span>
+          </div>
+          <div class="info-row" *ngIf="tenant.nationality">
+            <span class="info-label">Nacionalidad</span>
+            <span class="info-value">{{ tenant.nationality }}</span>
+          </div>
+          <div class="info-row" *ngIf="tenant.occupation">
+            <span class="info-label">Ocupación</span>
+            <span class="info-value">{{ tenant.occupation }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Identificación -->
+      <div class="info-card">
+        <div class="card-header">
+          <i class="fa-solid fa-id-card"></i>
+          <h3>Identificación</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-row">
+            <span class="info-label">Tipo de Documento</span>
+            <span class="info-value">{{ tenant.identification_type }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Número</span>
+            <span class="info-value highlight">{{
+              tenant.identification_number
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacto de Emergencia -->
+      <div class="info-card" *ngIf="tenant.emergency_contact_name">
+        <div class="card-header emergency">
+          <i class="fa-solid fa-phone-volume"></i>
+          <h3>Contacto de Emergencia</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-row">
+            <span class="info-label">Nombre</span>
+            <span class="info-value">{{ tenant.emergency_contact_name }}</span>
+          </div>
+          <div class="info-row" *ngIf="tenant.emergency_contact_phone">
+            <span class="info-label">Teléfono</span>
+            <span class="info-value">{{ tenant.emergency_contact_phone }}</span>
+          </div>
+          <div class="info-row" *ngIf="tenant.emergency_contact_relationship">
+            <span class="info-label">Relación</span>
+            <span class="info-value">{{
+              tenant.emergency_contact_relationship
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información del Sistema -->
+      <div class="info-card">
+        <div class="card-header">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <h3>Registro del Sistema</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-row">
+            <span class="info-label">Fecha de Registro</span>
+            <span class="info-value">{{
+              tenant.created_at | dateFormat : "dd/MM/yyyy HH:mm"
+            }}</span>
+          </div>
+          <div class="info-row" *ngIf="tenant.updated_at">
+            <span class="info-label">Última Actualización</span>
+            <span class="info-value">{{
+              tenant.updated_at | dateFormat : "dd/MM/yyyy HH:mm"
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    <div class="notes-card" *ngIf="tenant.notes">
+      <div class="card-header">
+        <i class="fa-solid fa-note-sticky"></i>
+        <h3>Notas y Observaciones</h3>
+      </div>
+      <div class="card-body">
+        <p class="notes-content">{{ tenant.notes }}</p>
+      </div>
+    </div>
+
+    <!-- Sección de Contratos -->
+    <div class="contracts-section">
+      <div class="section-header">
+        <h2>
+          <i class="fa-solid fa-file-contract"></i>
+          Contratos del Inquilino
+        </h2>
+      </div>
+      <app-tenant-contracts
+        [tenantId]="tenant.id || tenant.tenant_id || 0"
+      ></app-tenant-contracts>
+    </div>
+  </div>
+</div>

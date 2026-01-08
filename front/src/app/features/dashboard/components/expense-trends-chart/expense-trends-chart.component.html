@@ -1,0 +1,23 @@
+<div class="trends-widget">
+  <div class="widget-header">
+    <h3>Tendencia de Ingresos vs Gastos</h3>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-state">
+    <span class="error-icon">⚠️</span>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error && trendData.length > 0" class="chart-container">
+    <canvas baseChart [data]="chartData" type="line" [options]="chartOptions"></canvas>
+  </div>
+
+  <div *ngIf="!loading && !error && trendData.length === 0" class="no-data">
+    <p>No hay datos disponibles para el período seleccionado</p>
+  </div>
+</div>

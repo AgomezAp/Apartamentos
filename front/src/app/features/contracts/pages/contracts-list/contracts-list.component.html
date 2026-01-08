@@ -1,0 +1,114 @@
+<div class="contracts-list-page">
+  <!-- Filtros - Estructura de 2 filas -->
+  <div class="filters-section">
+    <!-- Primera fila: Botón + Búsqueda -->
+    <div class="filters-row-main">
+      <button class="btn btn-primary" routerLink="/contracts/create">
+        <i class="fa-solid fa-plus"></i> Nuevo Contrato
+      </button>
+
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Buscar por número, edificio, inquilino..."
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="applyFilters()"
+          class="form-control"
+        />
+        <button class="btn-search" (click)="applyFilters()">Buscar</button>
+      </div>
+    </div>
+
+    <!-- Segunda fila: Filtros adicionales -->
+    <div class="filters-row-secondary">
+      <div class="filter-group">
+        <label for="status-filter">Estado:</label>
+        <select
+          id="status-filter"
+          [(ngModel)]="statusFilter"
+          (change)="applyFilters()"
+          class="form-control"
+        >
+          <option value="">Todos</option>
+          <option value="active">Activos</option>
+          <option value="pending">Pendientes</option>
+          <option value="finished">Finalizados</option>
+          <option value="cancelled">Cancelados</option>
+        </select>
+      </div>
+
+      <button class="btn btn-outline" (click)="clearFilters()">
+        <i class="fa-solid fa-trash-can"></i> Limpiar filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando contratos...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-message" *ngIf="error">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Lista de contratos -->
+  <div
+    class="contracts-grid"
+    *ngIf="!loading && !error && contracts.length > 0"
+  >
+    <app-contract-card
+      *ngFor="let contract of contracts"
+      [contract]="contract"
+      (onFinish)="onFinishContract($event)"
+      (onEdit)="onEditContract($event)"
+      (onDelete)="onDeleteContract($event)"
+    >
+    </app-contract-card>
+  </div>
+
+  <!-- Sin resultados -->
+  <div class="empty-state" *ngIf="!loading && !error && contracts.length === 0">
+    <i class="fa-solid fa-file-contract"></i>
+    <h3>No se encontraron contratos</h3>
+    <p>No hay contratos que coincidan con tu búsqueda o filtros.</p>
+    <button class="btn btn-primary" routerLink="/contracts/create">
+      <i class="fa-solid fa-plus"></i> Crear primer contrato
+    </button>
+  </div>
+
+  <!-- Paginación -->
+  <div class="pagination" *ngIf="!loading && totalPages > 1">
+    <button
+      class="btn-page"
+      [disabled]="currentPage === 1"
+      (click)="onPageChange(currentPage - 1)"
+    >
+      <i class="fa-solid fa-chevron-left"></i> Anterior
+    </button>
+
+    <div class="page-numbers">
+      <button
+        *ngFor="let page of pages"
+        class="btn-page-number"
+        [class.active]="page === currentPage"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+
+    <span class="page-info"> {{ totalItems }} contratos </span>
+
+    <button
+      class="btn-page"
+      [disabled]="currentPage === totalPages"
+      (click)="onPageChange(currentPage + 1)"
+    >
+      Siguiente <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
