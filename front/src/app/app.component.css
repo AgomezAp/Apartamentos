@@ -100,6 +100,20 @@ body {
   /* NO TIENE OVERFLOW - El scroll es del body */
 }
 
+/* Main con navegación completa */
+.app-main {
+  margin-left: 280px;
+}
+
+/* Main a pantalla completa (sin sidebar) - Para rutas de autenticación */
+.app-main-full {
+  flex: 1;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
 /* Cuando el sidebar está colapsado */
 .app-sidebar.collapsed + .app-main,
 .app-body:has(.app-sidebar.collapsed) .app-main {

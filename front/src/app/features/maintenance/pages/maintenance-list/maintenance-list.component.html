@@ -1,7 +1,7 @@
 <div class="maintenance-list-container">
   <!-- Modal para asignar técnico -->
   <app-assign-technician-modal 
-    (submit)="handleAssign($event)"
+    (assign)="handleAssign($event)"
     (cancel)="handleCancelAssign()"
   ></app-assign-technician-modal>
 
@@ -140,9 +140,3 @@
     </button>
   </div>
 </div>
-
-<!-- Modal de Asignación de Técnico -->
-<app-assign-technician-modal
-  (assign)="handleAssign($event)"
-  (cancel)="handleCancelAssign()"
-></app-assign-technician-modal>

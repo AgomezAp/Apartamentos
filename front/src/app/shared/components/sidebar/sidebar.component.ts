@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 export interface MenuItem {
   label: string;
@@ -20,6 +21,8 @@ export interface MenuItem {
 })
 export class SidebarComponent {
   @Input() collapsed: boolean = false;
+
+  constructor(private authService: AuthService) {}
   @Input() menuItems: MenuItem[] = [
     { label: 'Dashboard', icon: '📈', route: '/dashboard' },
     { label: 'Edificios', icon: '🏛️', route: '/buildings' },
@@ -46,5 +49,9 @@ export class SidebarComponent {
     if (item.children) {
       item.expanded = !item.expanded;
     }
+  }
+
+  onLogout(): void {
+    this.authService.logout();
   }
 }

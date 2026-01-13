@@ -1,19 +1,21 @@
 <div class="app-layout">
-  <!-- Header Fijo -->
+  <!-- Header Fijo - Solo si es ruta protegida -->
   <app-header 
+    *ngIf="showNavigation"
     class="app-header"
     (toggleSidebar)="onToggleSidebar()"
   ></app-header>
 
   <div class="app-body">
-    <!-- Sidebar Fijo -->
+    <!-- Sidebar Fijo - Solo si es ruta protegida -->
     <app-sidebar 
+      *ngIf="showNavigation"
       class="app-sidebar"
       [collapsed]="sidebarCollapsed"
     ></app-sidebar>
 
     <!-- Contenido Principal - Scroll Natural -->
-    <main class="app-main">
+    <main [ngClass]="{'app-main': showNavigation, 'app-main-full': !showNavigation}">
       <router-outlet></router-outlet>
     </main>
   </div>

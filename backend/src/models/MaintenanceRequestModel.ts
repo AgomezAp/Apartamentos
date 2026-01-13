@@ -14,7 +14,11 @@ class MaintenanceRequestModel extends Model {
   declare scheduled_date: Date | null;
   declare completed_date: Date | null;
   declare assigned_to: number | null;
-  declare resolved_by: number | null;
+  declare assigned_to_name: string | null;
+  declare assigned_to_phone: string | null;
+  declare assigned_to_company: string | null;
+  declare assigned_to_email: string | null;
+  declare resolved_by: string | null;
   declare estimated_cost: number | null;
   declare actual_cost: number | null;
   declare notes: string | null;
@@ -77,8 +81,24 @@ MaintenanceRequestModel.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    assigned_to_name: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    assigned_to_phone: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
+    assigned_to_company: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    assigned_to_email: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
     resolved_by: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(255),
       allowNull: true,
     },
     estimated_cost: {

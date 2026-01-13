@@ -44,5 +44,13 @@
         </ul>
       </li>
     </ul>
+    
+    <!-- Logout Button -->
+    <div class="logout-section">
+      <button class="logout-btn" (click)="onLogout()" title="Cerrar sesión">
+        <span class="menu-icon">🚪</span>
+        <span class="menu-label" *ngIf="!collapsed">Cerrar Sesión</span>
+      </button>
+    </div>
   </nav>
 </aside>

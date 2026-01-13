@@ -13,7 +13,11 @@ interface MaintenanceRequest {
   scheduled_date?: Date | null;
   completed_date?: Date | null;
   assigned_to?: number | null;
-  resolved_by?: number | null;
+  assigned_to_name?: string | null;
+  assigned_to_phone?: string | null;
+  assigned_to_company?: string | null;
+  assigned_to_email?: string | null;
+  resolved_by?: string | null;  // Cambiado a string - nombre de quien resolvió
   estimated_cost?: number | null;
   actual_cost?: number | null;
   notes?: string | null;
@@ -55,6 +59,10 @@ class MaintenanceRepository {
         mr.scheduled_date,
         mr.completed_date,
         mr.assigned_to,
+        mr.assigned_to_name,
+        mr.assigned_to_phone,
+        mr.assigned_to_company,
+        mr.assigned_to_email,
         mr.resolved_by,
         mr.estimated_cost,
         mr.actual_cost,
@@ -191,20 +199,30 @@ class MaintenanceRepository {
     const updateableFields = [
       'title', 'description', 'priority', 'status', 'category',
       'scheduled_date', 'completed_date', 'assigned_to', 
+      'assigned_to_name', 'assigned_to_phone', 'assigned_to_company', 'assigned_to_email',
       'resolved_by', 'estimated_cost', 'actual_cost', 'notes', 'attachments'
     ];
 
+    console.log('=== REPOSITORY UPDATE ===');
+    console.log('Received data:', maintenanceRequest);
+    console.log('Updateable fields:', updateableFields);
+
     updateableFields.forEach(field => {
-      if (maintenanceRequest[field as keyof MaintenanceRequest] !== undefined) {
+      const value = maintenanceRequest[field as keyof MaintenanceRequest];
+      console.log(`Checking field "${field}":`, value, 'undefined?', value === undefined);
+      if (value !== undefined) {
         fields.push(`${field} = $${paramIndex}`);
         values.push(
-          field === 'attachments' && maintenanceRequest[field]
-            ? JSON.stringify(maintenanceRequest[field])
-            : maintenanceRequest[field as keyof MaintenanceRequest]
+          field === 'attachments' && value
+            ? JSON.stringify(value)
+            : value
         );
         paramIndex++;
       }
     });
+
+    console.log('Fields to update:', fields);
+    console.log('Values:', values);
 
     if (fields.length === 0) {
       throw new Error('No hay campos para actualizar');

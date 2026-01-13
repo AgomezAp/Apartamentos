@@ -1,45 +1,84 @@
 /* =====================================================
-   AUTHENTICATION STYLES - COLORES CORPORATIVOS
+   AUTHENTICATION STYLES - FIX DEFINITIVO SCROLL
    ===================================================== */
 
 /* =====================================================
-   CONTAINER PRINCIPAL
+   🔥 FIX CRÍTICO: HOST Y HTML/BODY
    ===================================================== */
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* =====================================================
+   CONTAINER PRINCIPAL - SIN SCROLL
+   ===================================================== */
+
 .auth-container {
-  min-height: 100vh;
+  /* Posicionamiento fijo que cubre TODO */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* 🔥 CLAVE: Bloquear scroll */
+  overflow: hidden;
+
+  /* Centrado */
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Fondo */
   background: linear-gradient(135deg, #141414 0%, #2a2a2a 50%, #141414 100%);
+
+  /* Por encima de todo */
+  z-index: 99999;
+
+  /* Reset */
+  margin: 0;
   padding: 20px;
-  position: relative;
-  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Efecto decorativo de fondo */
 .auth-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255, 214, 0, 0.05) 0%, transparent 50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 0, 0.05) 0%,
+    transparent 50%
+  );
   animation: pulse 15s ease-in-out infinite;
+  pointer-events: none;
 }
 
+/* Línea amarilla inferior */
 .auth-container::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, transparent, #FFD600, transparent);
+  background: linear-gradient(90deg, transparent, #ffd600, transparent);
+  pointer-events: none;
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.5;
   }
@@ -52,29 +91,54 @@
 /* =====================================================
    CARD DE AUTENTICACIÓN
    ===================================================== */
+
 .auth-card {
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 
-    0 10px 40px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 214, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 214, 0, 0.1);
   width: 100%;
-  max-width: 450px;
-  padding: 40px;
-  animation: fadeInUp 0.5s ease-out;
+  max-width: 420px;
+  padding: 32px;
   position: relative;
   z-index: 1;
+
+  /* 🔥 Control de altura máxima con scroll interno si es necesario */
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+
+  /* Animación de entrada */
+  animation: fadeInUp 0.5s ease-out;
 }
 
+/* Línea amarilla superior */
 .auth-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: #FFD600;
+  background: #ffd600;
   border-radius: 16px 16px 0 0;
+}
+
+/* Scrollbar personalizado para la card */
+.auth-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-card::-webkit-scrollbar-track {
+  background: #f4f4f5;
+  border-radius: 3px;
+}
+
+.auth-card::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 3px;
+}
+
+.auth-card::-webkit-scrollbar-thumb:hover {
+  background: #ffd600;
 }
 
 @keyframes fadeInUp {
@@ -91,88 +155,85 @@
 /* =====================================================
    HEADER
    ===================================================== */
+
 .auth-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .logo {
-  width: 80px;
-  height: 80px;
+  width: 72px;
+  height: 72px;
   background: #141414;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
-  box-shadow: 
-    0 4px 15px rgba(20, 20, 20, 0.3),
-    0 0 0 4px rgba(255, 214, 0, 0.3);
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 15px rgba(20, 20, 20, 0.3), 0 0 0 4px rgba(255, 214, 0, 0.3);
   position: relative;
   overflow: hidden;
 }
 
 .logo::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   height: 30%;
-  background: #FFD600;
+  background: #ffd600;
 }
 
 .logo i {
-  font-size: 40px;
-  color: #FFD600;
+  font-size: 32px;
+  color: #ffd600;
   position: relative;
   z-index: 1;
 }
 
-/* Si usas imagen de logo en lugar de icono */
 .logo img {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
   position: relative;
   z-index: 1;
 }
 
 .auth-header h1 {
-  font-family: 'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif;
-  font-size: 26px;
+  font-family: "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
+  font-size: 24px;
   color: #141414;
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   font-weight: 700;
-  letter-spacing: -0.5px;
 }
 
 .auth-header p {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   color: #71717a;
   margin: 0;
   font-size: 14px;
-  font-weight: 400;
 }
 
 /* =====================================================
    FORMULARIO
    ===================================================== */
+
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .form-group label {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
   font-weight: 600;
   color: #141414;
   display: flex;
@@ -181,21 +242,22 @@
 }
 
 .form-group label i {
-  color: #FFD600;
-  font-size: 16px;
-  filter: drop-shadow(0 0 2px rgba(255, 214, 0, 0.3));
+  color: #ffd600;
+  font-size: 14px;
 }
 
 .form-group input {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  padding: 14px 16px;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 12px 14px;
   border: 2px solid #e4e4e7;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 14px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   outline: none;
   background: #fafafa;
   color: #141414;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group input::placeholder {
@@ -203,7 +265,7 @@
 }
 
 .form-group input:focus {
-  border-color: #FFD600;
+  border-color: #ffd600;
   background: #ffffff;
   box-shadow: 0 0 0 4px rgba(255, 214, 0, 0.15);
 }
@@ -212,53 +274,44 @@
   border-color: #d4d4d8;
 }
 
-/* Estado de error */
 .form-group input.error {
   border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.02);
+  background: rgba(239, 68, 68, 0.03);
 }
 
 .form-group input.error:focus {
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
-/* Estado de éxito */
-.form-group input.success {
-  border-color: #10b981;
-  background: rgba(16, 185, 129, 0.02);
-}
-
-.form-group input.success:focus {
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-}
-
 /* =====================================================
    INPUT DE CONTRASEÑA
    ===================================================== */
+
 .password-input {
   position: relative;
+  width: 100%;
 }
 
 .password-input input {
   width: 100%;
-  padding-right: 50px;
+  padding-right: 45px;
 }
 
 .toggle-password {
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: #71717a;
   cursor: pointer;
-  padding: 6px;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  border-radius: 6px;
+  transition: all 0.2s ease;
+  border-radius: 4px;
 }
 
 .toggle-password:hover {
@@ -274,86 +327,60 @@
 /* =====================================================
    MENSAJES DE ERROR
    ===================================================== */
+
 .error-message {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 12px;
   color: #ef4444;
-  margin-top: -4px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  animation: slideDown 0.2s ease-out;
 }
 
 .error-message::before {
-  content: '⚠';
-  font-size: 12px;
+  content: "⚠";
+  font-size: 11px;
 }
 
-/* Alerta general de error */
-.alert-error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-left: 4px solid #ef4444;
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 10px;
-}
-
-.alert-error p {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 13px;
-  color: #ef4444;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* =====================================================
-   FILA DE OPCIONES (Remember me / Forgot password)
+   FILA DE OPCIONES
    ===================================================== */
+
 .form-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: -10px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.checkbox-group input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #FFD600;
-  border-radius: 4px;
-}
-
-.checkbox-group label {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
-  color: #52525b;
-  cursor: pointer;
-  margin: 0;
-  font-weight: 400;
-  user-select: none;
-}
-
-.checkbox-group label:hover {
-  color: #141414;
-}
-
-/* Custom Checkbox (opcional) */
+/* Custom Checkbox */
 .custom-checkbox {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  color: #52525b;
+  user-select: none;
+}
+
+.custom-checkbox:hover {
+  color: #141414;
 }
 
 .custom-checkbox input {
@@ -365,8 +392,8 @@
 }
 
 .checkmark {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background: #fafafa;
   border: 2px solid #e4e4e7;
   border-radius: 4px;
@@ -374,21 +401,22 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .custom-checkbox:hover .checkmark {
-  border-color: #FFD600;
+  border-color: #ffd600;
 }
 
 .custom-checkbox input:checked ~ .checkmark {
-  background: #FFD600;
-  border-color: #FFD600;
+  background: #ffd600;
+  border-color: #ffd600;
 }
 
 .custom-checkbox input:checked ~ .checkmark::after {
-  content: '✓';
+  content: "✓";
   color: #141414;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -399,86 +427,71 @@
 /* =====================================================
    LINKS
    ===================================================== */
+
 .link {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   color: #141414;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
 }
 
 .link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 0;
   width: 0;
   height: 2px;
-  background: #FFD600;
-  transition: width 0.3s ease;
-}
-
-.link:hover {
-  color: #141414;
+  background: #ffd600;
+  transition: width 0.2s ease;
 }
 
 .link:hover::after {
   width: 100%;
 }
 
-.link:focus {
-  outline: none;
-  color: #141414;
-}
-
-.link:focus::after {
-  width: 100%;
-}
-
-/* Link variante amarillo */
-.link-accent {
-  color: #141414;
-  background: linear-gradient(transparent 60%, rgba(255, 214, 0, 0.3) 60%);
-}
-
-.link-accent:hover {
-  background: linear-gradient(transparent 60%, rgba(255, 214, 0, 0.5) 60%);
-}
-
 /* =====================================================
    BOTÓN PRINCIPAL
    ===================================================== */
+
 .btn-primary {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   background: #141414;
-  color: #FFD600;
+  color: #ffd600;
   border: none;
-  padding: 16px 24px;
-  border-radius: 10px;
-  font-size: 16px;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 8px;
   position: relative;
   overflow: hidden;
+  min-height: 48px;
 }
 
 .btn-primary::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 214, 0, 0.2), transparent);
-  transition: left 0.5s ease;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 214, 0, 0.2),
+    transparent
+  );
+  transition: left 0.4s ease;
 }
 
 .btn-primary:hover:not(:disabled)::before {
@@ -488,21 +501,11 @@
 .btn-primary:hover:not(:disabled) {
   background: #2a2a2a;
   transform: translateY(-2px);
-  box-shadow: 
-    0 6px 20px rgba(20, 20, 20, 0.3),
-    0 0 0 2px rgba(255, 214, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(20, 20, 20, 0.3), 0 0 0 2px rgba(255, 214, 0, 0.3);
 }
 
 .btn-primary:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 10px rgba(20, 20, 20, 0.2);
-}
-
-.btn-primary:focus {
-  outline: none;
-  box-shadow: 
-    0 0 0 3px rgba(255, 214, 0, 0.4),
-    0 6px 20px rgba(20, 20, 20, 0.2);
 }
 
 .btn-primary:disabled {
@@ -511,72 +514,15 @@
   background: #71717a;
 }
 
-/* Botón variante secundaria */
-.btn-secondary {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #FFD600;
-  color: #141414;
-  border: none;
-  padding: 16px 24px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: #ccab00;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 214, 0, 0.3);
-}
-
-.btn-secondary:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.4);
-}
-
-/* Botón outline */
-.btn-outline {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: transparent;
-  color: #141414;
-  border: 2px solid #141414;
-  padding: 14px 24px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.btn-outline:hover:not(:disabled) {
-  background: #141414;
-  color: #FFD600;
-  transform: translateY(-2px);
-}
-
-.btn-outline:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.2);
-}
-
 /* =====================================================
-   SPINNER DE CARGA
+   SPINNER
    ===================================================== */
+
 .btn-spinner {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2px solid rgba(255, 214, 0, 0.3);
-  border-top-color: #FFD600;
+  border-top-color: #ffd600;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -588,19 +534,20 @@
 }
 
 /* =====================================================
-   FOOTER DEL FORMULARIO
+   FOOTER
    ===================================================== */
+
 .form-footer {
   text-align: center;
-  margin-top: 10px;
-  padding-top: 24px;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid #e4e4e7;
 }
 
 .form-footer p {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   color: #71717a;
 }
 
@@ -609,19 +556,18 @@
   font-weight: 600;
   text-decoration: none;
   position: relative;
-  transition: all 0.3s ease;
 }
 
 .form-footer a::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 0;
   width: 100%;
   height: 2px;
-  background: #FFD600;
+  background: #ffd600;
   transform: scaleX(0);
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
 .form-footer a:hover::after {
@@ -629,226 +575,65 @@
 }
 
 /* =====================================================
-   DIVISOR (para login con redes sociales)
-   ===================================================== */
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 10px 0;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: #e4e4e7;
-}
-
-.divider span {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 12px;
-  color: #a1a1aa;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 500;
-}
-
-/* =====================================================
-   BOTONES DE REDES SOCIALES
-   ===================================================== */
-.social-buttons {
-  display: flex;
-  gap: 12px;
-}
-
-.btn-social {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border: 2px solid #e4e4e7;
-  border-radius: 10px;
-  background: #ffffff;
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #141414;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-social:hover {
-  border-color: #141414;
-  background: #fafafa;
-  transform: translateY(-2px);
-}
-
-.btn-social:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.1);
-}
-
-.btn-social i {
-  font-size: 18px;
-}
-
-.btn-social.google:hover {
-  border-color: #ea4335;
-}
-
-.btn-social.microsoft:hover {
-  border-color: #00a4ef;
-}
-
-/* =====================================================
-   INDICADOR DE FUERZA DE CONTRASEÑA
-   ===================================================== */
-.password-strength {
-  margin-top: 8px;
-}
-
-.strength-bar {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 6px;
-}
-
-.strength-segment {
-  flex: 1;
-  height: 4px;
-  background: #e4e4e7;
-  border-radius: 2px;
-  transition: background 0.3s ease;
-}
-
-.strength-segment.active.weak {
-  background: #ef4444;
-}
-
-.strength-segment.active.medium {
-  background: #f59e0b;
-}
-
-.strength-segment.active.strong {
-  background: #10b981;
-}
-
-.strength-text {
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.strength-text.weak {
-  color: #ef4444;
-}
-
-.strength-text.medium {
-  color: #f59e0b;
-}
-
-.strength-text.strong {
-  color: #10b981;
-}
-
-/* =====================================================
    RESPONSIVE
    ===================================================== */
+
 @media (max-width: 480px) {
   .auth-container {
     padding: 16px;
   }
-  
+
   .auth-card {
-    padding: 30px 20px;
+    padding: 24px 20px;
     border-radius: 12px;
-  }
-
-  .auth-header h1 {
-    font-size: 22px;
-  }
-
-  .logo {
-    width: 64px;
-    height: 64px;
-  }
-
-  .logo i {
-    font-size: 28px;
-  }
-
-  .form-row {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .btn-primary,
-  .btn-secondary,
-  .btn-outline {
-    padding: 14px 20px;
-    font-size: 15px;
-  }
-
-  .social-buttons {
-    flex-direction: column;
-  }
-
-  .form-group input {
-    padding: 12px 14px;
-  }
-}
-
-@media (max-width: 360px) {
-  .auth-card {
-    padding: 24px 16px;
+    max-height: calc(100vh - 32px);
   }
 
   .auth-header h1 {
     font-size: 20px;
   }
 
-  .auth-header p {
-    font-size: 13px;
+  .logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .logo i {
+    font-size: 26px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .btn-primary {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .form-group input {
+    padding: 10px 12px;
   }
 }
 
 /* =====================================================
-   ANIMACIONES ADICIONALES
+   ACCESIBILIDAD
    ===================================================== */
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-5px);
-  }
-  20%, 40%, 60%, 80% {
-    transform: translateX(5px);
-  }
-}
 
-.shake {
-  animation: shake 0.5s ease-in-out;
-}
-
-/* Animación para mensajes de error */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+@media (prefers-reduced-motion: reduce) {
+  .auth-container::before,
+  .auth-card,
+  .btn-spinner {
+    animation: none;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-.error-message,
-.alert-error {
-  animation: slideDown 0.3s ease-out;
+  .btn-primary::before {
+    display: none;
+  }
+
+  * {
+    transition: none !important;
+  }
 }

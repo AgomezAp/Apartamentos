@@ -17,7 +17,7 @@ export interface MaintenanceRequest {
   assigned_to_company?: string;
   assigned_to_email?: string;
   assigned_to_display_name?: string;  // Para mostrar (combinación de usuario o tercero)
-  resolved_by?: number;
+  resolved_by?: string;  // Nombre de quien resolvió (ahora es string)
   resolved_date?: string;
   notes?: string;
   created_at: string;

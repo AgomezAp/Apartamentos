@@ -5,17 +5,48 @@
    ===================================================== */
 
 /* =====================================================
-   CONTAINER PRINCIPAL
+   🔥 FIX CRÍTICO: HOST - BLOQUEAR SCROLL
    ===================================================== */
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* =====================================================
+   CONTAINER PRINCIPAL - SIN SCROLL
+   ===================================================== */
+
 .auth-container {
-  min-height: 100vh;
+  /* Posicionamiento fijo que cubre TODO */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* 🔥 CLAVE: Bloquear scroll externo */
+  overflow: hidden;
+
+  /* Centrado */
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Fondo con gradiente */
   background: linear-gradient(135deg, #141414 0%, #2a2a2a 50%, #141414 100%);
+
+  /* Por encima de todo */
+  z-index: 99999;
+
+  /* Reset */
+  margin: 0;
   padding: 24px;
-  position: relative;
-  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Efecto decorativo de fondo */
@@ -27,13 +58,15 @@
   width: 200%;
   height: 200%;
   background: radial-gradient(
-    circle,
-    rgba(255, 214, 0, 0.05) 0%,
+    circle at 30% 40%,
+    rgba(255, 214, 0, 0.06) 0%,
     transparent 50%
   );
   animation: pulse 15s ease-in-out infinite;
+  pointer-events: none;
 }
 
+/* Línea amarilla inferior */
 .auth-container::after {
   content: "";
   position: absolute;
@@ -42,6 +75,7 @@
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, transparent, #ffd600, transparent);
+  pointer-events: none;
 }
 
 @keyframes pulse {
@@ -59,18 +93,27 @@
 /* =====================================================
    CARD DE REGISTRO - MÁS ANCHA PARA DOS COLUMNAS
    ===================================================== */
+
 .auth-card {
   background: #ffffff;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 214, 0, 0.1);
   width: 100%;
-  max-width: 600px;
-  padding: 40px 48px;
-  animation: fadeInUp 0.5s ease-out;
+  max-width: 580px;
+  padding: 36px 44px;
   position: relative;
   z-index: 1;
+
+  /* 🔥 Control de altura máxima con scroll interno */
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Animación de entrada */
+  animation: fadeInUp 0.5s ease-out;
 }
 
+/* Línea amarilla superior */
 .auth-card::before {
   content: "";
   position: absolute;
@@ -80,6 +123,25 @@
   height: 5px;
   background: #ffd600;
   border-radius: 20px 20px 0 0;
+}
+
+/* Scrollbar personalizado para la card */
+.auth-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-card::-webkit-scrollbar-track {
+  background: #f4f4f5;
+  border-radius: 3px;
+}
+
+.auth-card::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 3px;
+}
+
+.auth-card::-webkit-scrollbar-thumb:hover {
+  background: #ffd600;
 }
 
 @keyframes fadeInUp {
@@ -96,20 +158,21 @@
 /* =====================================================
    HEADER
    ===================================================== */
+
 .auth-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .logo {
-  width: 85px;
-  height: 85px;
+  width: 80px;
+  height: 80px;
   background: #141414;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
+  margin: 0 auto 18px;
   box-shadow: 0 8px 25px rgba(20, 20, 20, 0.3), 0 0 0 5px rgba(255, 214, 0, 0.3);
   position: relative;
   overflow: hidden;
@@ -133,7 +196,7 @@
 }
 
 .logo i {
-  font-size: 36px;
+  font-size: 34px;
   color: #ffd600;
   position: relative;
   z-index: 1;
@@ -141,9 +204,9 @@
 
 .auth-header h1 {
   font-family: "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
-  font-size: 30px;
+  font-size: 28px;
   color: #141414;
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   font-weight: 700;
   letter-spacing: -0.5px;
 }
@@ -152,24 +215,26 @@
   font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   color: #71717a;
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
+  line-height: 1.4;
 }
 
 /* =====================================================
    FORMULARIO - LAYOUT
    ===================================================== */
+
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 /* Fila para campos lado a lado */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 18px;
 }
 
 /* Campo de ancho completo */
@@ -180,15 +245,16 @@
 /* =====================================================
    FORM GROUP
    ===================================================== */
+
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .form-group label {
   font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #141414;
   display: flex;
@@ -198,7 +264,7 @@
 
 .form-group label i {
   color: #ffd600;
-  font-size: 14px;
+  font-size: 13px;
   width: 16px;
   text-align: center;
   filter: drop-shadow(0 0 3px rgba(255, 214, 0, 0.4));
@@ -207,23 +273,25 @@
 .optional-label {
   color: #a1a1aa;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 /* =====================================================
    INPUTS
    ===================================================== */
+
 .form-group input {
   font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border: 2px solid #e4e4e7;
   border-radius: 10px;
   font-size: 14px;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   outline: none;
   background: #fafafa;
   color: #141414;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group input::placeholder {
@@ -280,6 +348,7 @@
 /* =====================================================
    INPUT DE CONTRASEÑA
    ===================================================== */
+
 .password-input {
   position: relative;
   width: 100%;
@@ -287,12 +356,12 @@
 
 .password-input input {
   width: 100%;
-  padding-right: 50px;
+  padding-right: 48px;
 }
 
 .toggle-password {
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -303,7 +372,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   border-radius: 6px;
 }
 
@@ -318,26 +387,27 @@
 }
 
 .toggle-password i {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 /* =====================================================
    MENSAJES DE ERROR
    ===================================================== */
+
 .error-message {
   font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   color: #ef4444;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding: 2px 0;
   animation: slideDown 0.3s ease;
 }
 
 .error-message::before {
   content: "⚠";
-  font-size: 11px;
+  font-size: 10px;
 }
 
 @keyframes slideDown {
@@ -354,25 +424,27 @@
 /* =====================================================
    BOTÓN PRINCIPAL
    ===================================================== */
+
 .btn-primary {
   font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   background: #141414;
   color: #ffd600;
   border: none;
-  padding: 16px 28px;
-  border-radius: 12px;
-  font-size: 16px;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 6px;
   position: relative;
   overflow: hidden;
   width: 100%;
+  min-height: 50px;
 }
 
 .btn-primary::before {
@@ -397,20 +469,18 @@
 
 .btn-primary:hover:not(:disabled) {
   background: #2a2a2a;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(20, 20, 20, 0.3),
-    0 0 0 3px rgba(255, 214, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(20, 20, 20, 0.3), 0 0 0 2px rgba(255, 214, 0, 0.3);
 }
 
 .btn-primary:active:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(0);
   box-shadow: 0 4px 15px rgba(20, 20, 20, 0.2);
 }
 
 .btn-primary:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(255, 214, 0, 0.4),
-    0 10px 30px rgba(20, 20, 20, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.4), 0 8px 25px rgba(20, 20, 20, 0.2);
 }
 
 .btn-primary:disabled {
@@ -422,7 +492,7 @@
 }
 
 .btn-primary i {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 /* Spinner de carga */
@@ -442,30 +512,32 @@
 /* =====================================================
    FOOTER DEL FORMULARIO
    ===================================================== */
+
 .form-footer {
   text-align: center;
-  margin-top: 8px;
-  padding-top: 24px;
+  margin-top: 6px;
+  padding-top: 18px;
   border-top: 1px solid #e4e4e7;
 }
 
 .form-footer p {
   font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   color: #71717a;
 }
 
 /* =====================================================
    LINKS
    ===================================================== */
+
 .link {
   font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   color: #141414;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   position: relative;
   margin-left: 4px;
 }
@@ -478,7 +550,7 @@
   width: 0;
   height: 2px;
   background: #ffd600;
-  transition: width 0.3s ease;
+  transition: width 0.25s ease;
 }
 
 .link:hover {
@@ -498,8 +570,9 @@
 }
 
 /* =====================================================
-   RESPONSIVE - TABLETS
+   RESPONSIVE - TABLETS (768px)
    ===================================================== */
+
 @media (max-width: 768px) {
   .auth-container {
     padding: 20px;
@@ -507,33 +580,8 @@
 
   .auth-card {
     max-width: 100%;
-    padding: 36px 32px;
-  }
-
-  .auth-header h1 {
-    font-size: 26px;
-  }
-}
-
-/* =====================================================
-   RESPONSIVE - MÓVILES
-   ===================================================== */
-@media (max-width: 576px) {
-  .auth-container {
-    padding: 16px;
-    align-items: flex-start;
-    padding-top: 32px;
-  }
-
-  .auth-card {
-    padding: 28px 20px;
-    border-radius: 16px;
-  }
-
-  /* En móvil, los campos van en una sola columna */
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    padding: 32px 28px;
+    max-height: calc(100vh - 40px);
   }
 
   .auth-header h1 {
@@ -541,7 +589,7 @@
   }
 
   .auth-header p {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .logo {
@@ -552,22 +600,88 @@
   .logo i {
     font-size: 30px;
   }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES (576px)
+   ===================================================== */
+
+@media (max-width: 576px) {
+  .auth-container {
+    padding: 16px;
+  }
+
+  .auth-card {
+    padding: 28px 20px;
+    border-radius: 16px;
+    max-height: calc(100vh - 32px);
+  }
+
+  /* En móvil, los campos van en una sola columna */
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .auth-header {
+    margin-bottom: 24px;
+  }
+
+  .auth-header h1 {
+    font-size: 22px;
+  }
+
+  .auth-header p {
+    font-size: 13px;
+  }
+
+  .logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 14px;
+  }
+
+  .logo i {
+    font-size: 28px;
+  }
 
   .form-group input {
-    padding: 12px 14px;
+    padding: 11px 12px;
     font-size: 16px; /* Evita zoom en iOS */
   }
 
+  .form-group label {
+    font-size: 12px;
+  }
+
   .btn-primary {
-    padding: 14px 24px;
-    font-size: 15px;
-    border-radius: 10px;
+    padding: 13px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+    min-height: 46px;
   }
 
   .auth-form {
-    gap: 16px;
+    gap: 14px;
+  }
+
+  .form-footer {
+    padding-top: 14px;
+    margin-top: 4px;
+  }
+
+  .form-footer p {
+    font-size: 12px;
+  }
+
+  .link {
+    font-size: 12px;
   }
 }
+
+/* =====================================================
+   RESPONSIVE - MÓVILES MUY PEQUEÑOS (380px)
+   ===================================================== */
 
 @media (max-width: 380px) {
   .auth-container {
@@ -576,55 +690,212 @@
 
   .auth-card {
     padding: 24px 16px;
+    max-height: calc(100vh - 24px);
   }
 
   .auth-header h1 {
-    font-size: 22px;
+    font-size: 20px;
+  }
+
+  .auth-header p {
+    font-size: 12px;
+  }
+
+  .logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .logo i {
+    font-size: 24px;
+  }
+
+  .form-group label {
+    font-size: 11px;
+  }
+
+  .form-group input {
+    padding: 10px;
+  }
+
+  .error-message {
+    font-size: 10px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - ALTURA PEQUEÑA (Landscape móvil)
+   ===================================================== */
+
+@media (max-height: 700px) {
+  .auth-card {
+    padding: 24px 32px;
+  }
+
+  .auth-header {
+    margin-bottom: 20px;
   }
 
   .logo {
     width: 60px;
     height: 60px;
+    margin-bottom: 12px;
   }
 
   .logo i {
     font-size: 26px;
   }
 
-  .form-group label {
-    font-size: 13px;
+  .auth-header h1 {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  .auth-header p {
+    font-size: 12px;
+  }
+
+  .auth-form {
+    gap: 12px;
+  }
+
+  .form-row {
+    gap: 12px;
+  }
+
+  .form-group {
+    gap: 4px;
+  }
+
+  .form-group input {
+    padding: 10px 12px;
+  }
+
+  .btn-primary {
+    padding: 12px 20px;
+    min-height: 44px;
+  }
+
+  .form-footer {
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+}
+
+@media (max-height: 600px) {
+  .auth-card {
+    padding: 20px 24px;
+  }
+
+  .auth-header {
+    margin-bottom: 16px;
+  }
+
+  .logo {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+
+  .logo i {
+    font-size: 22px;
+  }
+
+  .auth-header h1 {
+    font-size: 20px;
+  }
+
+  .auth-form {
+    gap: 10px;
+  }
+
+  .form-row {
+    gap: 10px;
+  }
+
+  .form-group input {
+    padding: 8px 10px;
+  }
+
+  .btn-primary {
+    padding: 10px 16px;
+    min-height: 40px;
+    font-size: 14px;
   }
 }
 
 /* =====================================================
-   ACCESIBILIDAD
+   ACCESIBILIDAD - REDUCED MOTION
    ===================================================== */
+
 @media (prefers-reduced-motion: reduce) {
+  .auth-container::before {
+    animation: none;
+  }
+
+  .auth-card {
+    animation: none;
+  }
+
+  .btn-primary .fa-spinner {
+    animation: none;
+  }
+
+  .btn-primary::before {
+    display: none;
+  }
+
+  .logo {
+    transition: none;
+  }
+
+  .form-group input.error {
+    animation: none;
+  }
+
   *,
   *::before,
   *::after {
+    transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
 }
 
-/* Focus visible para navegación por teclado */
+/* =====================================================
+   ACCESIBILIDAD - FOCUS VISIBLE
+   ===================================================== */
+
 .form-group input:focus-visible,
 .btn-primary:focus-visible,
 .toggle-password:focus-visible,
 .link:focus-visible {
-  outline: 2px solid #ffd600;
+  outline: 3px solid #ffd600;
   outline-offset: 2px;
 }
 
-/* Alto contraste */
+/* =====================================================
+   ACCESIBILIDAD - HIGH CONTRAST
+   ===================================================== */
+
 @media (prefers-contrast: high) {
+  .auth-card {
+    border: 3px solid #141414;
+  }
+
   .form-group input {
     border-width: 3px;
   }
 
   .btn-primary {
     border: 2px solid #ffd600;
+  }
+
+  .link::after {
+    height: 3px;
+  }
+
+  .auth-card::before {
+    height: 6px;
   }
 }

@@ -447,11 +447,7 @@ export function initializeAssociations(): void {
     as: 'assignedTo',
   });
 
-  // MaintenanceRequest belongsTo User (resolved_by)
-  MaintenanceRequestModel.belongsTo(UserModel, {
-    foreignKey: 'resolved_by',
-    as: 'resolvedBy',
-  });
+  // NOTA: resolved_by ya no es foreign key, es VARCHAR con el nombre del técnico
 
   // Unit hasMany MaintenanceRequests
   UnitModel.hasMany(MaintenanceRequestModel, {
@@ -474,12 +470,7 @@ export function initializeAssociations(): void {
     onDelete: 'SET NULL',
   });
 
-  // User hasMany MaintenanceRequests (resolved_by)
-  UserModel.hasMany(MaintenanceRequestModel, {
-    foreignKey: 'resolved_by',
-    as: 'resolvedMaintenanceRequests',
-    onDelete: 'SET NULL',
-  });
+  // NOTA: No hay asociación resolved_by - es texto con nombre del técnico, no FK
 
   console.log('✅ Asociaciones de modelos inicializadas correctamente');
 }

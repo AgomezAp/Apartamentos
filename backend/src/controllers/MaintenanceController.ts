@@ -197,6 +197,10 @@ class MaintenanceController {
   async update(req: Request, res: Response): Promise<void> {
     try {
       const id = parseInt(req.params.id);
+      console.log('=== MAINTENANCE UPDATE ===');
+      console.log('ID:', id);
+      console.log('Body:', JSON.stringify(req.body, null, 2));
+      console.log('Body keys:', Object.keys(req.body));
       const updated: any = await MaintenanceRepository.update(id, req.body);
 
       if (!updated) {
@@ -213,6 +217,7 @@ class MaintenanceController {
         data: updated,
       });
     } catch (error: any) {
+      console.error('Error updating maintenance request:', error);
       res.status(500).json({
         success: false,
         message: 'Error al actualizar solicitud de mantenimiento',
