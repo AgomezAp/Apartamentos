@@ -40,9 +40,9 @@
           <option value="">Todas las categorías</option>
           <option
             *ngFor="let category of categories"
-            [value]="category.category_id"
+            [value]="category.expense_category_id"
           >
-            {{ category.category_name }}
+            {{ category.name }}
           </option>
         </select>
       </div>

@@ -13,10 +13,6 @@ interface MaintenanceRequest {
   scheduled_date?: Date | null;
   completed_date?: Date | null;
   assigned_to?: number | null;
-  assigned_to_name?: string | null;  // Nombre del técnico/tercero
-  assigned_to_phone?: string | null; // Teléfono del técnico
-  assigned_to_company?: string | null; // Empresa del técnico
-  assigned_to_email?: string | null; // Email del técnico
   resolved_by?: number | null;
   estimated_cost?: number | null;
   actual_cost?: number | null;
@@ -59,10 +55,6 @@ class MaintenanceRepository {
         mr.scheduled_date,
         mr.completed_date,
         mr.assigned_to,
-        mr.assigned_to_name,
-        mr.assigned_to_phone,
-        mr.assigned_to_company,
-        mr.assigned_to_email,
         mr.resolved_by,
         mr.estimated_cost,
         mr.actual_cost,
@@ -74,7 +66,7 @@ class MaintenanceRepository {
         b.name as building_name,
         CONCAT(t.first_name, ' ', t.last_name) as tenant_name,
         t.email as tenant_email,
-        COALESCE(mr.assigned_to_name, assignee.full_name) as assigned_to_display_name
+        assignee.full_name as assigned_to_display_name
       FROM maintenance_requests mr
       LEFT JOIN units u ON mr.unit_id = u.id
       LEFT JOIN buildings b ON u.building_id = b.id
@@ -137,10 +129,6 @@ class MaintenanceRepository {
         mr.scheduled_date,
         mr.completed_date,
         mr.assigned_to,
-        mr.assigned_to_name,
-        mr.assigned_to_phone,
-        mr.assigned_to_company,
-        mr.assigned_to_email,
         mr.resolved_by,
         mr.estimated_cost,
         mr.actual_cost,
@@ -153,7 +141,7 @@ class MaintenanceRepository {
         CONCAT(t.first_name, ' ', t.last_name) as tenant_name,
         t.email as tenant_email,
         t.phone as tenant_phone,
-        COALESCE(mr.assigned_to_name, assignee.full_name) as assigned_to_display_name
+        assignee.full_name as assigned_to_display_name
       FROM maintenance_requests mr
       LEFT JOIN units u ON mr.unit_id = u.id
       LEFT JOIN buildings b ON u.building_id = b.id
@@ -202,8 +190,7 @@ class MaintenanceRepository {
 
     const updateableFields = [
       'title', 'description', 'priority', 'status', 'category',
-      'scheduled_date', 'completed_date', 'assigned_to', 'assigned_to_name',
-      'assigned_to_phone', 'assigned_to_company', 'assigned_to_email', 
+      'scheduled_date', 'completed_date', 'assigned_to', 
       'resolved_by', 'estimated_cost', 'actual_cost', 'notes', 'attachments'
     ];
 

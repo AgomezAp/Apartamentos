@@ -39,12 +39,12 @@ export interface ExpenseFormData {
 }
 
 export interface ExpenseCategory {
-  category_id: number;
-  category_name: string;
+  expense_category_id: number;
+  name: string;
   description?: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ExpenseFilter {

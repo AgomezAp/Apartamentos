@@ -86,8 +86,8 @@ export class PaymentDetailComponent implements OnInit {
     if (!this.payment) return;
     
     this.paymentService.update(this.payment.id || this.payment.payment_id!, { 
-      status: 'completed', 
-      payment_date: new Date().toISOString() 
+      payment_status_id: 2,  // 2 = Pagado/Completado
+      payment_date: new Date().toISOString().split('T')[0]  // Solo la fecha, sin hora
     }).subscribe({
       next: () => {
         this.loadPayment(this.payment!.id || this.payment!.payment_id!);

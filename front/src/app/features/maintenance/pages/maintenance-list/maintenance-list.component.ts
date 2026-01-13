@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MaintenanceService } from '../../services/maintenance.service';
-import { MaintenanceRequest, MaintenanceFilter, MaintenanceCategories, MaintenancePriorities, MaintenanceStatuses } from '../../models/miantenance.model';
+import { MaintenanceRequest, MaintenanceFilter, MaintenancePriorities, MaintenanceStatuses } from '../../models/miantenance.model';
 import { MaintenanceCardComponent } from '../../components/maintenance-card/maintenance-card.component';
 import { AssignTechnicianModalComponent } from '../../components/assign-technician-modal/assign-technician-modal.component';
 import { ResolveMaintenanceModalComponent } from '../../components/resolve-maintenance-modal/resolve-maintenance-modal.component';
+import { ExpenseCategoryService, ExpenseCategory } from '../../../expense-categories/services/expense-category.service';
 
 @Component({
   selector: 'app-maintenance-list',
@@ -25,7 +26,7 @@ export class MaintenanceListComponent implements OnInit {
   
   // Filters
   filter: MaintenanceFilter = {};
-  categories = MaintenanceCategories;
+  categories: ExpenseCategory[] = [];
   priorities = MaintenancePriorities;
   statuses = MaintenanceStatuses;
   
@@ -34,10 +35,26 @@ export class MaintenanceListComponent implements OnInit {
   itemsPerPage = 9;
   totalItems = 0;
 
-  constructor(private maintenanceService: MaintenanceService) {}
+  constructor(
+    private maintenanceService: MaintenanceService,
+    private expenseCategoryService: ExpenseCategoryService
+  ) {}
 
   ngOnInit(): void {
+    this.loadCategories();
     this.loadRequests();
+  }
+
+  loadCategories(): void {
+    this.expenseCategoryService.getAll().subscribe({
+      next: (response) => {
+        this.categories = response.data || [];
+        console.log('Categorías cargadas en lista:', this.categories);
+      },
+      error: (error) => {
+        console.error('Error cargando categorías:', error);
+      }
+    });
   }
 
   loadRequests(): void {

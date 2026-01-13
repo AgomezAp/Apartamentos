@@ -103,11 +103,11 @@ export class MaintenanceCreateComponent implements OnInit {
         console.log('Maintenance request created:', response);
         this.router.navigate(['/maintenance']);
       },
-      error: (error) => {
+   /*    error: (error) => {
         console.error('Error creating maintenance request:', error);
         alert('Error al crear la solicitud de mantenimiento');
         this.loading = false;
-      }
+      } */
     });
   }
 

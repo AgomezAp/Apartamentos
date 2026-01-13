@@ -21,20 +21,22 @@ export const unitExistsValidator = body('unit_id')
   });
 
 /**
- * Validador: verificar que el inquilino existe
+ * Validador: verificar que el inquilino existe (OPCIONAL)
  */
 export const tenantExistsValidator = body('tenant_id')
-  .notEmpty()
-  .withMessage('El ID del inquilino es requerido')
+  .optional({ checkFalsy: true }) // Permite null, undefined, empty string
   .isInt()
   .withMessage('El ID del inquilino debe ser un número entero')
   .custom(async (tenantId) => {
-    const result = await executeQuery<any[]>(
-      'SELECT id FROM tenants WHERE id = $1 AND is_active = true',
-      [tenantId]
-    );
-    if (!result || result.length === 0) {
-      throw new Error('El inquilino especificado no existe o no está activo');
+    // Solo valida si se proporciona un ID
+    if (tenantId) {
+      const result = await executeQuery<any[]>(
+        'SELECT id FROM tenants WHERE id = $1 AND is_active = true',
+        [tenantId]
+      );
+      if (!result || result.length === 0) {
+        throw new Error('El inquilino especificado no existe o no está activo');
+      }
     }
     return true;
   });
@@ -58,18 +60,8 @@ export const createMaintenanceValidators = [
   body('category')
     .notEmpty()
     .withMessage('La categoría es requerida')
-    .isIn([
-      'Plomería',
-      'Electricidad',
-      'Pintura',
-      'Carpintería',
-      'Cerrajería',
-      'Electrodomésticos',
-      'Limpieza',
-      'Aire Acondicionado',
-      'Otros'
-    ])
-    .withMessage('Categoría no válida'),
+    .isLength({ min: 1, max: 255 })
+    .withMessage('La categoría debe ser válida'),
   body('priority')
     .optional()
     .isIn(['low', 'medium', 'high', 'urgent'])

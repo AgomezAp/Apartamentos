@@ -1,70 +1,38 @@
 /* =====================================================
-   DASHBOARD LAYOUT - OPTIMIZADO
-   Sistema de Gestión de Arrendamiento
+   DASHBOARD CONTAINER - LAYOUT PRINCIPAL
    ===================================================== */
 
-/* =====================================================
-   VARIABLES LOCALES DEL DASHBOARD
-   ===================================================== */
-.dashboard-container {
-  --dashboard-gap: var(--spacing-lg);
-  --widget-min-height: 280px;
-  --widget-compact-height: 240px;
-  --widget-tall-height: 400px; /* NUEVO: Para widgets altos */
-  --header-height: 80px;
-  --stats-height: 100px;
-}
-
-/* =====================================================
-   CONTENEDOR PRINCIPAL
-   ===================================================== */
 .dashboard-container {
   min-height: 100vh;
   background-color: var(--color-gray-50);
   font-family: var(--font-body);
-  padding: var(--spacing-lg);
-  max-width: 1600px;
-  margin: 0 auto;
 }
 
 /* =====================================================
-   DASHBOARD HEADER
+   HEADER DEL DASHBOARD
    ===================================================== */
+
 .dashboard-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  padding: var(--spacing-xl) var(--spacing-2xl);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    var(--color-primary-light) 100%
-  );
-  padding: var(--spacing-md) var(--spacing-xl);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-lg);
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
 }
 
 .header-content h1 {
   font-family: var(--font-display);
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--color-white);
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.header-content h1::before {
-  content: "📊";
 }
 
 .header-subtitle {
+  font-size: 0.95rem;
   color: var(--color-gray-400);
-  font-size: 0.9rem;
   margin: var(--spacing-xs) 0 0 0;
 }
 
@@ -75,7 +43,10 @@
   flex-wrap: wrap;
 }
 
-/* Date Filters */
+/* =====================================================
+   FILTROS DE FECHA
+   ===================================================== */
+
 .date-filters {
   display: flex;
   gap: var(--spacing-md);
@@ -84,31 +55,28 @@
 
 .filter-group {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+  flex-direction: column;
+  gap: var(--spacing-xs);
 }
 
 .filter-group label {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-gray-300);
-  white-space: nowrap;
+  color: var(--color-gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .date-input {
   padding: var(--spacing-sm) var(--spacing-md);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  border: 2px solid var(--color-gray-600);
-  border-radius: var(--radius-md);
-  background-color: var(--color-primary-lighter);
+  border: 2px solid var(--color-primary-lighter);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary-light);
   color: var(--color-white);
-  transition: all var(--transition-normal);
-  min-height: 40px;
-}
-
-.date-input:hover {
-  border-color: var(--color-gray-500);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  transition: all var(--transition-fast);
+  min-width: 140px;
 }
 
 .date-input:focus {
@@ -117,28 +85,35 @@
   box-shadow: var(--shadow-glow);
 }
 
-/* Refresh Button */
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* =====================================================
+   BOTÓN REFRESH
+   ===================================================== */
+
 .btn-refresh {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-lg);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-primary);
   background-color: var(--color-secondary);
-  border: 2px solid var(--color-secondary);
+  color: var(--color-primary);
+  border: none;
   border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-normal);
-  min-height: 40px;
+  transition: all var(--transition-fast);
 }
 
 .btn-refresh:hover:not(:disabled) {
-  background-color: var(--color-secondary-light);
   transform: translateY(-2px);
   box-shadow: var(--shadow-glow);
+  background-color: var(--color-secondary-light);
 }
 
 .btn-refresh:disabled {
@@ -147,8 +122,8 @@
 }
 
 .btn-icon {
-  font-size: 1rem;
   display: inline-block;
+  font-size: 1rem;
 }
 
 .btn-icon.spinning {
@@ -156,25 +131,21 @@
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* =====================================================
-   LOADING & ERROR STATES
+   LOADING STATE
    ===================================================== */
-.loading-container,
-.error-container {
+
+.loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: var(--spacing-2xl);
   min-height: 400px;
-  background-color: var(--color-white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-200);
 }
 
 .spinner {
@@ -186,15 +157,27 @@
   animation: spin 1s linear infinite;
 }
 
-.loading-container p,
-.error-container p {
+.loading-container p {
   margin-top: var(--spacing-lg);
-  font-size: 1rem;
   color: var(--color-gray-500);
+  font-size: 0.95rem;
 }
 
+/* =====================================================
+   ERROR STATE
+   ===================================================== */
+
 .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  min-height: 300px;
   background-color: var(--color-error-bg);
+  border: 2px dashed var(--color-error);
+  border-radius: var(--radius-lg);
+  margin: var(--spacing-xl);
 }
 
 .error-icon {
@@ -205,20 +188,20 @@
 .error-container p {
   color: var(--color-error);
   font-weight: 500;
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
 }
 
 .btn-retry {
-  margin-top: var(--spacing-lg);
   padding: var(--spacing-sm) var(--spacing-xl);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-white);
   background-color: var(--color-error);
+  color: var(--color-white);
   border: none;
   border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition: all var(--transition-fast);
 }
 
 .btn-retry:hover {
@@ -229,85 +212,81 @@
 /* =====================================================
    DASHBOARD CONTENT
    ===================================================== */
+
 .dashboard-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
 /* =====================================================
-   STATS GRID - 6 Cards en una fila
+   STATS GRID - Tarjetas de estadísticas superiores
    ===================================================== */
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: var(--spacing-md);
-}
-
-/* Asegurar que las stats cards sean compactas */
-.stats-grid ::ng-deep .stats-card,
-.stats-grid > * {
-  min-height: auto;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
 }
 
 /* =====================================================
-   🔥 DASHBOARD GRID - LAYOUT PRINCIPAL OPTIMIZADO
+   🔥 DASHBOARD GRID - SOLUCIÓN AL ESPACIO EN BLANCO
+   Usando grid-auto-flow: dense para llenar huecos
    ===================================================== */
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows:
-    minmax(280px, auto) /* Fila 1: Charts principales */
-    minmax(250px, 320px) /* Fila 2: Tabla pagos recientes */
-    minmax(240px, auto) /* Fila 3: Widgets medianos */
-    minmax(350px, auto); /* 🔥 Fila 4: Alertas y Tareas - AUMENTADA */
+  grid-auto-rows: minmax(min-content, auto); /* 🔑 CLAVE: altura automática */
+  grid-auto-flow: dense; /* 🔑 CLAVE: llena los huecos */
   gap: var(--spacing-lg);
-  grid-template-areas:
-    "revenue  revenue  revenue  revenue  revenue  revenue  revenue  trends  trends  trends  trends  trends"
-    "recent   recent   recent   recent   recent   recent   recent   recent  recent  recent  recent  recent"
-    "occupancy occupancy occupancy occupancy overdue overdue overdue overdue history history history history"
-    "alerts   alerts   alerts   alerts   alerts   alerts   tasks    tasks   tasks   tasks   tasks   tasks";
+  align-items: start; /* 🔑 CLAVE: alinea al inicio */
 }
 
-/* Widget Areas */
+/* ----- WIDGETS LAYOUT ----- */
+
+/* Revenue Chart - Ocupa 8 columnas */
 .widget-revenue {
-  grid-area: revenue;
+  grid-column: span 8;
 }
 
+/* Expense Trends - Ocupa 4 columnas */
 .widget-trends {
-  grid-area: trends;
+  grid-column: span 4;
 }
 
-.widget-recent-table {
-  grid-area: recent;
-}
-
+/* Ocupación - 4 columnas */
 .widget-occupancy {
-  grid-area: occupancy;
+  grid-column: span 4;
 }
 
+/* Pagos Vencidos - 4 columnas */
 .widget-overdue {
-  grid-area: overdue;
+  grid-column: span 4;
 }
 
+/* Historial de Pagos - 4 columnas */
 .widget-history {
-  grid-area: history;
+  grid-column: span 4;
 }
 
+/* Alertas - 6 columnas */
 .widget-alerts {
-  grid-area: alerts;
+  grid-column: span 6;
 }
 
+/* Tareas Pendientes - 6 columnas */
 .widget-tasks {
-  grid-area: tasks;
+  grid-column: span 6;
 }
 
 /* =====================================================
    ESTILOS BASE PARA TODOS LOS WIDGETS
    ===================================================== */
+
 .widget-revenue,
 .widget-trends,
-.widget-recent-table,
 .widget-occupancy,
 .widget-overdue,
 .widget-history,
@@ -319,161 +298,87 @@
   border: 1px solid var(--color-gray-200);
   overflow: hidden;
   transition: all var(--transition-normal);
-  display: flex;
-  flex-direction: column;
+  /* 🔑 IMPORTANTE: altura automática basada en contenido */
+  height: fit-content;
 }
 
 .widget-revenue:hover,
 .widget-trends:hover,
-.widget-recent-table:hover,
 .widget-occupancy:hover,
 .widget-overdue:hover,
 .widget-history:hover,
 .widget-alerts:hover,
 .widget-tasks:hover {
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
   border-color: var(--color-secondary);
 }
 
-/* Asegurar que los componentes internos llenen el espacio */
-.widget-revenue > *,
-.widget-trends > *,
-.widget-recent-table > *,
-.widget-occupancy > *,
-.widget-overdue > *,
-.widget-history > *,
-.widget-alerts > *,
-.widget-tasks > * {
-  flex: 1;
-  min-height: 0;
-}
-
 /* =====================================================
-   AJUSTES ESPECÍFICOS POR WIDGET
+   RESPONSIVE - TABLETS LANDSCAPE (1024px)
    ===================================================== */
 
-/* Widget de tabla con altura limitada y scroll interno */
-.widget-recent-table {
-  max-height: 320px;
-}
-
-/* =====================================================
-   🔥 WIDGETS ALERTAS Y TAREAS - MÁS ESPACIO VERTICAL
-   ===================================================== */
-.widget-alerts,
-.widget-tasks {
-  min-height: 350px; /* 🔥 NUEVO: Altura mínima aumentada */
-  max-height: 450px; /* 🔥 CAMBIADO: de 260px a 450px */
-}
-
-/* Override para que los componentes internos manejen su propio scroll */
-.widget-recent-table ::ng-deep .table-responsive,
-.widget-overdue ::ng-deep .table-responsive,
-.widget-history ::ng-deep .payment-list {
-  overflow-y: auto;
-  max-height: 200px;
-}
-
-/* 🔥 LISTAS DE ALERTAS Y TAREAS - MÁS ESPACIO */
-.widget-alerts ::ng-deep .alerts-list,
-.widget-tasks ::ng-deep .tasks-list {
-  overflow-y: auto;
-  max-height: 320px; /* 🔥 CAMBIADO: de 180px a 320px */
-}
-
-/* 🔥 Ajustar altura mínima de los widgets internos */
-.widget-alerts ::ng-deep .alerts-widget,
-.widget-tasks ::ng-deep .pending-tasks {
-  min-height: 350px;
-}
-
-/* =====================================================
-   RESPONSIVE - PANTALLAS GRANDES (1400px+)
-   ===================================================== */
-@media (min-width: 1400px) {
-  .dashboard-container {
-    padding: var(--spacing-xl);
-  }
-
-  .dashboard-grid {
-    gap: var(--spacing-xl);
-  }
-
-  /* Aún más espacio en pantallas grandes */
-  .widget-alerts,
-  .widget-tasks {
-    min-height: 400px;
-    max-height: 500px;
-  }
-
-  .widget-alerts ::ng-deep .alerts-list,
-  .widget-tasks ::ng-deep .tasks-list {
-    max-height: 380px;
-  }
-}
-
-/* =====================================================
-   RESPONSIVE - TABLETS LANDSCAPE (1024px - 1200px)
-   ===================================================== */
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-md);
   }
 
   .dashboard-grid {
     grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: auto;
-    grid-template-areas:
-      "revenue  revenue  revenue  trends   trends   trends"
-      "recent   recent   recent   recent   recent   recent"
-      "occupancy occupancy overdue  overdue  history  history"
-      "alerts   alerts   alerts   tasks    tasks    tasks";
   }
 
-  /* Mantener altura en tablets */
-  .widget-alerts,
+  .widget-revenue {
+    grid-column: span 6;
+  }
+
+  .widget-trends {
+    grid-column: span 6;
+  }
+
+  .widget-occupancy {
+    grid-column: span 3;
+  }
+
+  .widget-overdue {
+    grid-column: span 3;
+  }
+
+  .widget-history {
+    grid-column: span 6;
+  }
+
+  .widget-alerts {
+    grid-column: span 3;
+  }
+
   .widget-tasks {
-    min-height: 320px;
-    max-height: 400px;
-  }
-
-  .widget-alerts ::ng-deep .alerts-list,
-  .widget-tasks ::ng-deep .tasks-list {
-    max-height: 280px;
+    grid-column: span 3;
   }
 }
 
 /* =====================================================
-   RESPONSIVE - TABLETS PORTRAIT (768px - 1024px)
+   RESPONSIVE - TABLETS PORTRAIT (768px)
    ===================================================== */
-@media (max-width: 1024px) {
-  .dashboard-container {
-    padding: var(--spacing-md);
-  }
 
+@media (max-width: 768px) {
   .dashboard-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-md);
     padding: var(--spacing-lg);
+    flex-direction: column;
+    text-align: center;
   }
 
   .header-actions {
-    width: 100%;
     flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-md);
+    width: 100%;
   }
 
   .date-filters {
-    flex-wrap: wrap;
+    flex-direction: column;
     width: 100%;
   }
 
   .filter-group {
-    flex: 1;
-    min-width: 140px;
+    width: 100%;
   }
 
   .date-input {
@@ -485,159 +390,51 @@
     justify-content: center;
   }
 
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "revenue  revenue"
-      "trends   trends"
-      "recent   recent"
-      "occupancy overdue"
-      "history  history"
-      "alerts   alerts"
-      "tasks    tasks";
-    gap: var(--spacing-md);
-  }
-
-  /* Full width en tablets - más espacio vertical */
-  .widget-recent-table,
-  .widget-alerts,
-  .widget-tasks {
-    max-height: none;
-    min-height: 300px;
-  }
-
-  .widget-alerts ::ng-deep .alerts-list,
-  .widget-tasks ::ng-deep .tasks-list {
-    max-height: 250px;
-  }
-}
-
-/* =====================================================
-   RESPONSIVE - MÓVILES (480px - 768px)
-   ===================================================== */
-@media (max-width: 768px) {
-  .dashboard-container {
-    padding: var(--spacing-sm);
-  }
-
-  .dashboard-header {
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-  }
-
-  .header-content h1 {
-    font-size: 1.4rem;
-  }
-
-  .date-filters {
-    flex-direction: column;
-  }
-
-  .filter-group {
-    width: 100%;
+  .dashboard-content {
+    padding: var(--spacing-lg);
   }
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-sm);
   }
 
   .dashboard-grid {
     grid-template-columns: 1fr;
-    grid-template-areas:
-      "revenue"
-      "trends"
-      "recent"
-      "occupancy"
-      "overdue"
-      "history"
-      "alerts"
-      "tasks";
-    gap: var(--spacing-md);
   }
 
-  /* En móvil, permitir altura automática pero con mínimo */
+  .widget-revenue,
+  .widget-trends,
+  .widget-occupancy,
+  .widget-overdue,
+  .widget-history,
   .widget-alerts,
   .widget-tasks {
-    min-height: 280px;
-    max-height: none;
-  }
-
-  .widget-alerts ::ng-deep .alerts-list,
-  .widget-tasks ::ng-deep .tasks-list {
-    max-height: 220px;
+    grid-column: span 1;
   }
 }
 
 /* =====================================================
-   RESPONSIVE - MÓVILES PEQUEÑOS (< 480px)
+   RESPONSIVE - MÓVILES (480px)
    ===================================================== */
+
 @media (max-width: 480px) {
-  .dashboard-container {
-    padding: var(--spacing-xs);
-  }
-
-  .dashboard-header {
-    padding: var(--spacing-sm) var(--spacing-md);
-  }
-
   .header-content h1 {
-    font-size: 1.2rem;
-  }
-
-  .header-subtitle {
-    font-size: 0.8rem;
+    font-size: 1.5rem;
   }
 
   .stats-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 
-  .filter-group label {
-    font-size: 0.8rem;
-  }
-
-  .date-input {
-    font-size: 0.85rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
-  .btn-refresh {
-    font-size: 0.85rem;
-    padding: var(--spacing-sm) var(--spacing-md);
-  }
-
-  /* Widgets sin hover en móvil */
-  .widget-revenue:hover,
-  .widget-trends:hover,
-  .widget-recent-table:hover,
-  .widget-occupancy:hover,
-  .widget-overdue:hover,
-  .widget-history:hover,
-  .widget-alerts:hover,
-  .widget-tasks:hover {
-    transform: none;
-  }
-
-  /* Altura más compacta en móviles pequeños */
-  .widget-alerts,
-  .widget-tasks {
-    min-height: 250px;
-  }
-
-  .widget-alerts ::ng-deep .alerts-list,
-  .widget-tasks ::ng-deep .tasks-list {
-    max-height: 180px;
+  .dashboard-content {
+    padding: var(--spacing-md);
   }
 }
 
 /* =====================================================
-   ACCESIBILIDAD - REDUCED MOTION
+   ACCESIBILIDAD
    ===================================================== */
+
 @media (prefers-reduced-motion: reduce) {
   .btn-icon.spinning {
     animation: none;
@@ -649,42 +446,25 @@
 
   .widget-revenue,
   .widget-trends,
-  .widget-recent-table,
   .widget-occupancy,
   .widget-overdue,
   .widget-history,
   .widget-alerts,
-  .widget-tasks,
-  .btn-refresh,
-  .btn-retry {
+  .widget-tasks {
     transition: none;
-  }
-
-  .widget-revenue:hover,
-  .widget-trends:hover,
-  .widget-recent-table:hover,
-  .widget-occupancy:hover,
-  .widget-overdue:hover,
-  .widget-history:hover,
-  .widget-alerts:hover,
-  .widget-tasks:hover,
-  .btn-refresh:hover,
-  .btn-retry:hover {
-    transform: none;
   }
 }
 
-/* =====================================================
-   ACCESIBILIDAD - HIGH CONTRAST
-   ===================================================== */
-@media (prefers-contrast: high) {
-  .dashboard-header {
-    border: 2px solid var(--color-white);
-  }
+.btn-refresh:focus-visible,
+.btn-retry:focus-visible,
+.date-input:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
 
+@media (prefers-contrast: high) {
   .widget-revenue,
   .widget-trends,
-  .widget-recent-table,
   .widget-occupancy,
   .widget-overdue,
   .widget-history,
@@ -693,145 +473,4 @@
     border-width: 2px;
     border-color: var(--color-primary);
   }
-
-  .date-input {
-    border-width: 3px;
-  }
-
-  .btn-refresh {
-    border-width: 3px;
-  }
-}
-
-/* =====================================================
-   FOCUS STATES
-   ===================================================== */
-.date-input:focus-visible,
-.btn-refresh:focus-visible,
-.btn-retry:focus-visible {
-  outline: 3px solid var(--color-secondary);
-  outline-offset: 2px;
-}
-
-/* =====================================================
-   PRINT STYLES
-   ===================================================== */
-@media print {
-  .dashboard-container {
-    padding: 0;
-    background: none;
-  }
-
-  .dashboard-header {
-    background: none;
-    color: var(--color-primary);
-    box-shadow: none;
-    border-bottom: 2px solid var(--color-primary);
-    border-radius: 0;
-  }
-
-  .header-content h1 {
-    color: var(--color-primary);
-  }
-
-  .header-actions {
-    display: none;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .dashboard-grid {
-    display: block;
-  }
-
-  .widget-revenue,
-  .widget-trends,
-  .widget-recent-table,
-  .widget-occupancy,
-  .widget-overdue,
-  .widget-history,
-  .widget-alerts,
-  .widget-tasks {
-    box-shadow: none;
-    border: 1px solid var(--color-gray-300);
-    break-inside: avoid;
-    margin-bottom: var(--spacing-md);
-    max-height: none;
-  }
-}
-
-/* =====================================================
-   ANIMACIONES DE ENTRADA
-   ===================================================== */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.dashboard-content {
-  animation: fadeInUp 0.4s ease forwards;
-}
-
-.stats-grid > * {
-  animation: fadeInUp 0.3s ease forwards;
-}
-
-.stats-grid > *:nth-child(1) {
-  animation-delay: 0.05s;
-}
-.stats-grid > *:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.stats-grid > *:nth-child(3) {
-  animation-delay: 0.15s;
-}
-.stats-grid > *:nth-child(4) {
-  animation-delay: 0.2s;
-}
-.stats-grid > *:nth-child(5) {
-  animation-delay: 0.25s;
-}
-.stats-grid > *:nth-child(6) {
-  animation-delay: 0.3s;
-}
-
-.widget-revenue {
-  animation: fadeInUp 0.4s ease 0.35s forwards;
-  opacity: 0;
-}
-.widget-trends {
-  animation: fadeInUp 0.4s ease 0.4s forwards;
-  opacity: 0;
-}
-.widget-recent-table {
-  animation: fadeInUp 0.4s ease 0.45s forwards;
-  opacity: 0;
-}
-.widget-occupancy {
-  animation: fadeInUp 0.4s ease 0.5s forwards;
-  opacity: 0;
-}
-.widget-overdue {
-  animation: fadeInUp 0.4s ease 0.55s forwards;
-  opacity: 0;
-}
-.widget-history {
-  animation: fadeInUp 0.4s ease 0.6s forwards;
-  opacity: 0;
-}
-.widget-alerts {
-  animation: fadeInUp 0.4s ease 0.65s forwards;
-  opacity: 0;
-}
-.widget-tasks {
-  animation: fadeInUp 0.4s ease 0.7s forwards;
-  opacity: 0;
 }

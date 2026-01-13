@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MaintenanceRequest, MaintenanceFormData, MaintenanceCategories, MaintenancePriorities } from '../../models/miantenance.model';
+import { MaintenanceRequest, MaintenanceFormData, MaintenancePriorities } from '../../models/miantenance.model';
 import { Unit } from '../../../units/models/unit.model';
 import { Tenant } from '../../../tenants/models/tenant.model';
 import { Building } from '../../../buildings/models/building.model';
+import { ExpenseCategoryService, ExpenseCategory } from '../../../expense-categories/services/expense-category.service';
 
 @Component({
   selector: 'app-maintenance-form',
@@ -24,14 +25,30 @@ export class MaintenanceFormComponent implements OnInit {
   @Output() cancel = new EventEmitter<void>();
 
   maintenanceForm!: FormGroup;
-  categories = MaintenanceCategories;
+  categories: ExpenseCategory[] = [];
   priorities = MaintenancePriorities;
   loading = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private expenseCategoryService: ExpenseCategoryService
+  ) {}
 
   ngOnInit(): void {
+    this.loadCategories();
     this.initForm();
+  }
+
+  loadCategories(): void {
+    this.expenseCategoryService.getAll().subscribe({
+      next: (response) => {
+        this.categories = response.data || [];
+        console.log('Categorías cargadas:', this.categories);
+      },
+      error: (error) => {
+        console.error('Error cargando categorías:', error);
+      }
+    });
   }
 
   initForm(): void {
@@ -41,7 +58,7 @@ export class MaintenanceFormComponent implements OnInit {
       building_id: [this.request?.building_name || '', Validators.required],
       unit_id: [this.request?.unit_id || '', Validators.required],
       tenant_id: [this.request?.tenant_id || '', []], // No requiere validación, puede estar vacío
-      category: [this.request?.category || 'other', Validators.required],
+      category: [this.request?.category || '', Validators.required],
       priority: [this.request?.priority || 'medium', Validators.required],
       title: [this.request?.title || '', [Validators.required, Validators.minLength(3)]],
       description: [this.request?.description || '', [Validators.required, Validators.minLength(10)]],

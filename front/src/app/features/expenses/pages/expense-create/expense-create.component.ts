@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../services/expense.service';
 import { CatalogService } from '../../../catalogs/service/catalog.service';
-import { ExpenseFormData, ExpenseCategory } from '../../models/expense.model';
+import { ExpenseFormData } from '../../models/expense.model';
 import { Building } from '../../../buildings/models/building.model';
 import { ExpenseFormComponent } from '../../components/expense-form/expense-form.component';
 
@@ -16,7 +16,6 @@ import { ExpenseFormComponent } from '../../components/expense-form/expense-form
 })
 export class ExpenseCreateComponent implements OnInit {
   buildings: Building[] = [];
-  categories: ExpenseCategory[] = [];
   loading = true;
   error: string | null = null;
 
@@ -27,19 +26,14 @@ export class ExpenseCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadInitialData();
-  }
-
-  loadInitialData(): void {
     this.loadBuildings();
-    this.loadCategories();
   }
 
   loadBuildings(): void {
     this.catalogService.getBuildings().subscribe({
       next: (response) => {
         this.buildings = response.data || [];
-        this.checkLoadingComplete();
+        this.loading = false;
       },
       error: (error) => {
         this.error = 'Error al cargar los edificios';
@@ -47,26 +41,6 @@ export class ExpenseCreateComponent implements OnInit {
         console.error('Error loading buildings:', error);
       }
     });
-  }
-
-  loadCategories(): void {
-    this.expenseService.getCategories().subscribe({
-      next: (response) => {
-        this.categories = response.data || [];
-        this.checkLoadingComplete();
-      },
-      error: (error) => {
-        this.error = 'Error al cargar las categorías';
-        this.loading = false;
-        console.error('Error loading categories:', error);
-      }
-    });
-  }
-
-  checkLoadingComplete(): void {
-    if (this.buildings.length > 0 && this.categories.length > 0) {
-      this.loading = false;
-    }
   }
 
   onSubmit(formData: ExpenseFormData): void {

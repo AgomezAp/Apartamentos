@@ -28,8 +28,8 @@
           class="form-control"
           [class.error]="expenseForm.get('category_id')?.invalid && expenseForm.get('category_id')?.touched">
           <option value="">Seleccione una categoría</option>
-          <option *ngFor="let category of categories" [value]="category.category_id">
-            {{ category.category_name }}
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
           </option>
         </select>
         <span class="error-message" *ngIf="expenseForm.get('category_id')?.invalid && expenseForm.get('category_id')?.touched">

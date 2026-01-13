@@ -7,8 +7,8 @@ import { CatalogService } from '../../../catalogs/service/catalog.service';
 import {
   Expense,
   ExpenseFilter,
-  ExpenseCategory,
 } from '../../models/expense.model';
+import { ExpenseCategory } from '../../../catalogs/service/models/catalog.model';
 import { Building } from '../../../buildings/models/building.model';
 import { ExpenseCardComponent } from '../../components/expense-card/expense-card.component';
 import { Subject } from 'rxjs';
@@ -103,9 +103,10 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   }
 
   loadCategories(): void {
-    this.expenseService.getCategories().subscribe({
+    this.catalogService.getExpenseCategories().subscribe({
       next: (response) => {
         this.categories = response.data || [];
+        console.log('Categorías de gastos cargadas en lista:', this.categories);
       },
       error: (error) => {
         console.error('Error loading categories:', error);

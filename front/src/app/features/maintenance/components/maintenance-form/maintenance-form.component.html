@@ -31,7 +31,7 @@
           [class.error]="maintenanceForm.get('unit_id')?.invalid && maintenanceForm.get('unit_id')?.touched"
           [disabled]="units.length === 0">
           <option value="">{{ units.length === 0 ? 'Seleccione un edificio primero' : 'Seleccione una unidad' }}</option>
-          <option *ngFor="let unit of units" [value]="unit.unit_id">
+          <option *ngFor="let unit of units" [value]="unit.id">
             {{ unit.unit_number }}
           </option>
         </select>
@@ -48,7 +48,7 @@
           formControlName="tenant_id"
           class="form-control">
           <option value="">Sin inquilino (Unidad desocupada)</option>
-          <option *ngFor="let tenant of tenants" [value]="tenant.tenant_id">
+          <option *ngFor="let tenant of tenants" [value]="tenant.id">
             {{ tenant.first_name }} {{ tenant.last_name }}
           </option>
         </select>
@@ -61,8 +61,9 @@
           id="category" 
           formControlName="category"
           class="form-control">
-          <option *ngFor="let cat of categories" [value]="cat.value">
-            {{ cat.icon }} {{ cat.label }}
+          <option value="">Seleccione una categoría</option>
+          <option *ngFor="let cat of categories" [value]="cat.name">
+            {{ cat.name }}
           </option>
         </select>
       </div>

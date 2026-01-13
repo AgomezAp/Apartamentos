@@ -7,7 +7,7 @@ class CatalogController {
   async getUnitTypes(_req: Request, res: Response): Promise<Response> {
     try {
       const data = await executeQuery(
-        'SELECT * FROM unit_types WHERE is_active = true ORDER BY name',
+        'SELECT * FROM unit_types ORDER BY name',
         []
       ) as any[];
       
@@ -76,7 +76,7 @@ class CatalogController {
   async getServiceTypes(_req: Request, res: Response): Promise<Response> {
     try {
       const data = await executeQuery(
-        'SELECT * FROM service_types WHERE is_active = true ORDER BY name',
+        'SELECT * FROM service_types ORDER BY name',
         []
       ) as any[];
       
@@ -214,7 +214,7 @@ class CatalogController {
   async getAlertTypes(_req: Request, res: Response): Promise<Response> {
     try {
       const data = await executeQuery(
-        'SELECT * FROM alert_types WHERE is_active = true ORDER BY name',
+        'SELECT * FROM alert_types ORDER BY name',
         []
       ) as any[];
       

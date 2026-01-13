@@ -15,7 +15,6 @@
   <div class="form-container" *ngIf="!loading && !error">
     <app-expense-form
       [buildings]="buildings"
-      [categories]="categories"
       (submit)="onSubmit($event)"
       (cancel)="onCancel()">
     </app-expense-form>

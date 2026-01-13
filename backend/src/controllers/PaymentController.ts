@@ -89,6 +89,11 @@ class PaymentController {
     try {
       const payment: Payment = req.body;
       
+      // Convertir payment_status_id a número si viene como string
+      if (payment.payment_status_id) {
+        payment.payment_status_id = Number(payment.payment_status_id);
+      }
+      
       // Determinar el estado correcto basándose en la fecha de vencimiento y el monto pagado
       const dueDate = new Date(payment.due_date);
       const today = new Date();
@@ -114,6 +119,22 @@ class PaymentController {
           payment.payment_status_id = 1;
         }
       }
+      
+      // Si se crea con status completado (2) o parcial (4), asignar payment_date automáticamente
+      if ((payment.payment_status_id === 2 || payment.payment_status_id === 4) && !payment.payment_date) {
+        payment.payment_date = new Date();
+      }
+      
+      // Si es completado y no tiene amount_paid, usar amount_due
+      if (payment.payment_status_id === 2 && !payment.amount_paid) {
+        payment.amount_paid = payment.amount_due;
+      }
+      
+      console.log('Creando pago con datos:', {
+        status_id: payment.payment_status_id,
+        payment_date: payment.payment_date,
+        amount_paid: payment.amount_paid
+      });
       
       const id = await PaymentModel.create(payment);
       const newPayment = await PaymentModel.findById(id);
@@ -144,6 +165,23 @@ class PaymentController {
 
       const oldData = await PaymentModel.findById(id);
       req.body.oldData = oldData;
+
+      // Si se actualiza a status completado (2), automáticamente asignar amount_paid y payment_date
+      if (payment.payment_status_id === 2 && oldData) {
+        // Asignar amount_paid si no viene en el request
+        if (!payment.amount_paid) {
+          payment.amount_paid = oldData.amount_due;
+        }
+        // Asignar payment_date con la fecha actual si no viene en el request
+        if (!payment.payment_date) {
+          payment.payment_date = new Date();
+        }
+      }
+      
+      // Si se actualiza a status parcial (3), también asignar payment_date si no existe
+      if (payment.payment_status_id === 3 && oldData && !payment.payment_date) {
+        payment.payment_date = new Date();
+      }
 
       const updated = await PaymentModel.update(id, payment);
 

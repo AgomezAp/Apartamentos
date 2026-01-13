@@ -1,8 +1,10 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Expense, ExpenseFormData, ExpenseCategory, PaymentMethods } from '../../models/expense.model';
+import { Expense, ExpenseFormData, PaymentMethods } from '../../models/expense.model';
 import { Building } from '../../../buildings/models/building.model';
+import { BuildingService } from '../../../buildings/services/building.service';
+import { ExpenseCategoryService, ExpenseCategory } from '../../../expense-categories/services/expense-category.service';
 
 @Component({
   selector: 'app-expense-form',
@@ -14,18 +16,24 @@ import { Building } from '../../../buildings/models/building.model';
 export class ExpenseFormComponent implements OnInit {
   @Input() expense?: Expense;
   @Input() buildings: Building[] = [];
-  @Input() categories: ExpenseCategory[] = [];
   @Output() submit = new EventEmitter<ExpenseFormData>();
   @Output() cancel = new EventEmitter<void>();
 
   expenseForm!: FormGroup;
   paymentMethods = PaymentMethods;
   loading = false;
+  categories: ExpenseCategory[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private expenseCategoryService: ExpenseCategoryService,
+    private buildingService: BuildingService
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.loadCategories();
+    this.loadBuildings();
   }
 
   initForm(): void {
@@ -41,6 +49,33 @@ export class ExpenseFormComponent implements OnInit {
       reference_number: [this.expense?.reference_number || ''],
       notes: [this.expense?.notes || '']
     });
+  }
+
+  loadCategories(): void {
+    this.expenseCategoryService.getAll().subscribe({
+      next: (response) => {
+        console.log('Respuesta categorías:', response);
+        this.categories = response.data || [];
+        console.log('Categorías cargadas:', this.categories);
+      },
+      error: (error) => {
+        console.error('Error cargando categorías:', error);
+      }
+    });
+  }
+
+  loadBuildings(): void {
+    if (this.buildings.length === 0) {
+      this.buildingService.getBuildings().subscribe({
+        next: (response) => {
+          this.buildings = response.data || [];
+          console.log('Edificios cargados:', this.buildings);
+        },
+        error: (error) => {
+          console.error('Error cargando edificios:', error);
+        }
+      });
+    }
   }
 
   onSubmit(): void {

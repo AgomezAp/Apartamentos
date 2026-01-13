@@ -144,9 +144,9 @@ class PaymentRepository {
   async create(payment: Payment): Promise<number> {
     const query = `
       INSERT INTO payments (
-        contract_id, period_month, period_year, amount_due,
-        due_date, payment_status_id, payment_method, notes, created_at, updated_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        contract_id, period_month, period_year, amount_due, amount_paid,
+        due_date, payment_date, payment_status_id, payment_method, notes, created_at, updated_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       RETURNING id
     `;
     const result: any = await executeQuery(query, [
@@ -154,7 +154,9 @@ class PaymentRepository {
       payment.period_month,
       payment.period_year,
       payment.amount_due,
+      payment.amount_paid || null,
       payment.due_date,
+      payment.payment_date || null,
       payment.payment_status_id || 1, // Default: Pendiente
       payment.payment_method || null,
       payment.notes || null,

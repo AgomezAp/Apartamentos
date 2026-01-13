@@ -522,7 +522,7 @@ class ExpenseRepository {
    */
   async getCategories(activeOnly: boolean = true): Promise<any[]> {
     let query = `
-      SELECT id as category_id, name as category_name, description, is_active, created_at, updated_at 
+      SELECT id as expense_category_id, name, description, is_active, created_at, updated_at 
       FROM expense_categories
     `;
 
@@ -530,7 +530,7 @@ class ExpenseRepository {
       query += ` WHERE is_active = true`;
     }
 
-    query += ` ORDER BY category_name ASC`;
+    query += ` ORDER BY name ASC`;
 
     return executeQuery(query);
   }

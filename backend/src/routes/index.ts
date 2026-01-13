@@ -28,18 +28,20 @@ router.get('/health', (_req, res) => {
 // Rutas de autenticación - PÚBLICAS (no requieren token)
 router.use('/auth', authRoutes);
 
+// Rutas de catálogos - PÚBLICAS (necesarias para formularios)
+router.use('/catalogs', catalogRoutes);
+
+// Rutas de categorías de gastos - PÚBLICAS (necesarias para formularios)
+router.use('/expense-categories', expenseCategoriesRoutes);
+
 // ========================================
 // 🔒 TODAS LAS RUTAS SIGUIENTES ESTÁN PROTEGIDAS
 // Requieren autenticación con JWT
 // ========================================
 router.use(authenticate);
 
-// Rutas de catálogos
-router.use('/catalogs', catalogRoutes);
-
 // Rutas de configuración de tipos y categorías
 router.use('/unit-types', unitTypesRoutes);
-router.use('/expense-categories', expenseCategoriesRoutes);
 
 // Rutas principales
 router.use('/buildings', buildingRoutes);

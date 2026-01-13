@@ -25,8 +25,8 @@
           class="filter-control"
         >
           <option value="">Todas</option>
-          <option *ngFor="let cat of categories" [value]="cat.value">
-            {{ cat.icon }} {{ cat.label }}
+          <option *ngFor="let cat of categories" [value]="cat.name">
+            {{ cat.name }}
           </option>
         </select>
       </div>

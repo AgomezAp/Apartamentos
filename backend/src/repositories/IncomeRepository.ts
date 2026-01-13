@@ -12,10 +12,13 @@ class IncomeRepository {
    */
   async getIncomeByPeriod(startDate: string, endDate: string): Promise<any> {
     try {
+      // Filtrar por payment_date (cuando se pagó realmente) O por due_date si payment_date es null
+      // Esto incluye pagos que se hicieron en el período seleccionado
       const result: any = await executeQuery(
         `SELECT 
           p.id as payment_id,
           p.due_date,
+          p.payment_date,
           p.amount_due,
           p.amount_paid,
           (p.amount_due - p.amount_paid) as balance,
@@ -31,14 +34,19 @@ class IncomeRepository {
         JOIN units u ON c.unit_id = u.id
         JOIN buildings b ON u.building_id = b.id
         JOIN tenants t ON c.tenant_id = t.id
-        WHERE p.due_date >= $1 
-          AND p.due_date <= $2
-          AND ps.name IN ('Pagado', 'Parcial')
-        ORDER BY p.due_date DESC`,
+        WHERE ps.name IN ('Pagado', 'Completado', 'Parcial')
+          AND (
+            -- Si tiene payment_date, filtrar por esa fecha (cuando realmente se pagó)
+            (p.payment_date IS NOT NULL AND p.payment_date >= $1 AND p.payment_date <= $2)
+            OR
+            -- Si no tiene payment_date pero está completado/parcial, usar due_date como fallback
+            (p.payment_date IS NULL AND p.due_date >= $1 AND p.due_date <= $2)
+          )
+        ORDER BY COALESCE(p.payment_date, p.due_date) DESC`,
         [startDate, endDate]
       );
 
-      const completedPayments = result.filter((p: any) => p.status === 'Pagado');
+      const completedPayments = result.filter((p: any) => p.status === 'Pagado' || p.status === 'Completado');
       const partialPayments = result.filter((p: any) => p.status === 'Parcial');
 
       const totalCompleted = completedPayments.reduce((sum: number, p: any) => 
@@ -62,7 +70,7 @@ class IncomeRepository {
           amountDue: parseFloat(row.amount_due),
           amountPaid: parseFloat(row.amount_paid),
           balance: parseFloat(row.balance),
-          status: row.status === 'Pagado' ? 'Completado' : row.status,
+          status: row.status === 'Pagado' || row.status === 'Completado' ? 'Completado' : row.status,
           building: row.building,
           unit: row.unit,
           tenant: row.tenant_name,
@@ -81,21 +89,22 @@ class IncomeRepository {
    */
   async getIncomeTrend(months: number = 6): Promise<any> {
     try {
+      // Usar COALESCE para usar payment_date si existe, sino due_date
       const result: any = await executeQuery(
         `SELECT 
-          EXTRACT(YEAR FROM p.due_date) as year,
-          EXTRACT(MONTH FROM p.due_date) as month,
+          EXTRACT(YEAR FROM COALESCE(p.payment_date, p.due_date)) as year,
+          EXTRACT(MONTH FROM COALESCE(p.payment_date, p.due_date)) as month,
           COUNT(p.id) as total_payments,
-          COALESCE(SUM(CASE WHEN ps.name = 'Pagado' THEN p.amount_paid ELSE 0 END), 0) as completed_income,
+          COALESCE(SUM(CASE WHEN ps.name IN ('Pagado', 'Completado') THEN p.amount_paid ELSE 0 END), 0) as completed_income,
           COALESCE(SUM(CASE WHEN ps.name = 'Parcial' THEN p.amount_paid ELSE 0 END), 0) as partial_income,
           COALESCE(SUM(p.amount_paid), 0) as total_income,
-          COUNT(CASE WHEN ps.name = 'Pagado' THEN 1 END) as completed_count,
+          COUNT(CASE WHEN ps.name IN ('Pagado', 'Completado') THEN 1 END) as completed_count,
           COUNT(CASE WHEN ps.name = 'Parcial' THEN 1 END) as partial_count
         FROM payments p
         JOIN payment_statuses ps ON p.payment_status_id = ps.id
-        WHERE ps.name IN ('Pagado', 'Parcial')
-          AND p.due_date >= CURRENT_DATE - INTERVAL '${months} months'
-        GROUP BY EXTRACT(YEAR FROM p.due_date), EXTRACT(MONTH FROM p.due_date)
+        WHERE ps.name IN ('Pagado', 'Completado', 'Parcial')
+          AND COALESCE(p.payment_date, p.due_date) >= CURRENT_DATE - INTERVAL '${months} months'
+        GROUP BY EXTRACT(YEAR FROM COALESCE(p.payment_date, p.due_date)), EXTRACT(MONTH FROM COALESCE(p.payment_date, p.due_date))
         ORDER BY year DESC, month DESC
         LIMIT $1`,
         [months]
