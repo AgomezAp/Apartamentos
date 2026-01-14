@@ -50,11 +50,19 @@ class Server {
    * Configurar middlewares globales
    */
   private configureMiddlewares(): void {
-    // CORS
-    this.app.use(cors({
+    // CORS - opciones explícitas para permitir preflight y métodos necesarios
+    const corsOptions = {
       origin: process.env.CORS_ORIGIN || '*',
       credentials: true,
-    }));
+      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+      exposedHeaders: ['Content-Range', 'X-Total-Count'],
+      optionsSuccessStatus: 204,
+    } as any;
+
+    this.app.use(cors(corsOptions));
+    // Asegurar manejo de preflight (OPTIONS) para todas las rutas
+    this.app.options('*', cors(corsOptions));
 
     // Body parser
     this.app.use(express.json());
