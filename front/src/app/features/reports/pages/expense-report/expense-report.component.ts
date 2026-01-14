@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReportService } from '../../services/report.service';
+import { BuildingService } from '../../../buildings/services/building.service';
 import { ReportFilterComponent } from '../../components/report-filter/report-filter.component';
 import { ChartViewerComponent } from '../../components/chart-viewer/chart-viewer.component';
 import { ReportTableComponent, TableColumn } from '../../components/report-table/report-table.component';
@@ -27,6 +28,7 @@ export class ExpenseReportComponent implements OnInit {
   expenses: any[] = [];
   chartData?: ChartData;
   filter: ReportFilter = {};
+  buildings: any[] = [];
 
   tableColumns: TableColumn[] = [
     { key: 'category', label: 'Categoría', type: 'text' },
@@ -42,11 +44,19 @@ export class ExpenseReportComponent implements OnInit {
     byCategory: [] as any[]
   };
 
-  constructor(private reportService: ReportService) {}
+  constructor(private reportService: ReportService, private buildingService: BuildingService) {}
 
   ngOnInit(): void {
     this.setDefaultDates();
     this.loadExpenseReport();
+    this.loadBuildings();
+  }
+
+  loadBuildings(): void {
+    this.buildingService.getActiveBuildings().subscribe({
+      next: (response: any) => this.buildings = response?.data || [],
+      error: (err) => console.error('Error cargando edificios:', err)
+    });
   }
 
   setDefaultDates(): void {
@@ -65,20 +75,38 @@ export class ExpenseReportComponent implements OnInit {
 
     this.loading = true;
 
-    // Simulated data - replace with actual API call
-    setTimeout(() => {
-      this.expenses = [
-        { category: 'Mantenimiento', count: 15, total: 5000, average: 333.33 },
-        { category: 'Servicios', count: 12, total: 3600, average: 300 },
-        { category: 'Administración', count: 8, total: 2400, average: 300 },
-        { category: 'Reparaciones', count: 5, total: 1500, average: 300 },
-        { category: 'Otros', count: 3, total: 900, average: 300 }
-      ];
+    // Llamar al backend para obtener gastos reales por rango y edificio opcional
+    const buildingId = (this.filter && (this.filter as any).building_id) ? (this.filter as any).building_id : undefined;
+    this.reportService.getExpensesByRange(this.filter.start_date!, this.filter.end_date!, buildingId).subscribe({
+      next: (response: any) => {
+        // El backend devuelve { period, summary, items }
+        const items = response?.data?.items || response?.items || [];
 
-      this.calculateSummary();
-      this.generateChartData();
-      this.loading = false;
-    }, 500);
+        // Transformar a formato utilizado por el componente (agrupar por categoría)
+        const grouped: Record<string, any> = {};
+        items.forEach((it: any) => {
+          const cat = it.category || 'Otros';
+          if (!grouped[cat]) grouped[cat] = { category: cat, count: 0, total: 0 };
+          grouped[cat].count += 1;
+          grouped[cat].total += parseFloat(it.amount || 0);
+        });
+
+        this.expenses = Object.values(grouped).map(g => ({
+          category: g.category,
+          count: g.count,
+          total: g.total,
+          average: g.count > 0 ? g.total / g.count : 0
+        }));
+
+        this.calculateSummary();
+        this.generateChartData();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading expenses report:', err);
+        this.loading = false;
+      }
+    });
   }
 
   onFilterChange(filter: ReportFilter): void {

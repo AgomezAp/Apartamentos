@@ -131,10 +131,6 @@ export class MaintenanceDetailComponent implements OnInit {
       next: () => {
         this.loadRequest(this.request!.request_id);
       },
-      error: (error) => {
-        console.error('Error resolving request:', error);
-        alert('Error al resolver la solicitud');
-      }
     });
   }
 

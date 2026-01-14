@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReportService } from '../../services/report.service';
+import { BuildingService } from '../../../buildings/services/building.service';
 import { ReportFilterComponent } from '../../components/report-filter/report-filter.component';
 import { ChartViewerComponent } from '../../components/chart-viewer/chart-viewer.component';
 import { ReportTableComponent, TableColumn } from '../../components/report-table/report-table.component';
@@ -30,6 +31,7 @@ export class RevenueReportComponent implements OnInit, OnDestroy {
   chartData?: ChartData;
   sourceChartData?: ChartData;
   filter: ReportFilter = {};
+  buildings: any[] = [];
 
   tableColumns: TableColumn[] = [
     { key: 'period', label: 'Período', type: 'text' },
@@ -49,7 +51,7 @@ export class RevenueReportComponent implements OnInit, OnDestroy {
   private filterSubject = new Subject<void>();
   private destroy$ = new Subject<void>();
 
-  constructor(private reportService: ReportService) {}
+  constructor(private reportService: ReportService, private buildingService: BuildingService) {}
 
   ngOnInit(): void {
     this.setDefaultDates();
@@ -64,6 +66,14 @@ export class RevenueReportComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.loadRevenueReport();
       });
+    this.loadBuildings();
+  }
+
+  loadBuildings(): void {
+    this.buildingService.getActiveBuildings().subscribe({
+      next: (response: any) => this.buildings = response?.data || [],
+      error: (err) => console.error('Error cargando edificios:', err)
+    });
   }
 
   ngOnDestroy(): void {

@@ -112,11 +112,11 @@ export class ReportService {
   }
 
   // Income Reports - Nuevo API especializado
-  getIncomeByPeriod(startDate: string, endDate: string): Observable<any> {
+  getIncomeByPeriod(startDate: string, endDate: string, buildingId?: number): Observable<any> {
     let params = new HttpParams()
       .set('start_date', startDate)
       .set('end_date', endDate);
-    
+    if (buildingId) params = params.set('building_id', buildingId.toString());
     return this.http.get<any>('http://localhost:3010/api/income/period', { params });
   }
 
@@ -133,11 +133,23 @@ export class ReportService {
     return this.http.get<any>('http://localhost:3010/api/income/expenses', { params });
   }
 
-  getIncomeVsExpenses(startDate: string, endDate: string): Observable<any> {
+  /**
+   * Obtener gastos por rango de fechas (start_date, end_date) y opcionalmente filtrar por edificio
+   */
+  getExpensesByRange(startDate: string, endDate: string, buildingId?: number): Observable<any> {
     let params = new HttpParams()
       .set('start_date', startDate)
       .set('end_date', endDate);
-    
+    if (buildingId) params = params.set('building_id', buildingId.toString());
+    return this.http.get<any>('http://localhost:3010/api/income/expenses', { params });
+  }
+
+  getIncomeVsExpenses(startDate: string, endDate: string, buildingId?: number): Observable<any> {
+    let params = new HttpParams()
+      .set('start_date', startDate)
+      .set('end_date', endDate);
+    if (buildingId) params = params.set('building_id', buildingId.toString());
+
     return this.http.get<any>('http://localhost:3010/api/income/balance', { params });
   }
 
@@ -147,10 +159,11 @@ export class ReportService {
     return this.http.get<any>('http://localhost:3010/api/income/balance-trend', { params });
   }
 
-  getBalanceTrendByPeriod(startDate: string, endDate: string): Observable<any> {
+  getBalanceTrendByPeriod(startDate: string, endDate: string, buildingId?: number): Observable<any> {
     let params = new HttpParams()
       .set('start_date', startDate)
       .set('end_date', endDate);
+    if (buildingId) params = params.set('building_id', buildingId.toString());
     return this.http.get<any>('http://localhost:3010/api/income/balance-trend-period', { params });
   }
 

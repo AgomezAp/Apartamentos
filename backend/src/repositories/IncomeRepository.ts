@@ -10,7 +10,7 @@ class IncomeRepository {
    * @param startDate Fecha de inicio (YYYY-MM-DD)
    * @param endDate Fecha de fin (YYYY-MM-DD)
    */
-  async getIncomeByPeriod(startDate: string, endDate: string): Promise<any> {
+  async getIncomeByPeriod(startDate: string, endDate: string, buildingId?: number): Promise<any> {
     try {
       // Filtrar por payment_date (cuando se pagó realmente) O por due_date si payment_date es null
       // Esto incluye pagos que se hicieron en el período seleccionado
@@ -42,8 +42,10 @@ class IncomeRepository {
             -- Si no tiene payment_date pero está completado/parcial, usar due_date como fallback
             (p.payment_date IS NULL AND p.due_date >= $1 AND p.due_date <= $2)
           )
-        ORDER BY COALESCE(p.payment_date, p.due_date) DESC`,
-        [startDate, endDate]
+          
+          /* Filtro por edificio si se proporcionó */
+          ${buildingId ? 'AND b.id = $3' : ''}
+        ORDER BY COALESCE(p.payment_date, p.due_date) DESC`, (buildingId ? [startDate, endDate, buildingId] : [startDate, endDate])
       );
 
       const completedPayments = result.filter((p: any) => p.status === 'Pagado' || p.status === 'Completado');
@@ -132,7 +134,7 @@ class IncomeRepository {
    * @param startDate Fecha de inicio (YYYY-MM-DD)
    * @param endDate Fecha de fin (YYYY-MM-DD)
    */
-  async getExpensesByPeriod(startDate: string, endDate: string): Promise<any> {
+  async getExpensesByPeriod(startDate: string, endDate: string, buildingId?: number): Promise<any> {
     try {
       // Obtener gastos regulares
       const expensesResult: any = await executeQuery(
@@ -148,8 +150,9 @@ class IncomeRepository {
         JOIN expense_categories ec ON ex.category_id = ec.id
         LEFT JOIN buildings b ON ex.building_id = b.id
         WHERE ex.expense_date >= $1 AND ex.expense_date <= $2
+          ${buildingId ? 'AND ex.building_id = $3' : ''}
         ORDER BY ex.expense_date DESC`,
-        [startDate, endDate]
+        (buildingId ? [startDate, endDate, buildingId] : [startDate, endDate])
       );
 
       // Obtener gastos de mantenimiento
@@ -169,8 +172,9 @@ class IncomeRepository {
         WHERE mr.completed_date >= $1 AND mr.completed_date <= $2
           AND mr.status = 'completed'
           AND mr.estimated_cost IS NOT NULL
+          ${buildingId ? 'AND b.id = $3' : ''}
         ORDER BY mr.completed_date DESC`,
-        [startDate, endDate]
+        (buildingId ? [startDate, endDate, buildingId] : [startDate, endDate])
       );
 
       const expenses = expensesResult.map((row: any) => ({
@@ -223,10 +227,10 @@ class IncomeRepository {
    * @param startDate Fecha de inicio (YYYY-MM-DD)
    * @param endDate Fecha de fin (YYYY-MM-DD)
    */
-  async getIncomeVsExpenses(startDate: string, endDate: string): Promise<any> {
+  async getIncomeVsExpenses(startDate: string, endDate: string, buildingId?: number): Promise<any> {
     try {
-      const income = await this.getIncomeByPeriod(startDate, endDate);
-      const expenses = await this.getExpensesByPeriod(startDate, endDate);
+      const income = await this.getIncomeByPeriod(startDate, endDate, buildingId);
+      const expenses = await this.getExpensesByPeriod(startDate, endDate, buildingId);
 
       const totalIncome = income.summary.totalIncome;
       const totalExpenses = expenses.summary.totalExpenses;
@@ -302,7 +306,7 @@ class IncomeRepository {
    * @param startDate Fecha de inicio (YYYY-MM-DD)
    * @param endDate Fecha de fin (YYYY-MM-DD)
    */
-  async getBalanceTrendByPeriod(startDate: string, endDate: string): Promise<any> {
+  async getBalanceTrendByPeriod(startDate: string, endDate: string, buildingId?: number): Promise<any> {
     try {
       // Obtener ingresos agrupados por mes
       const incomeResult: any = await executeQuery(
@@ -312,12 +316,15 @@ class IncomeRepository {
           COALESCE(SUM(p.amount_paid), 0) as total_income
         FROM payments p
         JOIN contracts c ON p.contract_id = c.id
+        JOIN units u ON c.unit_id = u.id
+        JOIN buildings b ON u.building_id = b.id
         JOIN payment_statuses ps ON p.payment_status_id = ps.id
         WHERE ps.name IN ('Pagado', 'Parcial')
           AND p.due_date >= $1 AND p.due_date <= $2
+          ${buildingId ? 'AND b.id = $3' : ''}
         GROUP BY EXTRACT(YEAR FROM p.due_date), EXTRACT(MONTH FROM p.due_date)
         ORDER BY year, month`,
-        [startDate, endDate]
+        (buildingId ? [startDate, endDate, buildingId] : [startDate, endDate])
       );
 
       // Obtener gastos agrupados por mes
@@ -327,10 +334,12 @@ class IncomeRepository {
           EXTRACT(MONTH FROM ex.expense_date) as month,
           COALESCE(SUM(ex.amount), 0) as total_expenses
         FROM expenses ex
+        LEFT JOIN buildings b ON ex.building_id = b.id
         WHERE ex.expense_date >= $1 AND ex.expense_date <= $2
+          ${buildingId ? 'AND ex.building_id = $3' : ''}
         GROUP BY EXTRACT(YEAR FROM ex.expense_date), EXTRACT(MONTH FROM ex.expense_date)
         ORDER BY year, month`,
-        [startDate, endDate]
+        (buildingId ? [startDate, endDate, buildingId] : [startDate, endDate])
       );
 
       // Obtener mantenimiento agrupado por mes
@@ -340,12 +349,15 @@ class IncomeRepository {
           EXTRACT(MONTH FROM mr.completed_date) as month,
           COALESCE(SUM(mr.estimated_cost), 0) as total_maintenance
         FROM maintenance_requests mr
+        JOIN units u ON mr.unit_id = u.id
+        JOIN buildings b ON u.building_id = b.id
         WHERE mr.status = 'completed'
           AND mr.completed_date >= $1 AND mr.completed_date <= $2
           AND mr.estimated_cost IS NOT NULL
+          ${buildingId ? 'AND b.id = $3' : ''}
         GROUP BY EXTRACT(YEAR FROM mr.completed_date), EXTRACT(MONTH FROM mr.completed_date)
         ORDER BY year, month`,
-        [startDate, endDate]
+        (buildingId ? [startDate, endDate, buildingId] : [startDate, endDate])
       );
 
       // Crear un mapa de todos los meses en el período

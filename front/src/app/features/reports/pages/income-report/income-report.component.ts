@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../services/report.service';
+import { BuildingService } from '../../../buildings/services/building.service';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { DateFormatPipe } from '../../../../shared/pipes/date-format.pipe';
 import { BaseChartDirective } from 'ng2-charts';
@@ -136,6 +137,8 @@ export class IncomeReportComponent implements OnInit {
   // Filtros por fecha
   startDate: string = '';
   endDate: string = '';
+  selectedBuildingId?: number | null = undefined;
+  buildings: any[] = [];
   
   // Array de meses para labels
   months = [
@@ -160,7 +163,7 @@ export class IncomeReportComponent implements OnInit {
   completedCount = 0;
   partialCount = 0;
 
-  constructor(private reportService: ReportService) {
+  constructor(private reportService: ReportService, private buildingService: BuildingService) {
     this.setDefaultDates();
   }
   
@@ -174,10 +177,25 @@ export class IncomeReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadBuildings();
     this.loadIncomeReport();
     this.loadMonthlyTrend();
     this.loadBalance();
     this.loadBalanceTrendByPeriod();
+  }
+
+  loadBuildings(): void {
+    this.reportService; // noop to satisfy linter if unused
+    // Cargar edificios activos para el filtro
+    const bs = (this as any).buildingService as BuildingService;
+    if (bs && bs.getActiveBuildings) {
+      bs.getActiveBuildings().subscribe({
+        next: (response: any) => {
+          this.buildings = (response && response.data) ? response.data : [];
+        },
+        error: (err) => console.error('Error cargando edificios:', err)
+      });
+    }
   }
 
   loadIncomeReport(): void {
@@ -189,7 +207,8 @@ export class IncomeReportComponent implements OnInit {
     
     this.reportService.getIncomeByPeriod(
       this.startDate,
-      this.endDate
+      this.endDate,
+      this.selectedBuildingId || undefined
     ).subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
@@ -261,7 +280,7 @@ export class IncomeReportComponent implements OnInit {
       return;
     }
     
-    this.reportService.getIncomeVsExpenses(this.startDate, this.endDate).subscribe({
+    this.reportService.getIncomeVsExpenses(this.startDate, this.endDate, this.selectedBuildingId || undefined).subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
           this.balanceData = response.data;
@@ -293,7 +312,7 @@ export class IncomeReportComponent implements OnInit {
       return;
     }
 
-    this.reportService.getBalanceTrendByPeriod(this.startDate, this.endDate).subscribe({
+    this.reportService.getBalanceTrendByPeriod(this.startDate, this.endDate, this.selectedBuildingId || undefined).subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
           this.balanceTrendData = response.data;

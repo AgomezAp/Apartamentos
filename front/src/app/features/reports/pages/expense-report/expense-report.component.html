@@ -12,9 +12,10 @@
   <!-- Filters -->
   <app-report-filter
     [showReportTypeFilter]="false"
-    [showBuildingFilter]="false"
+    [showBuildingFilter]="true"
     [showUnitFilter]="false"
     [showTenantFilter]="false"
+    [buildings]="buildings"
     (filterChange)="onFilterChange($event)">
   </app-report-filter>
 

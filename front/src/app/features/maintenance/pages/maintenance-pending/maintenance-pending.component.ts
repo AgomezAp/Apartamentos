@@ -63,10 +63,6 @@ export class MaintenancePendingComponent implements OnInit {
         next: () => {
           this.loadPendingRequests();
         },
-        error: (error) => {
-          console.error('Error resolving request:', error);
-          alert('Error al resolver la solicitud');
-        }
       });
     }
   }

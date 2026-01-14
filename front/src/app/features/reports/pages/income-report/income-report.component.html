@@ -4,14 +4,6 @@
       <h1>💰 Reporte de Ingresos</h1>
       <p class="header-subtitle">Pagos completados y parciales</p>
     </div>
-    <div class="header-actions">
-      <button class="btn btn-secondary" (click)="exportToExcel()" [disabled]="loading || payments.length === 0">
-        📊 Exportar Excel
-      </button>
-      <button class="btn btn-secondary" (click)="exportToPDF()" [disabled]="loading || payments.length === 0">
-        📄 Exportar PDF
-      </button>
-    </div>
   </div>
 
   <!-- Filtros -->
@@ -25,6 +17,13 @@
       <div class="filter-group">
         <label>📅 Fecha Fin</label>
         <input type="date" [(ngModel)]="endDate" (change)="onFilterChange()" class="filter-control">
+      </div>
+      <div class="filter-group">
+        <label>🏢 Edificio</label>
+        <select [(ngModel)]="selectedBuildingId" (change)="onFilterChange()" class="filter-control">
+          <option [ngValue]="undefined">Todos</option>
+          <option *ngFor="let b of buildings" [ngValue]="b.id">{{ b.name }}</option>
+        </select>
       </div>
       <div class="filter-group">
         <button class="btn btn-apply" (click)="onFilterChange()">

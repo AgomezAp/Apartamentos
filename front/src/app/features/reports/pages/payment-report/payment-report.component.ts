@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReportService } from '../../services/report.service';
+import { BuildingService } from '../../../buildings/services/building.service';
 import { ReportFilterComponent } from '../../components/report-filter/report-filter.component';
 import { ChartViewerComponent } from '../../components/chart-viewer/chart-viewer.component';
 import { ReportTableComponent, TableColumn } from '../../components/report-table/report-table.component';
@@ -28,6 +29,7 @@ export class PaymentReportComponent implements OnInit {
   chartData?: ChartData;
   statusChartData?: ChartData;
   filter: ReportFilter = {};
+  buildings: any[] = [];
 
   tableColumns: TableColumn[] = [
     { key: 'period', label: 'Período', type: 'text' },
@@ -46,11 +48,21 @@ export class PaymentReportComponent implements OnInit {
     collectionRate: 0
   };
 
-  constructor(private reportService: ReportService) {}
+  constructor(private reportService: ReportService, private buildingService: BuildingService) {}
 
   ngOnInit(): void {
     this.setDefaultDates();
     this.loadPaymentReport();
+    this.loadBuildings();
+  }
+
+  loadBuildings(): void {
+    this.buildingService.getActiveBuildings().subscribe({
+      next: (response: any) => {
+        this.buildings = response?.data || [];
+      },
+      error: (err) => console.error('Error cargando edificios:', err)
+    });
   }
 
   setDefaultDates(): void {

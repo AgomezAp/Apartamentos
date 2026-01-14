@@ -112,10 +112,6 @@ export class MaintenanceListComponent implements OnInit {
         this.loadRequests();
         this.selectedResolveRequestId = null;
       },
-      error: (error) => {
-        console.error('Error resolving request:', error);
-        alert('Error al resolver la solicitud');
-      }
     });
   }
 

@@ -6,6 +6,7 @@
 /* =====================================================
    CONTENEDOR PRINCIPAL
    ===================================================== */
+
 .income-report-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -19,6 +20,7 @@
 /* =====================================================
    PAGE HEADER
    ===================================================== */
+
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -60,9 +62,11 @@
 /* =====================================================
    BOTONES
    ===================================================== */
+
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-lg);
   font-family: var(--font-body);
@@ -73,6 +77,7 @@
   transition: all var(--transition-normal);
   border: 2px solid transparent;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn:focus-visible {
@@ -106,6 +111,8 @@
   color: var(--color-primary);
   border-color: var(--color-secondary);
   padding: var(--spacing-sm) var(--spacing-xl);
+  min-height: 44px;
+  font-weight: 700;
 }
 
 .btn-apply:hover:not(:disabled) {
@@ -115,12 +122,13 @@
 }
 
 /* =====================================================
-   FILTERS CARD
+   🔥 FILTERS CARD - REORGANIZADO
    ===================================================== */
+
 .filters-card {
   background-color: var(--color-white);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-gray-200);
@@ -140,11 +148,14 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--color-gray-100);
 }
 
+/* 🔥 GRID DE FILTROS - 4 COLUMNAS EN LÍNEA */
 .filters-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr 1fr auto;
   gap: var(--spacing-lg);
   align-items: flex-end;
 }
@@ -156,28 +167,34 @@
 }
 
 .filter-group label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--color-gray-600);
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
+/* 🔥 CONTROLES DE FILTRO - ESTILOS MEJORADOS */
 .filter-control {
   padding: var(--spacing-sm) var(--spacing-md);
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   border: 2px solid var(--color-gray-200);
   border-radius: var(--radius-md);
   background-color: var(--color-gray-50);
   color: var(--color-primary);
-  transition: all var(--transition-normal);
+  transition: all var(--transition-fast);
   min-height: 44px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .filter-control:hover {
   border-color: var(--color-gray-300);
+  background-color: var(--color-white);
 }
 
 .filter-control:focus {
@@ -187,9 +204,45 @@
   box-shadow: var(--shadow-glow);
 }
 
+/* Select personalizado */
+select.filter-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2371717a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+select.filter-control:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FFD600' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
+/* Input date personalizado */
+input[type="date"].filter-control {
+  cursor: pointer;
+}
+
+input[type="date"].filter-control::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+}
+
+input[type="date"].filter-control:hover::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}
+
+/* Botón dentro del filter-group */
+.filter-group .btn-apply {
+  width: 100%;
+  min-width: 120px;
+}
+
 /* =====================================================
    SUMMARY CARDS
    ===================================================== */
+
 .summary-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -277,6 +330,7 @@
 /* =====================================================
    BALANCE SUMMARY
    ===================================================== */
+
 .balance-summary {
   margin-bottom: var(--spacing-xl);
 }
@@ -390,6 +444,7 @@
 /* =====================================================
    CHARTS SECTION
    ===================================================== */
+
 .charts-section {
   margin-bottom: var(--spacing-xl);
 }
@@ -433,6 +488,7 @@
 /* =====================================================
    LOADING STATE
    ===================================================== */
+
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -469,6 +525,7 @@
 /* =====================================================
    PAYMENTS TABLE
    ===================================================== */
+
 .payments-table-card {
   background-color: var(--color-white);
   border-radius: var(--radius-lg);
@@ -632,6 +689,7 @@
 /* =====================================================
    EMPTY STATE
    ===================================================== */
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -667,6 +725,7 @@
 /* =====================================================
    ANIMATIONS
    ===================================================== */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -688,12 +747,15 @@
 .summary-cards {
   animation-delay: 0.1s;
 }
+
 .balance-summary {
   animation-delay: 0.2s;
 }
+
 .charts-section {
   animation-delay: 0.3s;
 }
+
 .payments-table-card {
   animation-delay: 0.4s;
 }
@@ -701,9 +763,24 @@
 /* =====================================================
    RESPONSIVE - TABLETS LANDSCAPE (1024px)
    ===================================================== */
+
 @media (max-width: 1024px) {
   .income-report-container {
     padding: var(--spacing-lg);
+  }
+
+  /* Filtros: 2 columnas + 1 columna + botón */
+  .filters-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .filter-group:nth-child(3) {
+    grid-column: 1;
+  }
+
+  .filter-group:nth-child(4) {
+    grid-column: 2;
   }
 
   .summary-cards {
@@ -723,6 +800,7 @@
 /* =====================================================
    RESPONSIVE - TABLETS PORTRAIT (768px)
    ===================================================== */
+
 @media (max-width: 768px) {
   .income-report-container {
     padding: var(--spacing-md);
@@ -748,17 +826,22 @@
     justify-content: center;
   }
 
+  /* Filtros: 2 columnas */
+  .filters-card {
+    padding: var(--spacing-md);
+  }
+
   .filters-grid {
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-md);
   }
 
-  .filter-group:last-child {
-    grid-column: 1 / -1;
+  .filter-group:nth-child(3) {
+    grid-column: 1;
   }
 
-  .filter-group:last-child .btn-apply {
-    width: 100%;
+  .filter-group:nth-child(4) {
+    grid-column: 2;
   }
 
   .summary-cards {
@@ -789,6 +872,7 @@
 /* =====================================================
    RESPONSIVE - MÓVILES (480px)
    ===================================================== */
+
 @media (max-width: 480px) {
   .income-report-container {
     padding: var(--spacing-sm);
@@ -807,12 +891,35 @@
     flex-direction: column;
   }
 
+  /* Filtros: 1 columna en móvil */
   .filters-card {
     padding: var(--spacing-md);
   }
 
+  .filters-card h3 {
+    font-size: 1rem;
+  }
+
   .filters-grid {
     grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .filter-group:nth-child(1),
+  .filter-group:nth-child(2),
+  .filter-group:nth-child(3),
+  .filter-group:nth-child(4) {
+    grid-column: 1;
+  }
+
+  .filter-control {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .btn-apply {
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-height: 48px;
   }
 
   .summary-card {
@@ -879,6 +986,7 @@
 /* =====================================================
    ACCESIBILIDAD - REDUCED MOTION
    ===================================================== */
+
 @media (prefers-reduced-motion: reduce) {
   .summary-card,
   .filters-card,
@@ -886,7 +994,8 @@
   .chart-card,
   .payments-table-card,
   .balance-item,
-  .btn {
+  .btn,
+  .filter-control {
     transition: none;
   }
 
@@ -911,6 +1020,7 @@
 /* =====================================================
    ACCESIBILIDAD - HIGH CONTRAST
    ===================================================== */
+
 @media (prefers-contrast: high) {
   .summary-card,
   .filters-card,
@@ -942,6 +1052,7 @@
 /* =====================================================
    PRINT STYLES
    ===================================================== */
+
 @media print {
   .income-report-container {
     padding: 0;
@@ -989,6 +1100,7 @@
 /* =====================================================
    PAGINACIÓN
    ===================================================== */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -1007,24 +1119,25 @@
   transition: all 0.2s;
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--color-primary);
   min-width: 40px;
   text-align: center;
 }
 
 .page-btn:hover:not(:disabled) {
-  background: var(--color-success);
-  color: white;
-  border-color: var(--color-success);
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border-color: var(--color-secondary);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
 .page-btn.active {
-  background: var(--color-success);
-  color: white;
-  border-color: var(--color-success);
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border-color: var(--color-secondary);
   box-shadow: var(--shadow-md);
+  font-weight: 700;
 }
 
 .page-btn:disabled {
@@ -1036,19 +1149,28 @@
 /* =====================================================
    TABLA DE TENDENCIA
    ===================================================== */
+
 .trend-table-card {
   background: var(--color-white);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
+  border: 1px solid var(--color-gray-200);
+  transition: all var(--transition-normal);
+}
+
+.trend-table-card:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-secondary);
 }
 
 .trend-table-card h3 {
   color: var(--color-primary);
   margin-bottom: var(--spacing-lg);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 600;
+  font-family: var(--font-display);
 }
 
 .trend-table {
@@ -1058,25 +1180,35 @@
 }
 
 .trend-table thead {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-  color: white;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-light) 100%
+  );
+  color: var(--color-white);
 }
 
 .trend-table th {
-  padding: 1rem;
+  padding: var(--spacing-md) var(--spacing-lg);
   text-align: left;
   font-weight: 600;
   border-bottom: 2px solid var(--color-primary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .trend-table td {
-  padding: 0.875rem 1rem;
+  padding: var(--spacing-md) var(--spacing-lg);
   border-bottom: 1px solid var(--color-gray-200);
 }
 
+.trend-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
 .trend-table tbody tr:hover {
-  background-color: var(--color-gray-50);
-  transition: background-color 0.2s;
+  background-color: var(--color-secondary-subtle);
 }
 
 .trend-table .period-cell {
@@ -1093,7 +1225,7 @@
 }
 
 .trend-table .amount {
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-display);
   font-weight: 500;
 }
 
@@ -1103,11 +1235,11 @@
 
 .trend-table .amount.expense,
 .trend-table .amount.maintenance {
-  color: var(--color-danger);
+  color: var(--color-error);
 }
 
 .trend-table .amount.expense-total {
-  color: var(--color-danger);
+  color: var(--color-error);
   font-weight: 600;
 }
 
@@ -1117,26 +1249,26 @@
 }
 
 .trend-table .amount.negative {
-  color: var(--color-danger);
+  color: var(--color-error);
   font-weight: 600;
 }
 
 .trend-table .margin-badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-full);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-xl);
   font-weight: 600;
   font-size: 0.85rem;
 }
 
 .trend-table .margin-badge.positive {
-  background: rgba(39, 174, 96, 0.1);
+  background: var(--color-success-bg);
   color: var(--color-success);
 }
 
 .trend-table .margin-badge.negative {
-  background: rgba(231, 76, 60, 0.1);
-  color: var(--color-danger);
+  background: var(--color-error-bg);
+  color: var(--color-error);
 }
 
 .trend-table tfoot {
@@ -1145,22 +1277,27 @@
 }
 
 .trend-table tfoot td {
-  padding: 1rem;
-  border-top: 2px solid var(--color-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 2px solid var(--color-secondary);
   border-bottom: none;
 }
 
 .trend-table .total-row {
-  background: linear-gradient(135deg, rgba(44, 62, 80, 0.05) 0%, rgba(52, 73, 94, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(44, 62, 80, 0.05) 0%,
+    rgba(52, 73, 94, 0.05) 100%
+  );
 }
 
 /* =====================================================
    CHART WRAPPERS
    ===================================================== */
+
 .chart-wrapper {
   position: relative;
   height: 300px;
-  padding: 1rem;
+  padding: var(--spacing-md);
 }
 
 .chart-placeholder {
@@ -1171,11 +1308,12 @@
   color: var(--color-gray-500);
   font-style: italic;
   text-align: center;
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--color-gray-200);
 }
 
 .chart-placeholder p {
   margin: 0;
   font-size: 1rem;
 }
-
-

@@ -26,8 +26,8 @@
     <div class="filter-group" *ngIf="showBuildingFilter && buildings.length > 0">
       <label>🏢 Edificio</label>
       <select [(ngModel)]="filter.building_id" class="filter-control">
-        <option [value]="undefined">Todos</option>
-        <option *ngFor="let building of buildings" [value]="building.building_id">
+        <option [ngValue]="undefined">Todos</option>
+        <option *ngFor="let building of buildings" [ngValue]="building.id">
           {{ building.name }}
         </option>
       </select>

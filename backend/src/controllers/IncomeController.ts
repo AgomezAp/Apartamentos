@@ -33,7 +33,9 @@ class IncomeController {
         return;
       }
 
-      const data = await IncomeRepository.getIncomeByPeriod(startDate, endDate);
+      const buildingId = req.query.building_id ? parseInt(req.query.building_id as string) : undefined;
+
+      const data = await IncomeRepository.getIncomeByPeriod(startDate, endDate, buildingId);
 
       res.json({
         success: true,
@@ -91,6 +93,7 @@ class IncomeController {
     try {
       const startDate = req.query.start_date as string;
       const endDate = req.query.end_date as string;
+      const buildingId = req.query.building_id ? parseInt(req.query.building_id as string) : undefined;
 
       // Validar que las fechas existan
       if (!startDate || !endDate) {
@@ -111,7 +114,7 @@ class IncomeController {
         return;
       }
 
-      const data = await IncomeRepository.getExpensesByPeriod(startDate, endDate);
+      const data = await IncomeRepository.getExpensesByPeriod(startDate, endDate, buildingId);
 
       res.json({
         success: true,
@@ -155,7 +158,10 @@ class IncomeController {
         return;
       }
 
-      const data = await IncomeRepository.getIncomeVsExpenses(startDate, endDate);
+      const buildingId = req.query.building_id ? parseInt(req.query.building_id as string) : undefined;
+      console.log('[IncomeController] getIncomeVsExpenses building_id =', buildingId);
+
+      const data = await IncomeRepository.getIncomeVsExpenses(startDate, endDate, buildingId);
 
       res.json({
         success: true,
@@ -213,6 +219,8 @@ class IncomeController {
     try {
       const startDate = req.query.start_date as string;
       const endDate = req.query.end_date as string;
+      const buildingId = req.query.building_id ? parseInt(req.query.building_id as string) : undefined;
+      console.log('[IncomeController] getBalanceTrendByPeriod building_id =', buildingId);
 
       if (!startDate || !endDate) {
         res.status(400).json({
@@ -231,7 +239,7 @@ class IncomeController {
         return;
       }
 
-      const data = await IncomeRepository.getBalanceTrendByPeriod(startDate, endDate);
+      const data = await IncomeRepository.getBalanceTrendByPeriod(startDate, endDate, buildingId);
 
       res.json({
         success: true,

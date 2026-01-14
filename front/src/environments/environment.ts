@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://echoesoftheoracle.com/api'
+  apiUrl: 'http://localhost:3010/api'
 };
