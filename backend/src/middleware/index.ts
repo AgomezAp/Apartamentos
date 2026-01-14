@@ -238,3 +238,34 @@ export const authenticate = (
     });
   }
 };
+
+/**
+ * Middleware que previene modificaciones por usuarios de solo lectura
+ */
+export const preventReadOnlyModifications = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = (req as any).user;
+    if (user) {
+      // Permitir solo métodos seguros de lectura si el usuario es de solo lectura
+      const roleName = (user as any).role || null;
+      const isReadOnlyFlag = (user as any).is_read_only || false;
+      const isReaderRole = roleName === 'reader' || roleName === 'viewer';
+      if (isReadOnlyFlag || isReaderRole) {
+        const safeMethods = ['GET', 'HEAD', 'OPTIONS'];
+        if (!safeMethods.includes(req.method)) {
+          return res.status(403).json({
+            success: false,
+            error: 'Usuario de solo lectura no autorizado para modificar datos',
+          });
+        }
+      }
+    }
+    return next();
+  } catch (err) {
+    return next();
+  }
+};

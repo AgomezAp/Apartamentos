@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware';
+import { authenticate, preventReadOnlyModifications } from '../middleware';
 import authRoutes from './auth';
+import rolesRoutes from './roles';
 import buildingRoutes from './buildings';
 import unitRoutes from './units';
 import contractRoutes from './contracts';
@@ -28,6 +29,9 @@ router.get('/health', (_req, res) => {
 // Rutas de autenticación - PÚBLICAS (no requieren token)
 router.use('/auth', authRoutes);
 
+// Rutas de roles - públicas para poblar selects en formularios
+router.use('/roles', rolesRoutes);
+
 // Rutas de catálogos - PÚBLICAS (necesarias para formularios)
 router.use('/catalogs', catalogRoutes);
 
@@ -39,6 +43,7 @@ router.use('/expense-categories', expenseCategoriesRoutes);
 // Requieren autenticación con JWT
 // ========================================
 router.use(authenticate);
+router.use(preventReadOnlyModifications);
 
 // Rutas de configuración de tipos y categorías
 router.use('/unit-types', unitTypesRoutes);

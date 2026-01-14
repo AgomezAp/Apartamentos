@@ -9,6 +9,7 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { RolesService } from '../../../../core/services/roles.service';
 import { RegisterData } from '../../../../core/models/user.model';
 
 @Component({
@@ -33,10 +34,13 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private notificationService: NotificationService
+    ,
+    private rolesService: RolesService
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.loadRoles();
     this.registerForm.get('password')?.valueChanges.subscribe((value) => {
       this.calculatePasswordStrength(value || '');
     });
@@ -51,6 +55,7 @@ export class RegisterComponent implements OnInit {
         full_name: ['', [Validators.required, Validators.minLength(3)]],
         email: ['', [Validators.required, Validators.email]],
         phone: [''], // Sin validación - campo completamente opcional
+        role_id: [null],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]],
       },
@@ -128,6 +133,22 @@ export class RegisterComponent implements OnInit {
       },
       complete: () => {
         this.isLoading = false;
+      },
+    });
+  }
+
+  // Cargar roles para el select
+  roles: Array<{ id: number; name: string; description?: string }> = [];
+
+  private loadRoles(): void {
+    this.rolesService.getRoles().subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.roles = res.data;
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando roles', err);
       },
     });
   }

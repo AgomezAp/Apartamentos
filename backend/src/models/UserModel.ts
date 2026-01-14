@@ -8,6 +8,8 @@ class UserModel extends Model {
   public full_name!: string;
   public phone!: string;
   public is_active!: boolean;
+  public is_read_only!: boolean;
+  public role_id?: number;
   public last_login!: Date;
 }
 
@@ -37,6 +39,14 @@ UserModel.init(
     is_active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+    },
+    is_read_only: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    role_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     last_login: {
       type: DataTypes.DATE,

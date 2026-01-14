@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
 import { PaymentFormData } from '../../models/payment.model';
 import { PaymentFormComponent } from '../../components/payment-form/payment-form.component';
@@ -10,11 +11,13 @@ import { Unit } from '../../../units/models/unit.model';
 import { ContractService } from '../../../contracts/services/contract.service';
 import { TenantsService } from '../../../tenants/services/tenants.service';
 import { UnitService } from '../../../units/services/unit.service';
+import { BuildingService } from '../../../buildings/services/building.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-payment-create',
-  imports: [CommonModule, RouterModule, PaymentFormComponent],
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule, PaymentFormComponent],
   templateUrl: './payment-create.component.html',
   styleUrl: './payment-create.component.css'
 })
@@ -22,6 +25,8 @@ export class PaymentCreateComponent implements OnInit {
   contracts: Contract[] = [];
   tenants: Tenant[] = [];
   units: Unit[] = [];
+  buildings: any[] = [];
+  selectedBuildingId?: number = undefined;
   loading = false;
   isSubmitting = false; // Guard para prevenir doble submit
 
@@ -30,14 +35,40 @@ export class PaymentCreateComponent implements OnInit {
     private contractService: ContractService,
     private tenantsService: TenantsService,
     private unitService: UnitService,
+    private buildingService: BuildingService,
     private router: Router,
     private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
+    this.loadBuildings();
     this.loadContracts();
     this.loadTenants();
     this.loadUnits();
+  }
+
+  loadBuildings(): void {
+    this.buildingService.getActiveBuildings().subscribe({
+      next: (response: any) => {
+        this.buildings = response?.data || response?.items || [];
+      },
+      error: (err) => console.error('Error loading buildings:', err)
+    });
+  }
+
+  onBuildingChange(buildingId?: number): void {
+    this.selectedBuildingId = buildingId || undefined;
+    // Filtrar contratos por edificio seleccionado
+    const filters: any = { status: 'active' };
+    if (this.selectedBuildingId) filters.building_id = this.selectedBuildingId;
+
+    this.contractService.searchContracts(filters).subscribe({
+      next: (response: any) => {
+        // searchContracts devuelve ApiResponse<Contract[]>
+        this.contracts = response?.data || response?.items || [];
+      },
+      error: (err) => console.error('Error loading contracts by building:', err)
+    });
   }
 
   loadContracts(): void {

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import UserModel from '../models/UserModel';
+import RoleModel from '../models/RoleModel';
 
 /**
  * Controlador de autenticación
@@ -12,7 +13,7 @@ class AuthController {
    */
   async register(req: Request, res: Response): Promise<void> {
     try {
-      const { email, password, full_name, phone } = req.body;
+      const { email, password, full_name, phone, role_id } = req.body;
 
       // Validar que el email no exista
       const existingUser = await UserModel.findOne({ where: { email } });
@@ -27,6 +28,13 @@ class AuthController {
       // Hashear password
       const password_hash = await bcrypt.hash(password, 10);
 
+      // Si se proporcionó role_id, obtener el nombre del rol para decidir is_read_only
+      let assignedRoleName: string | null = null;
+      if (role_id) {
+        const role = await RoleModel.findByPk(role_id);
+        assignedRoleName = role?.name || null;
+      }
+
       // Crear usuario
       const user = await UserModel.create({
         email,
@@ -34,17 +42,26 @@ class AuthController {
         full_name,
         phone,
         is_active: true,
+        role_id: role_id || null,
+        is_read_only: assignedRoleName === 'reader' || assignedRoleName === 'viewer' ? true : false,
       });
 
       // Generar token JWT
       const jwtSecret = process.env.JWT_SECRET || 'secret-key-default';
       const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '24h';
-      
+
+      // Obtener nombre de rol para incluir en el token/response
+      const createdRole = user.role_id ? await RoleModel.findByPk(user.role_id) : null;
+      const roleName = createdRole?.name || null;
+
       const token = jwt.sign(
-        { 
-          id: user.id, 
+        {
+          id: user.id,
           email: user.email,
-          full_name: user.full_name 
+          full_name: user.full_name,
+          is_read_only: (user as any).is_read_only || false,
+          role_id: (user as any).role_id || null,
+          role: roleName,
         } as object,
         jwtSecret,
         { expiresIn: jwtExpiresIn } as jwt.SignOptions
@@ -58,6 +75,9 @@ class AuthController {
             id: user.id,
             email: user.email,
             full_name: user.full_name,
+            is_read_only: (user as any).is_read_only || false,
+            role_id: (user as any).role_id || null,
+            role: roleName,
             phone: user.phone,
             is_active: user.is_active,
           },
@@ -118,12 +138,18 @@ class AuthController {
       // Generar token JWT
       const jwtSecret = process.env.JWT_SECRET || 'secret-key-default';
       const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '24h';
-      
+      // Obtener nombre de rol para incluir en token/response
+      const loginRole = user.role_id ? await RoleModel.findByPk(user.role_id) : null;
+      const loginRoleName = loginRole?.name || null;
+
       const token = jwt.sign(
-        { 
-          id: user.id, 
+        {
+          id: user.id,
           email: user.email,
-          full_name: user.full_name 
+          full_name: user.full_name,
+          is_read_only: (user as any).is_read_only || false,
+          role_id: (user as any).role_id || null,
+          role: loginRoleName,
         } as object,
         jwtSecret,
         { expiresIn: jwtExpiresIn } as jwt.SignOptions
@@ -137,6 +163,9 @@ class AuthController {
             id: user.id,
             email: user.email,
             full_name: user.full_name,
+            is_read_only: (user as any).is_read_only || false,
+            role_id: (user as any).role_id || null,
+            role: loginRoleName,
             phone: user.phone,
             is_active: user.is_active,
             last_login: user.last_login,
@@ -170,7 +199,7 @@ class AuthController {
       }
 
       const user = await UserModel.findByPk(userId, {
-        attributes: ['id', 'email', 'full_name', 'phone', 'is_active', 'last_login'],
+        attributes: ['id', 'email', 'full_name', 'phone', 'is_active', 'is_read_only', 'role_id', 'last_login'],
       });
 
       if (!user) {
@@ -181,9 +210,16 @@ class AuthController {
         return;
       }
 
+      // Añadir nombre de rol si existe
+      const role = user?.getDataValue('role_id') ? await RoleModel.findByPk(user!.getDataValue('role_id')) : null;
+      const roleName = role?.name || null;
+
       res.json({
         success: true,
-        data: user,
+        data: {
+          ...user?.toJSON(),
+          role: roleName,
+        },
       });
     } catch (error: any) {
       console.error('Error al obtener perfil:', error);

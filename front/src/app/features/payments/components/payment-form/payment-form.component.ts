@@ -18,8 +18,10 @@ export class PaymentFormComponent implements OnInit {
   @Input() contracts: Contract[] = [];
   @Input() tenants: Tenant[] = [];
   @Input() units: Unit[] = [];
+  @Input() buildings: any[] = [];
   @Output() submit = new EventEmitter<PaymentFormData>();
   @Output() cancel = new EventEmitter<void>();
+  @Output() buildingChange = new EventEmitter<number | undefined>();
 
   paymentForm!: FormGroup;
   loading = false;
@@ -29,10 +31,12 @@ export class PaymentFormComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.setupContractChangeListener();
+    this.setupBuildingChangeListener();
   }
 
   initForm(): void {
     this.paymentForm = this.fb.group({
+      building_id: [(this.payment as any)?.building_id || ''],
       contract_id: [this.payment?.contract_id || '', Validators.required],
       tenant_id: [this.payment?.tenant_id || '', Validators.required],
       tenant_id_hidden: [this.payment?.tenant_id || '', Validators.required],
@@ -43,6 +47,16 @@ export class PaymentFormComponent implements OnInit {
       payment_status_id: [this.payment?.payment_status_id || 1, Validators.required], // 1 = Pendiente por defecto
       payment_method: [this.payment?.payment_method || ''],
       notes: [this.payment?.notes || '']
+    });
+  }
+
+  private setupBuildingChangeListener(): void {
+    this.paymentForm.get('building_id')?.valueChanges.subscribe((buildingId) => {
+      // Reset contract and related fields when building changes
+      this.paymentForm.patchValue({ contract_id: '', tenant_id: '', tenant_id_hidden: '', unit_id: '', unit_id_hidden: '' }, { emitEvent: false });
+      const id = buildingId ? parseInt(buildingId, 10) : undefined;
+      this.buildingChange.emit(id);
+      console.log('PaymentFormComponent: building changed, emitted buildingChange =', id);
     });
   }
 

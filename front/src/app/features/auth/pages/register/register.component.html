@@ -53,6 +53,19 @@
           </span>
         </div>
       </div>
+      <!-- Fila 2: Rol -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="role_id">
+            <i class="fa-solid fa-user-tag"></i>
+            Rol
+          </label>
+          <select id="role_id" formControlName="role_id">
+            <option [ngValue]="null">Seleccionar rol (opcional)</option>
+            <option *ngFor="let r of roles" [value]="r.id">{{ r.name }}</option>
+          </select>
+        </div>
+      </div>
       <!-- Fila 3: Contraseñas -->
       <div class="form-row">
         <!-- Password -->

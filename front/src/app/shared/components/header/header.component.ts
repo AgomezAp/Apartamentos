@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  @Input() appTitle: string = 'Gestión de Apartamentos';
+  @Input() appTitle: string = 'Gestor de propiedades';
   @Input() userName?: string;
   @Input() userRole?: string;
   @Output() toggleSidebar = new EventEmitter<void>();

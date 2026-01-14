@@ -1,6 +1,14 @@
 <div class="payment-form-container">
   <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
     <div class="form-grid">
+      <!-- Building selector moved here -->
+      <div class="form-group">
+        <label for="building_id">🏢 Edificio</label>
+        <select id="building_id" formControlName="building_id" class="form-control">
+          <option value="">Todos</option>
+          <option *ngFor="let b of buildings" [value]="b.id">{{ b.name }}</option>
+        </select>
+      </div>
       <!-- Contract -->
       <div class="form-group">
         <label for="contract_id">📋 Contrato *</label>

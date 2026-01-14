@@ -4,6 +4,8 @@
       [contracts]="contracts"
       [tenants]="tenants"
       [units]="units"
+      [buildings]="buildings"
+      (buildingChange)="onBuildingChange($event)"
       (submit)="onSubmit($event)"
       (cancel)="onCancel()">
     </app-payment-form>

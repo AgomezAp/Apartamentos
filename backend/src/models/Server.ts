@@ -16,6 +16,7 @@ import PaymentModel from './PaymentModel';
 import UserModel from './UserModel';
 import AuditLogModel from './AuditLog';
 import ServiceTypeModel from './ServiceTypeModel';
+import RoleModel from './RoleModel';
 import ExpenseCategoryModel from './ExpenseCategoryModel';
 import AlertTypeModel from './AlertTypeModel';
 import AlertModel from './AlertModel';
@@ -102,6 +103,7 @@ class Server {
       
       // Sincronizar modelos de Sequelize (verificar/crear tablas, sin modificar estructura)
       // Tablas base y catálogos
+      await RoleModel.sync({alter: true});
       await UserModel.sync({alter: true});
       await ServiceTypeModel.sync({alter: true});
       await ExpenseCategoryModel.sync({alter: true});
@@ -130,6 +132,21 @@ class Server {
       await AlertModel.sync({alter: true});
       await AuditLogModel.sync({alter: true});
       await SystemSettingModel.sync({alter: true});
+
+      // Sembrar roles por defecto si no existen
+      try {
+        const defaultRoles = [
+          { name: 'admin', description: 'Administrador con todos los permisos' },
+          { name: 'manager', description: 'Usuario con permisos de gestión' },
+          { name: 'reader', description: 'Usuario con permisos solo lectura' },
+        ];
+
+        for (const r of defaultRoles) {
+          await RoleModel.findOrCreate({ where: { name: r.name }, defaults: { description: r.description } });
+        }
+      } catch (seedErr) {
+        console.error('Error sembrando roles por defecto:', seedErr);
+      }
       
     } catch (error) {
       console.error('❌ Error sincronizando modelos:', error);

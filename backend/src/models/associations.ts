@@ -14,6 +14,7 @@ import AlertModel from './AlertModel';
 import AlertTypeModel from './AlertTypeModel';
 import PaymentTransactionModel from './PaymentTransactionModel';
 import AuditLogModel from './AuditLog';
+import RoleModel from './RoleModel';
 import UserModel from './UserModel';
 import BuildingUnitTypeConfigModel from './BuildingUnitTypeConfigModel';
 import MaintenanceRequestModel from './MaintenanceRequestModel';
@@ -395,6 +396,19 @@ export function initializeAssociations(): void {
   UserModel.hasMany(AuditLogModel, {
     foreignKey: 'user_id',
     as: 'auditLogs',
+    onDelete: 'SET NULL',
+  });
+
+  // User belongsTo Role
+  UserModel.belongsTo(RoleModel, {
+    foreignKey: 'role_id',
+    as: 'role',
+  });
+
+  // Role hasMany Users
+  RoleModel.hasMany(UserModel, {
+    foreignKey: 'role_id',
+    as: 'users',
     onDelete: 'SET NULL',
   });
 

@@ -59,6 +59,13 @@ export interface RegisterData {
   confirmPassword: string;
   full_name: string;
   phone?: string;
+  role_id?: number | null;
+}
+
+export interface RoleDTO {
+  id: number;
+  name: string;
+  description?: string;
 }
 
 /**
