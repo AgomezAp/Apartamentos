@@ -6,6 +6,8 @@ import { Contract } from '../../../contracts/models/contract.model';
 import { Tenant } from '../../../tenants/models/tenant.model';
 import { Unit } from '../../../units/models/unit.model';
 import { NumberFormatDirective } from '../../../../shared/directives/number-format.directive';
+import { PaymentService } from '../../services/payment.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-payment-form',
@@ -25,13 +27,26 @@ export class PaymentFormComponent implements OnInit {
 
   paymentForm!: FormGroup;
   loading = false;
+  
+  // Comprobantes
+  receipts: any[] = [];
+  uploadingReceipts = false;
+  // Archivos seleccionados en modo creación (sin payment.id)
+  pendingReceipts: File[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private paymentService: PaymentService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
     this.setupContractChangeListener();
     this.setupBuildingChangeListener();
+    if (this.payment?.id) {
+      this.loadReceipts();
+    }
   }
 
   initForm(): void {
@@ -191,7 +206,10 @@ export class PaymentFormComponent implements OnInit {
       console.log('📤 Payload construido en form component:', payload);
       console.log('🚀 Emitiendo evento submit...');
       
-      this.submit.emit(payload);
+      // Incluir comprobantes pendientes si estamos creando
+      const hasPendingReceipts = this.pendingReceipts && this.pendingReceipts.length > 0;
+      const payloadWithReceipts: any = hasPendingReceipts ? { ...payload, pending_receipts: this.pendingReceipts } : payload;
+      this.submit.emit(payloadWithReceipts);
     } else {
       console.log('❌ Formulario inválido');
       this.markFormGroupTouched(this.paymentForm);
@@ -222,5 +240,100 @@ export class PaymentFormComponent implements OnInit {
       return 'El valor debe ser un número válido';
     }
     return '';
+  }
+
+  // ========== Gestión de Comprobantes ==========
+  loadReceipts(): void {
+    if (!this.payment?.id) return;
+    
+    this.paymentService.getReceipts(this.payment.id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.receipts = response.data || [];
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando comprobantes:', err);
+      }
+    });
+  }
+
+  onFileSelected(event: any): void {
+    const files: FileList = event.target.files;
+    if (!files || files.length === 0) return;
+
+    // Validar tamaño y tipo
+    const validFiles: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type !== 'application/pdf') {
+        this.notificationService.showError(`${file.name} no es un archivo PDF`, 'Archivo no válido');
+        continue;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        this.notificationService.showError(`${file.name} excede el límite de 10MB`, 'Archivo muy grande');
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    if (validFiles.length === 0) return;
+
+    // Si estamos editando (payment.id existe), subir inmediatamente
+    if (this.payment?.id) {
+      this.uploadingReceipts = true;
+      this.paymentService.uploadReceipts(this.payment.id, validFiles).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.notificationService.showSuccess(response.message || 'Comprobantes subidos', 'Éxito');
+            this.loadReceipts();
+          }
+          this.uploadingReceipts = false;
+          event.target.value = ''; // Reset input
+        },
+        error: (err) => {
+          this.notificationService.showError(err.error?.error || 'Error subiendo comprobantes', 'Error');
+          this.uploadingReceipts = false;
+          event.target.value = '';
+        }
+      });
+      return;
+    }
+
+    // En modo creación, guardar archivos para subir después de crear el pago
+    this.pendingReceipts.push(...validFiles);
+    this.notificationService.showSuccess(`${validFiles.length} archivo(s) preparado(s) para subir al crear el pago`);
+    event.target.value = '';
+  }
+
+  deleteReceipt(receiptId: number): void {
+    if (!confirm('¿Está seguro de eliminar este comprobante?')) return;
+
+    this.paymentService.deleteReceipt(receiptId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.notificationService.showSuccess('Comprobante eliminado', 'Éxito');
+          this.loadReceipts();
+        }
+      },
+      error: (err) => {
+        this.notificationService.showError(err.error?.error || 'Error eliminando comprobante', 'Error');
+      }
+    });
+  }
+
+  getDownloadUrl(receiptId: number): string {
+    return this.paymentService.downloadReceipt(receiptId);
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  // Remover archivo pendiente en modo creación
+  removePending(index: number): void {
+    this.pendingReceipts.splice(index, 1);
   }
 }

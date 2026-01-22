@@ -13,6 +13,7 @@ import { DateFormatPipe } from '../../../../shared/pipes/date-format.pipe';
 })
 export class PaymentCardComponent {
   @Input() payment!: Payment;
+  @Input() receiptCount: number = 0;
   @Output() delete = new EventEmitter<number>();
   @Output() markCompleted = new EventEmitter<number>();
 

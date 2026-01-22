@@ -13,6 +13,7 @@ import TenantModel from './TenantModel';
 import ContractModel from './ContractModel';
 import PaymentStatusModel from './PaymentStatusModel';
 import PaymentModel from './PaymentModel';
+import PaymentReceiptModel from './PaymentReceiptModel';
 import UserModel from './UserModel';
 import AuditLogModel from './AuditLog';
 import ServiceTypeModel from './ServiceTypeModel';
@@ -130,6 +131,7 @@ class Server {
       
       // Tablas de pagos y transacciones
       await PaymentModel.sync({alter: true});
+      await PaymentReceiptModel.sync({alter: true});
       await PaymentTransactionModel.sync({alter: true});
       
       // Tablas de gastos y servicios

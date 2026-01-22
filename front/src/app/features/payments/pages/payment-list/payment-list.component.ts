@@ -39,6 +39,9 @@ export class PaymentListComponent implements OnInit, OnDestroy {
     overdue: 0
   };
 
+  // Receipt counts per payment
+  receiptCounts: Map<number, number> = new Map();
+
   private dateSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
@@ -77,11 +80,35 @@ export class PaymentListComponent implements OnInit, OnDestroy {
         
         this.totalItems = this.filteredPayments.length;
         this.calculateStatistics();
+        
+        // Load receipt counts for all payments
+        this.loadReceiptCounts();
         this.loading = false;
       },
       error: (error: any) => {
         console.error('Error loading payments:', error);
         this.loading = false;
+      }
+    });
+  }
+
+  loadReceiptCounts(): void {
+    this.receiptCounts.clear();
+    
+    // Load receipt count for each payment
+    this.filteredPayments.forEach(payment => {
+      const paymentId = payment.id || payment.payment_id;
+      if (paymentId) {
+        this.paymentService.getReceipts(paymentId).subscribe({
+          next: (response: any) => {
+            const receipts = response?.data || response || [];
+            this.receiptCounts.set(paymentId, Array.isArray(receipts) ? receipts.length : 0);
+          },
+          error: (error: any) => {
+            console.error(`Error loading receipts for payment ${paymentId}:`, error);
+            this.receiptCounts.set(paymentId, 0);
+          }
+        });
       }
     });
   }
@@ -196,5 +223,14 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
   get pages(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  getReceiptCount(paymentId: number | undefined): number {
+    if (!paymentId) return 0;
+    return this.receiptCounts.get(paymentId) || 0;
+  }
+
+  hasReceipts(paymentId: number | undefined): boolean {
+    return this.getReceiptCount(paymentId) > 0;
   }
 }

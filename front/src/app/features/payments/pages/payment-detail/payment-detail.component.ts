@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PaymentService } from '../../services/payment.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { Payment, Transaction, PaymentMethods } from '../../models/payment.model';
 import { TransactionFormComponent } from '../../components/transaction-form/transaction-form.component';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
@@ -9,20 +10,23 @@ import { DateFormatPipe } from '../../../../shared/pipes/date-format.pipe';
 
 @Component({
   selector: 'app-payment-detail',
-  imports: [CommonModule, RouterModule, TransactionFormComponent, CurrencyFormatPipe, DateFormatPipe],
+  imports: [CommonModule, RouterModule, CurrencyFormatPipe, DateFormatPipe],
   templateUrl: './payment-detail.component.html',
   styleUrl: './payment-detail.component.css'
 })
 export class PaymentDetailComponent implements OnInit {
   payment: Payment | null = null;
   transactions: Transaction[] = [];
+  receipts: any[] = [];
   loading = false;
   showTransactionForm = false;
+  uploadingReceipts = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +34,7 @@ export class PaymentDetailComponent implements OnInit {
     if (id) {
       this.loadPayment(parseInt(id));
       this.loadTransactions(parseInt(id));
+      this.loadReceipts(parseInt(id));
     }
   }
 
@@ -168,5 +173,81 @@ export class PaymentDetailComponent implements OnInit {
     const today = new Date();
     const diff = due.getTime() - today.getTime();
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  }
+
+  loadReceipts(paymentId: number): void {
+    this.paymentService.getReceipts(paymentId).subscribe({
+      next: (response: any) => {
+        this.receipts = response?.data || [];
+      },
+      error: (error: any) => {
+        console.error('Error loading receipts:', error);
+      }
+    });
+  }
+
+  onFileSelected(event: any): void {
+    const files: FileList = event.target.files;
+    if (!files || files.length === 0 || !this.payment?.id) return;
+
+    const validFiles: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type !== 'application/pdf') {
+        this.notificationService.showError(`${file.name} no es un archivo PDF`, 'Archivo no válido');
+        continue;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        this.notificationService.showError(`${file.name} excede el límite de 10MB`, 'Archivo muy grande');
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    if (validFiles.length === 0) return;
+
+    this.uploadingReceipts = true;
+    this.paymentService.uploadReceipts(this.payment.id!, validFiles).subscribe({
+      next: (response: any) => {
+        if (response?.success) {
+          this.notificationService.showSuccess(response.message || 'Comprobantes subidos', 'Éxito');
+          this.loadReceipts(this.payment!.id!);
+        }
+        this.uploadingReceipts = false;
+        event.target.value = '';
+      },
+      error: (err: any) => {
+        console.error('Error uploading receipts:', err);
+        this.notificationService.showError(err.error?.error || 'Error subiendo comprobantes', 'Error');
+        this.uploadingReceipts = false;
+        event.target.value = '';
+      }
+    });
+  }
+
+  deleteReceipt(receiptId: number): void {
+    if (!confirm('¿Está seguro de eliminar este comprobante?')) return;
+
+    this.paymentService.deleteReceipt(receiptId).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Comprobante eliminado', 'Éxito');
+        if (this.payment) {
+          this.loadReceipts(this.payment.id || this.payment.payment_id!);
+        }
+      },
+      error: (error: any) => {
+        this.notificationService.showError(error.error?.error || 'Error eliminando comprobante', 'Error');
+      }
+    });
+  }
+
+  getDownloadUrl(receiptId: number): string {
+    return this.paymentService.downloadReceipt(receiptId);
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
 }

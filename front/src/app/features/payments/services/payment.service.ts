@@ -57,4 +57,23 @@ export class PaymentService {
   createTransaction(transaction: any): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.apiUrl}/transactions`, transaction);
   }
+
+  // ========== Comprobantes ==========
+  uploadReceipts(paymentId: number, files: File[]): Observable<ApiResponse<any>> {
+    const formData = new FormData();
+    files.forEach(file => formData.append('receipts', file));
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/${paymentId}/receipts`, formData);
+  }
+
+  getReceipts(paymentId: number): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/${paymentId}/receipts`);
+  }
+
+  downloadReceipt(receiptId: number): string {
+    return `${environment.apiUrl}/payments/receipts/${receiptId}/download`;
+  }
+
+  deleteReceipt(receiptId: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${environment.apiUrl}/payments/receipts/${receiptId}`);
+  }
 }

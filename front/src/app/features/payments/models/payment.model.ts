@@ -37,6 +37,7 @@ export interface PaymentFormData {
   payment_status_id: number;
   payment_method?: string;
   notes?: string;
+  pending_receipts?: File[]; // Archivos seleccionados para subir al crear
 }
 
 export interface PaymentFilter {

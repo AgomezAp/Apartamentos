@@ -115,3 +115,11 @@ export const uploadUnitPhoto = multer({
     fileSize: 5 * 1024 * 1024 // 5MB
   }
 });
+
+export const uploadPaymentReceipt = multer({
+  storage: createMulterConfig('receipts'),
+  fileFilter: documentFilter, // Solo PDF
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB
+  }
+});

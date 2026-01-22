@@ -154,51 +154,51 @@
           <p>{{ payment.notes }}</p>
         </div>
       </div>
-    </div>
 
-    <!-- Right Column -->
-    <div class="right-column">
-      <!-- Transactions Section -->
-      <div class="transactions-card">
+      <!-- Comprobantes de Pago -->
+      <div class="info-card" *ngIf="payment">
         <div class="card-header">
-          <h3>📊 Transacciones</h3>
-          <button class="btn btn-small" (click)="toggleTransactionForm()">
-            {{ showTransactionForm ? '❌ Cerrar' : '➕ Nueva' }}
-          </button>
+          <h3>📎 Comprobantes de Pago</h3>
+          <span class="badge">{{ receipts.length }}</span>
         </div>
         <div class="card-body">
-          <!-- Transaction Form -->
-          <div class="transaction-form-section" *ngIf="showTransactionForm">
-            <app-transaction-form
-              [payment]="payment"
-              (submit)="onTransactionSubmit($event)"
-              (cancel)="toggleTransactionForm()">
-            </app-transaction-form>
+          <div class="receipts-upload-section">
+            <input
+              type="file"
+              #detailFileInput
+              (change)="onFileSelected($event)"
+              accept=".pdf"
+              multiple
+              style="display: none">
+            <button type="button" class="btn btn-upload" (click)="detailFileInput.click()" [disabled]="uploadingReceipts">
+              <span *ngIf="!uploadingReceipts">📤 Subir Comprobantes</span>
+              <span *ngIf="uploadingReceipts">⏳ Subiendo...</span>
+            </button>
+            <small class="help-text">Solo archivos PDF, máximo 10MB cada uno</small>
           </div>
 
-          <!-- Transactions List -->
-          <div class="transactions-list" *ngIf="transactions.length > 0 && !showTransactionForm">
-            <div class="transaction-item" *ngFor="let transaction of transactions">
-              <div class="transaction-header">
-                <span class="transaction-type">{{ transaction.transaction_type }}</span>
-                <span class="transaction-amount">{{ transaction.amount | currencyFormat }}</span>
-              </div>
-              <div class="transaction-details">
-                <p><strong>Fecha:</strong> {{ transaction.transaction_date | dateFormat:'dd/MM/yyyy' }}</p>
-                <p><strong>Método:</strong> {{ getPaymentMethodLabel(transaction.payment_method) }}</p>
-                <p *ngIf="transaction.reference_number"><strong>Ref:</strong> {{ transaction.reference_number }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="empty-transactions" *ngIf="transactions.length === 0 && !showTransactionForm">
-            <p>💭 No hay transacciones registradas</p>
+          <div class="receipts-list" *ngIf="receipts.length > 0">
+            <ul>
+              <li *ngFor="let receipt of receipts" class="receipt-item">
+                <span class="receipt-icon">📄</span>
+                <div class="receipt-info">
+                  <span class="receipt-name">{{ receipt.original_name }}</span>
+                  <span class="receipt-size">({{ formatFileSize(receipt.file_size) }})</span>
+                </div>
+                <div class="receipt-actions">
+                  <a [href]="getDownloadUrl(receipt.id)" target="_blank" class="btn-icon btn-download" title="Descargar">
+                    📥
+                  </a>
+                  <button type="button" (click)="deleteReceipt(receipt.id)" class="btn-icon btn-delete" title="Eliminar">
+                    🗑️
+                  </button>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
 <div class="loading" *ngIf="!payment && !loading">
   <p>💭 Pago no encontrado</p>

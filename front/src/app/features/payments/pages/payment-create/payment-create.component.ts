@@ -132,8 +132,34 @@ export class PaymentCreateComponent implements OnInit {
         console.log('✅ SUCCESS callback - Payment created:', response);
         this.loading = false;
         this.isSubmitting = false;
-        this.notificationService.showSuccess('Pago creado exitosamente');
-        this.router.navigate(['/payments']);
+        // Obtener ID del pago creado desde la respuesta
+        const created = response?.data || response;
+        const newPaymentId: number | undefined = created?.id || created?.payment_id;
+
+        // Si hay comprobantes pendientes, subirlos ahora
+        const pending = (formData as any).pending_receipts as File[] | undefined;
+        if (newPaymentId && pending && pending.length > 0) {
+          console.log(`📎 Subiendo ${pending.length} comprobante(s) para el pago ${newPaymentId}`);
+          this.paymentService.uploadReceipts(newPaymentId, pending).subscribe({
+            next: (uploadResp: any) => {
+              if (uploadResp?.success) {
+                this.notificationService.showSuccess(uploadResp.message || 'Comprobantes subidos', 'Éxito');
+              }
+              this.notificationService.showSuccess('Pago creado exitosamente');
+              this.router.navigate(['/payments']);
+            },
+            error: (err: any) => {
+              console.error('Error subiendo comprobantes:', err);
+              // Navegar aunque falle la subida de comprobantes
+              this.notificationService.showSuccess('Pago creado exitosamente');
+              this.notificationService.showError(err?.error?.error || 'Error subiendo comprobantes');
+              this.router.navigate(['/payments']);
+            }
+          });
+        } else {
+          this.notificationService.showSuccess('Pago creado exitosamente');
+          this.router.navigate(['/payments']);
+        }
       },
       error: (error: any) => {
         console.error('❌ ERROR callback - Error creating payment:', error);

@@ -136,6 +136,63 @@
           rows="3"
           placeholder="Notas adicionales sobre el pago"></textarea>
       </div>
+
+      <!-- Comprobantes de Pago (Crear y Editar) -->
+      <div class="form-group full-width">
+        <label>📎 Comprobantes de Pago (PDF)</label>
+        <div class="receipts-upload-section">
+          <input 
+            type="file" 
+            #fileInput
+            (change)="onFileSelected($event)"
+            accept=".pdf"
+            multiple
+            style="display: none">
+          <button type="button" class="btn btn-upload" (click)="fileInput.click()" [disabled]="uploadingReceipts">
+            <span *ngIf="!uploadingReceipts">📤 Subir Comprobantes</span>
+            <span *ngIf="uploadingReceipts">⏳ Subiendo...</span>
+          </button>
+          <small class="help-text">Solo archivos PDF, máximo 10MB cada uno</small>
+          <small class="help-text" *ngIf="!payment?.id">Los archivos se subirán al crear el pago</small>
+        </div>
+
+        <!-- Lista de comprobantes ya subidos (modo edición) -->
+        <div class="receipts-list" *ngIf="payment?.id && receipts.length > 0">
+          <h4>Comprobantes subidos:</h4>
+          <ul>
+            <li *ngFor="let receipt of receipts" class="receipt-item">
+              <span class="receipt-icon">📄</span>
+              <span class="receipt-name">{{ receipt.original_name }}</span>
+              <span class="receipt-size">({{ formatFileSize(receipt.file_size) }})</span>
+              <div class="receipt-actions">
+                <a [href]="getDownloadUrl(receipt.id)" target="_blank" class="btn-icon btn-download" title="Descargar">
+                  📥
+                </a>
+                <button type="button" (click)="deleteReceipt(receipt.id)" class="btn-icon btn-delete" title="Eliminar">
+                  🗑️
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Lista de comprobantes seleccionados (modo creación) -->
+        <div class="receipts-list" *ngIf="!payment?.id && pendingReceipts.length > 0">
+          <h4>Comprobantes seleccionados (se subirán al crear):</h4>
+          <ul>
+            <li *ngFor="let file of pendingReceipts; let i = index" class="receipt-item">
+              <span class="receipt-icon">📄</span>
+              <span class="receipt-name">{{ file.name }}</span>
+              <span class="receipt-size">({{ formatFileSize(file.size) }})</span>
+              <div class="receipt-actions">
+                <button type="button" (click)="removePending(i)" class="btn-icon btn-delete" title="Quitar">
+                  ❌
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <div class="form-actions">

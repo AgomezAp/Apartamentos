@@ -37,6 +37,9 @@
 
 .header-left {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
 }
 
 .amount-badge {
@@ -49,6 +52,19 @@
   font-weight: 700;
   color: var(--color-secondary);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.receipt-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-secondary);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: var(--spacing-md);
 }
 
 .header-right {

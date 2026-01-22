@@ -4,6 +4,9 @@
       <div class="amount-badge">
         <span class="amount">{{ payment.amount | currencyFormat }}</span>
       </div>
+      <div class="receipt-indicator" *ngIf="receiptCount > 0" title="Comprobantes de pago">
+        📎 {{ receiptCount }}
+      </div>
     </div>
     <div class="header-right">
       <span class="status-badge" [ngClass]="getStatusClass(payment.status)">

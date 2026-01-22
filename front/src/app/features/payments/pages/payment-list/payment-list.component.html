@@ -107,6 +107,7 @@
     <app-payment-card
       *ngFor="let payment of paginatedPayments"
       [payment]="payment"
+      [receiptCount]="getReceiptCount(payment.id || payment.payment_id)"
       (delete)="onDelete(payment.id || payment.payment_id)"
       (markCompleted)="onMarkCompleted(payment.id || payment.payment_id)">
     </app-payment-card>
