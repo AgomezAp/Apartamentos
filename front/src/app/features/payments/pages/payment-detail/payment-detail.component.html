@@ -186,9 +186,9 @@
                   <span class="receipt-size">({{ formatFileSize(receipt.file_size) }})</span>
                 </div>
                 <div class="receipt-actions">
-                  <a [href]="getDownloadUrl(receipt.id)" target="_blank" class="btn-icon btn-download" title="Descargar">
+                  <button type="button" (click)="downloadReceipt(receipt)" class="btn-icon btn-download" title="Descargar">
                     📥
-                  </a>
+                  </button>
                   <button type="button" (click)="deleteReceipt(receipt.id)" class="btn-icon btn-delete" title="Eliminar">
                     🗑️
                   </button>

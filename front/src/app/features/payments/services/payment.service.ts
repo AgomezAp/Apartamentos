@@ -73,6 +73,12 @@ export class PaymentService {
     return `${environment.apiUrl}/payments/receipts/${receiptId}/download`;
   }
 
+  // Authenticated file download (returns Blob)
+  downloadReceiptFile(receiptId: number) {
+    const url = `${environment.apiUrl}/payments/receipts/${receiptId}/download`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
+
   deleteReceipt(receiptId: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${environment.apiUrl}/payments/receipts/${receiptId}`);
   }

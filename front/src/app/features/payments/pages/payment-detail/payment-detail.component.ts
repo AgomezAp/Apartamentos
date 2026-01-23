@@ -245,6 +245,25 @@ export class PaymentDetailComponent implements OnInit {
     return this.paymentService.downloadReceipt(receiptId);
   }
 
+  downloadReceipt(receipt: any): void {
+    if (!receipt?.id) return;
+    this.paymentService.downloadReceiptFile(receipt.id).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = receipt.original_name || 'comprobante.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err: any) => {
+        this.notificationService.showError(err?.error || 'Error descargando comprobante', 'Error');
+      }
+    });
+  }
+
   formatFileSize(bytes: number): string {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
