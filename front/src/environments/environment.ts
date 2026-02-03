@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://api.numerologiapanama.com/api'
+  apiUrl: 'https://api.inventarioap.com/api'
 };
 /* export const environment = {
   production: false,
