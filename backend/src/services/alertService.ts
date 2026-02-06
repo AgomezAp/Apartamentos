@@ -6,9 +6,11 @@ import UnitModel from '../models/Unit';
 import { executeQuery } from '../config/database';
 import NotificationService from './NotificationService';
 import SettingsRepository from '../repositories/SettingsRepository';
+import whatsappService from './WhatsAppService';
 
 class AlertService {
   private isRunning: boolean = false;
+  private adminPhone: string = process.env.WHATSAPP_ADMIN_PHONE || '573006821133';
 
   /**
    * Iniciar el servicio de alertas automáticas
@@ -282,11 +284,8 @@ class AlertService {
    */
   async checkProlongedVacancy(): Promise<void> {
     try {
-      const settingResult: any = await executeQuery(
-        "SELECT setting_value FROM system_settings WHERE setting_key = 'alert_vacant_unit_threshold_days'",
-        []
-      );
-      const thresholdDays = parseInt(settingResult[0]?.setting_value || '60');
+      // Usar 15 días desde env o default
+      const thresholdDays = parseInt(process.env.VACANT_UNIT_ALERT_DAYS || '15');
 
       const prolongedVacantUnits = await UnitModel.getVacantReport();
       const criticalUnits = prolongedVacantUnits.filter(
@@ -305,12 +304,13 @@ class AlertService {
         const existingAlert: any = await executeQuery(
           `SELECT id FROM alerts 
            WHERE unit_id = $1 AND alert_type_id = $2 
-           AND created_at > NOW() - INTERVAL '30 days'
+           AND created_at > NOW() - INTERVAL '7 days'
            LIMIT 1`,
           [(unit as any).id, alertTypeId]
         );
 
         if (existingAlert.length === 0) {
+          // Crear alerta en BD
           await AlertModel.create({
             alert_type_id: alertTypeId,
             title: `Unidad desocupada por tiempo prolongado - ${(unit as any).building_name} ${(unit as any).unit_number}`,
@@ -323,12 +323,38 @@ class AlertService {
               last_occupied_date: (unit as any).last_occupied_date,
             },
           });
+
+          // 📱 Enviar alerta por WhatsApp al administrador
+          await this.sendVacantUnitWhatsAppAlert(unit);
         }
       }
 
-      console.log(`✅ Verificadas ${criticalUnits.length} unidades con desocupación prolongada`);
+      console.log(`✅ Verificadas ${criticalUnits.length} unidades con desocupación prolongada (>${thresholdDays} días)`);
     } catch (error) {
       console.error('Error verificando desocupación prolongada:', error);
+    }
+  }
+
+  /**
+   * 📱 Enviar alerta de unidad desocupada por WhatsApp
+   */
+  private async sendVacantUnitWhatsAppAlert(unit: any): Promise<void> {
+    try {
+      const message = `🏠 *ALERTA DE DESOCUPACIÓN*\n\n` +
+        `📍 *Edificio:* ${unit.building_name}\n` +
+        `🚪 *Unidad:* ${unit.unit_number}\n` +
+        `📅 *Días desocupada:* ${unit.days_vacant} días\n` +
+        `💰 *Canon mensual:* $${unit.rental_price?.toLocaleString('es-CO') || 'N/A'}\n\n` +
+        `⚠️ Esta unidad lleva más de 15 días sin inquilino.\n` +
+        `_Se recomienda revisar la disponibilidad y promocionarla._`;
+
+      const sent = await whatsappService.sendMessage(this.adminPhone, message);
+      
+      if (sent) {
+        console.log(`📱 Alerta de desocupación enviada por WhatsApp para unidad ${unit.unit_number}`);
+      }
+    } catch (error) {
+      console.error('Error enviando alerta de desocupación por WhatsApp:', error);
     }
   }
 
@@ -481,6 +507,67 @@ class AlertService {
       console.log(`✅ Resumen mensual enviado a ${adminEmail}`);
     } catch (error) {
       console.error('Error generando resumen mensual:', error);
+    }
+  }
+
+  /**
+   * 📱 Notificar pago registrado por WhatsApp al administrador
+   */
+  async notifyPaymentRegistered(paymentData: {
+    tenantName: string;
+    unitNumber: string;
+    buildingName: string;
+    amount: number;
+    paymentMethod?: string;
+    periodMonth: number;
+    periodYear: number;
+  }): Promise<void> {
+    try {
+      const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const monthName = monthNames[paymentData.periodMonth - 1] || paymentData.periodMonth;
+
+      const message = `💵 *PAGO REGISTRADO*\n\n` +
+        `👤 *Inquilino:* ${paymentData.tenantName}\n` +
+        `📍 *Edificio:* ${paymentData.buildingName}\n` +
+        `🚪 *Unidad:* ${paymentData.unitNumber}\n` +
+        `💰 *Monto:* $${paymentData.amount.toLocaleString('es-CO')}\n` +
+        `📅 *Periodo:* ${monthName} ${paymentData.periodYear}\n` +
+        `💳 *Método:* ${paymentData.paymentMethod || 'No especificado'}\n` +
+        `🕐 *Fecha:* ${new Date().toLocaleString('es-CO')}\n\n` +
+        `✅ _Pago registrado exitosamente en el sistema._`;
+
+      const sent = await whatsappService.sendMessage(this.adminPhone, message);
+      
+      if (sent) {
+        console.log(`📱 Notificación de pago enviada por WhatsApp para ${paymentData.tenantName}`);
+      }
+    } catch (error) {
+      console.error('Error enviando notificación de pago por WhatsApp:', error);
+    }
+  }
+
+  /**
+   * 📱 Enviar alerta de prueba por WhatsApp
+   */
+  async sendTestAlert(message?: string): Promise<boolean> {
+    try {
+      const testMessage = message || 
+        `🧪 *MENSAJE DE PRUEBA*\n\n` +
+        `✅ El sistema de alertas por WhatsApp está funcionando correctamente.\n\n` +
+        `📱 Número configurado: ${this.adminPhone}\n` +
+        `🕐 Fecha: ${new Date().toLocaleString('es-CO')}`;
+
+      const sent = await whatsappService.sendMessage(this.adminPhone, testMessage);
+      
+      if (sent) {
+        console.log(`📱 Mensaje de prueba enviado a ${this.adminPhone}`);
+      }
+      
+      return sent;
+    } catch (error) {
+      console.error('Error enviando mensaje de prueba:', error);
+      return false;
     }
   }
 

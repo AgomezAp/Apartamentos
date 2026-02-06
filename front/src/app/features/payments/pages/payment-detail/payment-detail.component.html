@@ -15,8 +15,8 @@
       <button class="btn btn-primary" (click)="onEdit()" *ngIf="payment.status === 'pending'">
         ✏️ Editar
       </button>
-      <button class="btn btn-success" (click)="onMarkCompleted()" *ngIf="payment.status === 'pending' || payment.status === 'overdue'">
-        ✅ Marcar Completado
+      <button class="btn btn-success" (click)="openInstallmentModal()" *ngIf="canAddInstallment()">
+        💵 Agregar Abono
       </button>
       <button class="btn btn-danger" (click)="onDelete()" *ngIf="payment.status === 'pending'">
         🗑️ Eliminar
@@ -36,10 +36,31 @@
       <!-- Amount Banner -->
       <div class="amount-banner">
         <div class="banner-content">
-          <span class="banner-label">Monto del Pago</span>
-          <h2 class="banner-amount">{{ payment.amount | currencyFormat }}</h2>
+          <span class="banner-label">Monto del Arriendo</span>
+          <h2 class="banner-amount">{{ getAmountDue() | currencyFormat }}</h2>
         </div>
         <div class="banner-icon">💵</div>
+      </div>
+
+      <!-- Progress Section (para pagos parciales) -->
+      <div class="payment-progress-section" *ngIf="getAmountPaid() > 0 || getBalance() > 0">
+        <div class="progress-header">
+          <span class="progress-label">Progreso del Pago</span>
+          <span class="progress-percentage">{{ getProgressPercentage() | number:'1.0-0' }}%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" [style.width.%]="getProgressPercentage()"></div>
+        </div>
+        <div class="progress-details">
+          <div class="progress-item paid">
+            <span class="label">💰 Pagado:</span>
+            <span class="value">{{ getAmountPaid() | currencyFormat }}</span>
+          </div>
+          <div class="progress-item pending" *ngIf="getBalance() > 0">
+            <span class="label">⏳ Pendiente:</span>
+            <span class="value">{{ getBalance() | currencyFormat }}</span>
+          </div>
+        </div>
       </div>
 
       <!-- Days Alert -->
@@ -198,8 +219,138 @@
           </div>
         </div>
       </div>
+
+      <!-- Historial de Abonos/Transacciones -->
+      <div class="info-card" *ngIf="transactions.length > 0">
+        <div class="card-header">
+          <h3>📜 Historial de Abonos</h3>
+          <span class="badge">{{ transactions.length }}</span>
+        </div>
+        <div class="card-body">
+          <div class="transactions-list">
+            <div class="transaction-item" *ngFor="let trans of transactions; let i = index">
+              <div class="transaction-number">
+                <span class="number-badge">{{ transactions.length - i }}</span>
+              </div>
+              <div class="transaction-info">
+                <div class="transaction-main">
+                  <span class="transaction-amount">{{ trans.amount | currencyFormat }}</span>
+                  <span class="transaction-method">{{ getPaymentMethodLabel(trans.payment_method) }}</span>
+                </div>
+                <div class="transaction-meta">
+                  <span class="transaction-date">📅 {{ trans.transaction_date | dateFormat:'dd/MM/yyyy' }}</span>
+                  <span class="transaction-ref" *ngIf="trans.reference_number">🔢 Ref: {{ trans.reference_number }}</span>
+                </div>
+                <div class="transaction-notes" *ngIf="trans.notes">
+                  <small>📝 {{ trans.notes }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
 <div class="loading" *ngIf="!payment && !loading">
   <p>💭 Pago no encontrado</p>
+</div>
+
+<!-- Modal de Abono -->
+<div class="modal-overlay" *ngIf="showInstallmentModal" (click)="closeInstallmentModal()">
+  <div class="modal-content installment-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>💵 Registrar Abono</h2>
+      <button class="btn-close" (click)="closeInstallmentModal()">×</button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Resumen del pago -->
+      <div class="payment-summary">
+        <div class="summary-row">
+          <span class="label">Arriendo Mensual:</span>
+          <span class="value">{{ getAmountDue() | currencyFormat }}</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Ya Pagado:</span>
+          <span class="value paid">{{ getAmountPaid() | currencyFormat }}</span>
+        </div>
+        <div class="summary-row highlight">
+          <span class="label">Saldo Pendiente:</span>
+          <span class="value pending">{{ getBalance() | currencyFormat }}</span>
+        </div>
+      </div>
+
+      <!-- Formulario de abono -->
+      <form (ngSubmit)="submitInstallment()" class="installment-form">
+        <div class="form-group">
+          <label for="amount">Monto del Abono *</label>
+          <div class="amount-input-wrapper">
+            <span class="currency-symbol">$</span>
+            <input 
+              type="number" 
+              id="amount" 
+              [(ngModel)]="installmentForm.amount" 
+              name="amount"
+              [max]="getBalance()"
+              min="1"
+              step="1000"
+              required>
+          </div>
+          <small class="help-text">Máximo: {{ getBalance() | currencyFormat }}</small>
+        </div>
+
+        <div class="form-group">
+          <label for="payment_method">Método de Pago *</label>
+          <select id="payment_method" [(ngModel)]="installmentForm.payment_method" name="payment_method" required>
+            <option *ngFor="let method of paymentMethods" [value]="method.value">
+              {{ method.icon }} {{ method.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="transaction_date">Fecha del Pago</label>
+            <input 
+              type="date" 
+              id="transaction_date" 
+              [(ngModel)]="installmentForm.transaction_date" 
+              name="transaction_date">
+          </div>
+
+          <div class="form-group">
+            <label for="reference_number">Número de Referencia</label>
+            <input 
+              type="text" 
+              id="reference_number" 
+              [(ngModel)]="installmentForm.reference_number" 
+              name="reference_number"
+              placeholder="Ej: 123456">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Notas (opcional)</label>
+          <textarea 
+            id="notes" 
+            [(ngModel)]="installmentForm.notes" 
+            name="notes"
+            rows="2"
+            placeholder="Observaciones sobre este abono..."></textarea>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeInstallmentModal()" [disabled]="installmentLoading">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-success" (click)="submitInstallment()" [disabled]="installmentLoading || installmentForm.amount <= 0">
+        <span *ngIf="!installmentLoading">
+          {{ installmentForm.amount >= getBalance() ? '✅ Completar Pago' : '💰 Registrar Abono' }}
+        </span>
+        <span *ngIf="installmentLoading">⏳ Procesando...</span>
+      </button>
+    </div>
+  </div>
 </div>

@@ -6,6 +6,7 @@ import { TenantsService } from '../../services/tenants.service';
 import { TenantCardComponent } from '../../components/tenant-card/tenant-card.component';
 import { Tenant, TenantSearchFilter } from '../../models/tenant.model';
 import { PaginationData } from '../../../../core/models/api-response.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
@@ -40,7 +41,8 @@ export class TenantListComponent implements OnInit, OnDestroy {
 
   constructor(
     private tenantsService: TenantsService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -102,6 +104,7 @@ export class TenantListComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error loading tenants:', error);
+        this.notificationService.showError('No se pudieron cargar los inquilinos');
         this.isLoading = false;
       }
     });
@@ -125,12 +128,33 @@ export class TenantListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(tenantId: number): void {
+    // Primero confirmar con el usuario
+    if (!confirm('¿Está seguro que desea eliminar este inquilino?')) {
+      return;
+    }
+    
     this.tenantsService.deleteTenant(tenantId).subscribe({
       next: () => {
+        this.notificationService.showSuccess('Inquilino eliminado exitosamente');
         this.loadTenants();
       },
       error: (error) => {
         console.error('Error deleting tenant:', error);
+        
+        // Manejar error específico de contratos activos
+        if (error.error?.details?.contracts) {
+          const contracts = error.error.details.contracts;
+          const contractsInfo = contracts.map((c: any) => 
+            `${c.contract_number} (${c.status === 'active' ? 'Activo' : 'Pendiente'})`
+          ).join(', ');
+          
+          this.notificationService.showError(
+            `Este inquilino tiene contratos que debe finalizar primero: ${contractsInfo}`,
+            'No se puede eliminar',
+            10000 // Mostrar por 10 segundos
+          );
+        }
+        // El interceptor ya muestra otros errores
       }
     });
   }

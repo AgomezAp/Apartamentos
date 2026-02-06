@@ -7,7 +7,8 @@ class PaymentRepository {
    */
   async findAll(filters: any): Promise<Payment[]> {
     let query = `
-      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, p.payment_date,
+      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, 
+             COALESCE(p.amount_paid, 0) as amount_paid, p.due_date, p.payment_date,
              p.payment_status_id, p.payment_method, p.notes, p.created_at, p.updated_at,
              c.monthly_rent, c.unit_id,
              u.unit_number, b.name as building_name,
@@ -98,7 +99,8 @@ class PaymentRepository {
    */
   async findById(id: number): Promise<Payment | null> {
     const query = `
-      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, p.payment_date,
+      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount,
+             COALESCE(p.amount_paid, 0) as amount_paid, p.due_date, p.payment_date,
              p.payment_status_id, p.payment_method, p.notes, p.created_at, p.updated_at,
              c.monthly_rent, c.unit_id,
              u.unit_number, b.name as building_name,
@@ -121,7 +123,8 @@ class PaymentRepository {
    */
   async findByUnitId(unitId: number, limit: number = 12): Promise<Payment[]> {
     const query = `
-      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount, p.due_date, p.payment_date,
+      SELECT p.id, p.contract_id, p.period_month, p.period_year, p.amount_due, p.amount_due as amount,
+             COALESCE(p.amount_paid, 0) as amount_paid, p.due_date, p.payment_date,
              p.payment_status_id, p.payment_method, p.notes, p.created_at, p.updated_at,
              c.monthly_rent, c.unit_id,
              u.unit_number, b.name as building_name,
@@ -218,18 +221,19 @@ class PaymentRepository {
   }
 
   /**
-   * Agregar una transacción a un pago
+   * Agregar una transacción/abono a un pago
    */
   async addTransaction(transaction: PaymentTransaction): Promise<number> {
     const query = `
       INSERT INTO payment_transactions (
-        payment_id, amount, transaction_date, payment_method,
-        reference_number, receipt_file_path, notes, created_by
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        payment_id, transaction_type, amount, transaction_date, payment_method,
+        reference_number, receipt_file_path, notes, created_by, created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP)
       RETURNING id
     `;
     const result: any = await executeQuery(query, [
       transaction.payment_id,
+      'payment', // transaction_type - siempre es 'payment' para abonos
       transaction.amount,
       transaction.transaction_date || new Date(),
       transaction.payment_method,
@@ -239,22 +243,44 @@ class PaymentRepository {
       transaction.created_by || null,
     ]);
 
-    // Actualizar el monto pagado del pago
+    // Actualizar el monto pagado del pago (inicializar en 0 si es NULL)
     await executeQuery(
       `UPDATE payments 
-       SET amount_paid = amount_paid + $1, 
+       SET amount_paid = COALESCE(amount_paid, 0) + $1,
+           payment_date = COALESCE(payment_date, CURRENT_TIMESTAMP),
            updated_at = CURRENT_TIMESTAMP
        WHERE id = $2`,
       [transaction.amount, transaction.payment_id]
     );
 
-    // Actualizar estado si está completamente pagado
-    await executeQuery(
-      `UPDATE payments 
-       SET payment_status_id = (SELECT id FROM payment_statuses WHERE name = 'Pagado' LIMIT 1)
-       WHERE id = $1 AND amount_paid >= amount_due`,
+    // Obtener datos actualizados del pago incluyendo monthly_rent del contrato
+    const paymentData: any = await executeQuery(
+      `SELECT p.amount_due, COALESCE(p.amount_paid, 0) as amount_paid, c.monthly_rent 
+       FROM payments p 
+       INNER JOIN contracts c ON p.contract_id = c.id 
+       WHERE p.id = $1`,
       [transaction.payment_id]
     );
+
+    if (paymentData.length > 0) {
+      const { amount_paid, monthly_rent, amount_due } = paymentData[0];
+      // Usar monthly_rent del contrato como referencia, si no existe usar amount_due
+      const totalDue = parseFloat(monthly_rent) || parseFloat(amount_due);
+      
+      if (parseFloat(amount_paid) >= totalDue) {
+        // Pago completado = status 2 (Pagado)
+        await executeQuery(
+          `UPDATE payments SET payment_status_id = 2 WHERE id = $1`,
+          [transaction.payment_id]
+        );
+      } else if (parseFloat(amount_paid) > 0) {
+        // Pago parcial = status 4 (Parcial)
+        await executeQuery(
+          `UPDATE payments SET payment_status_id = 4 WHERE id = $1`,
+          [transaction.payment_id]
+        );
+      }
+    }
 
     return result[0].id;
   }

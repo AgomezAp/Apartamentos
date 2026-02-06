@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { Payment, PaymentFilter, PaymentStatuses, PaymentMethods } from '../../models/payment.model';
 import { PaymentCardComponent } from '../../components/payment-card/payment-card.component';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
@@ -45,7 +46,10 @@ export class PaymentListComponent implements OnInit, OnDestroy {
   private dateSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
-  constructor(private paymentService: PaymentService) {}
+  constructor(
+    private paymentService: PaymentService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.loadPayments();
@@ -178,11 +182,12 @@ export class PaymentListComponent implements OnInit, OnDestroy {
     if (!paymentId) return;
     this.paymentService.delete(paymentId).subscribe({
       next: () => {
+        this.notificationService.showSuccess('Pago eliminado correctamente');
         this.loadPayments();
       },
       error: (error: any) => {
         console.error('Error deleting payment:', error);
-        alert('Error al eliminar el pago');
+        // El interceptor ya maneja el error
       }
     });
   }
@@ -196,11 +201,12 @@ export class PaymentListComponent implements OnInit, OnDestroy {
       payment_date: new Date().toISOString() 
     }).subscribe({
       next: () => {
+        this.notificationService.showSuccess('Pago marcado como completado');
         this.loadPayments();
       },
       error: (error: any) => {
         console.error('Error updating payment:', error);
-        alert('Error al actualizar el pago');
+        // El interceptor ya maneja el error
       }
     });
   }

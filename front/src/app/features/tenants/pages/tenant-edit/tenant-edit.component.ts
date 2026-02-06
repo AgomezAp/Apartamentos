@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TenantFormComponent } from '../../components/tenant-form/tenant-form.component';
 import { TenantsService } from '../../services/tenants.service';
 import { Tenant } from '../../models/tenant.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-tenant-edit',
@@ -20,7 +21,8 @@ export class TenantEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private tenantsService: TenantsService
+    private tenantsService: TenantsService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -40,7 +42,7 @@ export class TenantEditComponent implements OnInit {
       error: (error) => {
         console.error('Error al cargar inquilino:', error);
         this.isLoading = false;
-        alert('Error al cargar el inquilino');
+        this.notificationService.showError('No se pudo cargar el inquilino');
         this.router.navigate(['/tenants']);
       }
     });
@@ -83,13 +85,14 @@ export class TenantEditComponent implements OnInit {
       next: (response) => {
         console.log('Inquilino actualizado exitosamente:', response);
         this.isSubmitting = false;
+        this.notificationService.showSuccess('Inquilino actualizado exitosamente');
         // Navegar a la página de detalles
         this.router.navigate(['/tenants', this.tenant!.id || this.tenant!.tenant_id]);
       },
       error: (error) => {
         console.error('Error al actualizar inquilino:', error);
         this.isSubmitting = false;
-        alert('Error al actualizar el inquilino. Por favor, intenta nuevamente.');
+        // El interceptor ya muestra el error general
       }
     });
   }

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Tenant, IDENTIFICATION_TYPES, TENANT_STATUS } from '../../models/tenant.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-tenant-form',
@@ -21,7 +22,10 @@ export class TenantFormComponent implements OnInit {
   tenantStatuses = TENANT_STATUS;
   isSubmitting = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -50,10 +54,37 @@ export class TenantFormComponent implements OnInit {
 
   private patchFormValues(): void {
     if (this.tenant) {
-      const formValue: any = { ...this.tenant };
-      if (this.tenant.date_of_birth) {
-        formValue.date_of_birth = new Date(this.tenant.date_of_birth).toISOString().split('T')[0];
+      // Construir full_name desde first_name y last_name
+      const fullName = this.tenant.full_name || 
+        `${this.tenant.first_name || ''} ${this.tenant.last_name || ''}`.trim();
+      
+      // Obtener el teléfono (puede estar en phone o mobile_phone)
+      const phone = this.tenant.phone || this.tenant.mobile_phone || '';
+      
+      // Obtener el status (convertir is_active a status si es necesario)
+      let status = this.tenant.status;
+      if (!status && this.tenant.is_active !== undefined) {
+        status = this.tenant.is_active ? 'active' : 'inactive';
       }
+      
+      const formValue: any = {
+        full_name: fullName,
+        email: this.tenant.email,
+        phone: phone,
+        identification_number: this.tenant.identification_number || this.tenant.document_number,
+        identification_type: this.tenant.identification_type || this.tenant.document_type || 'CC',
+        date_of_birth: this.tenant.date_of_birth 
+          ? new Date(this.tenant.date_of_birth).toISOString().split('T')[0] 
+          : '',
+        nationality: this.tenant.nationality || '',
+        occupation: this.tenant.occupation || '',
+        emergency_contact_name: this.tenant.emergency_contact_name || '',
+        emergency_contact_phone: this.tenant.emergency_contact_phone || '',
+        emergency_contact_relationship: this.tenant.emergency_contact_relationship || '',
+        status: status || 'active',
+        notes: this.tenant.notes || ''
+      };
+      
       this.tenantForm.patchValue(formValue);
     }
   }
@@ -72,7 +103,57 @@ export class TenantFormComponent implements OnInit {
       this.isSubmitting = false;
     } else {
       this.markFormGroupTouched(this.tenantForm);
+      // Mostrar errores específicos al usuario
+      const errorMessages = this.getFormValidationErrors();
+      if (errorMessages.length > 0) {
+        this.notificationService.showError(
+          `Por favor corrige los siguientes errores:\n\n${errorMessages.join('\n')}`,
+          'Formulario incompleto'
+        );
+      }
     }
+  }
+
+  /**
+   * Obtiene los mensajes de error de validación del formulario
+   */
+  private getFormValidationErrors(): string[] {
+    const errors: string[] = [];
+    const fieldLabels: Record<string, string> = {
+      'full_name': 'Nombre completo',
+      'email': 'Correo electrónico',
+      'phone': 'Teléfono',
+      'identification_number': 'Número de identificación',
+      'identification_type': 'Tipo de identificación',
+      'date_of_birth': 'Fecha de nacimiento',
+      'nationality': 'Nacionalidad',
+      'occupation': 'Ocupación',
+      'emergency_contact_name': 'Contacto de emergencia',
+      'emergency_contact_phone': 'Teléfono de emergencia',
+      'emergency_contact_relationship': 'Relación con contacto',
+      'status': 'Estado',
+      'notes': 'Notas',
+    };
+
+    Object.keys(this.tenantForm.controls).forEach(key => {
+      const control = this.tenantForm.get(key);
+      if (control?.invalid) {
+        const label = fieldLabels[key] || key;
+        if (control.errors?.['required']) {
+          errors.push(`• ${label}: Este campo es requerido`);
+        } else if (control.errors?.['email']) {
+          errors.push(`• ${label}: Formato de correo inválido`);
+        } else if (control.errors?.['maxlength']) {
+          errors.push(`• ${label}: Máximo ${control.errors['maxlength'].requiredLength} caracteres`);
+        } else if (control.errors?.['min']) {
+          errors.push(`• ${label}: El valor mínimo es ${control.errors['min'].min}`);
+        } else {
+          errors.push(`• ${label}: Valor inválido`);
+        }
+      }
+    });
+
+    return errors;
   }
 
   onCancel(): void {

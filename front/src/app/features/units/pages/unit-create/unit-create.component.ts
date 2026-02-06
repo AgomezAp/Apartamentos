@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UnitFormComponent } from '../../components/unit-form/unit-form.component';
 import { UnitService } from '../../services/unit.service';
 import { UnitFormData } from '../../models/unit.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-unit-create',
@@ -17,7 +18,8 @@ export class UnitCreateComponent {
 
   constructor(
     private unitService: UnitService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   onFormSubmit(formData: UnitFormData): void {
@@ -50,13 +52,14 @@ export class UnitCreateComponent {
     this.unitService.createUnit(unitPayload as any).subscribe({
       next: (response) => {
         if (response.success && response.data) {
+          this.notificationService.showSuccess('Unidad creada exitosamente');
           this.router.navigate(['/units', response.data.id || response.data.unit_id]);
         }
       },
       error: (error) => {
         console.error('Error creating unit:', error);
         this.isSubmitting = false;
-        alert('Error al crear la unidad. Por favor, intente nuevamente.');
+        // El interceptor ya muestra el error
       }
     });
   }

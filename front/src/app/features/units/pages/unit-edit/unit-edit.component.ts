@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UnitFormComponent } from '../../components/unit-form/unit-form.component';
 import { UnitService } from '../../services/unit.service';
 import { Unit, UnitFormData } from '../../models/unit.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-unit-edit',
@@ -21,7 +22,8 @@ export class UnitEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private unitService: UnitService
+    private unitService: UnitService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -75,13 +77,14 @@ export class UnitEditComponent implements OnInit {
     this.unitService.updateUnit(this.unitId, unitPayload as any).subscribe({
       next: (response) => {
         if (response.success) {
+          this.notificationService.showSuccess('Unidad actualizada exitosamente');
           this.router.navigate(['/units', this.unitId]);
         }
       },
       error: (error) => {
         console.error('Error updating unit:', error);
         this.isSubmitting = false;
-        alert('Error al actualizar la unidad. Por favor, intente nuevamente.');
+        // El interceptor ya muestra el error
       }
     });
   }

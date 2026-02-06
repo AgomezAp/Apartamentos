@@ -7,6 +7,7 @@ import { Building } from '../../../buildings/models/building.model';
 import { NumberFormatDirective } from '../../../../shared/directives/number-format.directive';
 import { CatalogService } from '../../../catalogs/service/catalog.service';
 import { UnitType } from '../../../catalogs/service/models/catalog.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-unit-form',
@@ -37,7 +38,8 @@ export class UnitFormComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private buildingService: BuildingService,
-    private catalogService: CatalogService
+    private catalogService: CatalogService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -126,9 +128,54 @@ export class UnitFormComponent implements OnInit, OnChanges {
       this.formSubmit.emit(formValue);
     } else {
       this.markFormGroupTouched(this.unitForm);
-      console.log('❌ Formulario inválido:', this.unitForm.errors);
-      console.log('📋 Valores del formulario:', this.unitForm.value);
+      // Mostrar errores específicos al usuario
+      const errorMessages = this.getFormValidationErrors();
+      if (errorMessages.length > 0) {
+        this.notificationService.showError(
+          `Por favor corrige los siguientes errores:\n\n${errorMessages.join('\n')}`,
+          'Formulario incompleto'
+        );
+      }
     }
+  }
+
+  /**
+   * Obtiene los mensajes de error de validación del formulario
+   */
+  private getFormValidationErrors(): string[] {
+    const errors: string[] = [];
+    const fieldLabels: Record<string, string> = {
+      'building_id': 'Edificio',
+      'unit_number': 'Número de unidad',
+      'floor': 'Piso',
+      'unit_type_id': 'Tipo de unidad',
+      'bedrooms': 'Habitaciones',
+      'bathrooms': 'Baños',
+      'area_sqm': 'Área (m²)',
+      'status': 'Estado',
+      'monthly_rent': 'Renta mensual',
+      'deposit_required': 'Depósito requerido',
+      'furnished': 'Amueblado',
+      'description': 'Descripción',
+    };
+
+    Object.keys(this.unitForm.controls).forEach(key => {
+      const control = this.unitForm.get(key);
+      if (control?.invalid) {
+        const label = fieldLabels[key] || key;
+        if (control.errors?.['required']) {
+          errors.push(`• ${label}: Este campo es requerido`);
+        } else if (control.errors?.['min']) {
+          errors.push(`• ${label}: El valor mínimo es ${control.errors['min'].min}`);
+        } else if (control.errors?.['maxlength']) {
+          errors.push(`• ${label}: Máximo ${control.errors['maxlength'].requiredLength} caracteres`);
+        } else {
+          errors.push(`• ${label}: Valor inválido`);
+        }
+      }
+    });
+
+    return errors;
   }
 
   onCancel(): void {

@@ -59,8 +59,8 @@ export const createContractValidators: ValidationChain[] = [
   // Renta mensual ($50,000 - $50,000,000)
   moneyAmountValidator('monthly_rent', true),
   
-  // Depósito ($50,000 - $50,000,000)
-  moneyAmountValidator('deposit_amount', true),
+  // Depósito ($50,000 - $50,000,000) - OPCIONAL: algunos contratos no requieren depósito
+  moneyAmountValidator('deposit_amount', false),
   
   // Día de pago (1-31)
   body('payment_day')

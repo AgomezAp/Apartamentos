@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import TenantModel from '../models/Tenant';
 import { Tenant } from '../interfaces';
 import { TenantMapper, PaginationMapper } from '../utils/mappers';
+import { executeQuery } from '../config/database';
 
 class TenantController {
   async getAll(req: Request, res: Response): Promise<Response> {
@@ -158,6 +159,29 @@ class TenantController {
         });
       }
 
+      // Verificar si el inquilino tiene contratos activos o pendientes
+      const activeContracts: any[] = await executeQuery(
+        `SELECT c.id, c.contract_number, c.status, u.unit_number, b.name as building_name
+         FROM contracts c
+         INNER JOIN units u ON c.unit_id = u.id
+         INNER JOIN buildings b ON u.building_id = b.id
+         WHERE c.tenant_id = $1 AND c.status IN ('active', 'pending')
+         ORDER BY c.start_date DESC`,
+        [id]
+      );
+
+      if (activeContracts.length > 0) {
+        return res.status(400).json({
+          success: false,
+          error: 'No se puede eliminar el inquilino porque tiene contratos activos o pendientes',
+          details: {
+            message: 'Primero debe finalizar o cancelar los siguientes contratos:',
+            contracts: activeContracts,
+            hint: 'Vaya a la sección de Contratos y finalice o cancele los contratos asociados antes de eliminar el inquilino.'
+          }
+        });
+      }
+
       const deleted = await TenantModel.delete(id);
 
       if (!deleted) {
@@ -173,6 +197,17 @@ class TenantController {
       });
     } catch (error: any) {
       console.error('Error eliminando inquilino:', error);
+      
+      // Manejar error de foreign key si la validación anterior no lo capturó
+      if (error.code === '23503') {
+        return res.status(400).json({
+          success: false,
+          error: 'No se puede eliminar el inquilino porque tiene registros asociados (contratos, pagos, etc.)',
+          details: {
+            hint: 'Primero debe eliminar o reasignar los registros relacionados.'
+          }
+        });
+      }
       return res.status(500).json({
         success: false,
         error: error.message,

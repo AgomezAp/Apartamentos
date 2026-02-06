@@ -1,0 +1,143 @@
+<div class="whatsapp-settings">
+  <div class="section-header">
+    <h2>📱 Configuración de WhatsApp</h2>
+    <p class="description">
+      Conecta tu WhatsApp para enviar notificaciones automáticas a los inquilinos.
+    </p>
+  </div>
+
+  <!-- Estado de Carga -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando estado...</p>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div class="content" *ngIf="!loading">
+    
+    <!-- Estado de Conexión -->
+    <div class="connection-status" [class.connected]="status?.isReady">
+      <div class="status-indicator">
+        <span class="dot" [class.active]="status?.isReady"></span>
+        <span class="label">
+          {{ status?.isReady ? 'Conectado' : 'Desconectado' }}
+        </span>
+      </div>
+      <div class="status-info" *ngIf="status?.lastConnection">
+        <small>Última conexión: {{ formatDate(status.lastConnection) }}</small>
+      </div>
+    </div>
+
+    <!-- Panel de Conexión (cuando no está conectado) -->
+    <div class="connection-panel" *ngIf="!status?.isReady">
+      
+      <!-- Código QR -->
+      <div class="qr-container" *ngIf="qrCodeImage">
+        <h3>Escanea el código QR</h3>
+        <p class="instructions">
+          Abre WhatsApp en tu teléfono, ve a <strong>Configuración > Dispositivos vinculados > Vincular un dispositivo</strong> y escanea este código.
+        </p>
+        <div class="qr-wrapper">
+          <img [src]="qrCodeImage" alt="Código QR de WhatsApp" class="qr-image">
+        </div>
+        <p class="waiting-text">
+          ⏳ Esperando que escanees el código...
+        </p>
+      </div>
+
+      <!-- Botón de Conectar -->
+      <div class="connect-action" *ngIf="!qrCodeImage">
+        <div class="connect-info">
+          <span class="icon">📲</span>
+          <p>WhatsApp no está conectado. Haz clic en el botón para generar el código QR.</p>
+        </div>
+        <button 
+          class="btn btn-primary btn-lg" 
+          (click)="connect()"
+          [disabled]="connecting">
+          <span *ngIf="!connecting">🔗 Conectar WhatsApp</span>
+          <span *ngIf="connecting">
+            <span class="spinner-small"></span> Conectando...
+          </span>
+        </button>
+      </div>
+
+      <!-- Error -->
+      <div class="error-message" *ngIf="status?.error">
+        <span class="error-icon">⚠️</span>
+        <p>{{ status.error }}</p>
+        <button class="btn btn-outline" (click)="connect()">Reintentar</button>
+      </div>
+    </div>
+
+    <!-- Panel de Conectado -->
+    <div class="connected-panel" *ngIf="status?.isReady">
+      
+      <!-- Éxito -->
+      <div class="success-banner">
+        <span class="success-icon">✅</span>
+        <div class="success-text">
+          <h3>WhatsApp Conectado</h3>
+          <p>Las notificaciones se enviarán automáticamente a los inquilinos.</p>
+        </div>
+      </div>
+
+      <!-- Prueba de Mensaje -->
+      <div class="test-section">
+        <h3>🧪 Enviar Mensaje de Prueba</h3>
+        <div class="test-form">
+          <div class="form-group">
+            <label for="testPhone">Número de WhatsApp</label>
+            <input 
+              type="tel" 
+              id="testPhone" 
+              [(ngModel)]="testPhone"
+              placeholder="Ej: 3001234567"
+              class="form-control">
+            <small>Ingresa el número sin código de país (se agregará 57 automáticamente)</small>
+          </div>
+          <div class="form-group">
+            <label for="testMessage">Mensaje</label>
+            <textarea 
+              id="testMessage" 
+              [(ngModel)]="testMessage"
+              rows="3"
+              class="form-control"></textarea>
+          </div>
+          <button 
+            class="btn btn-secondary"
+            (click)="sendTestMessage()"
+            [disabled]="sendingTest || !testPhone">
+            <span *ngIf="!sendingTest">📤 Enviar Prueba</span>
+            <span *ngIf="sendingTest">Enviando...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Desconectar -->
+      <div class="disconnect-section">
+        <button class="btn btn-danger" (click)="disconnect()">
+          🔌 Desconectar WhatsApp
+        </button>
+      </div>
+    </div>
+
+    <!-- Información -->
+    <div class="info-section">
+      <h4>ℹ️ Información</h4>
+      <ul>
+        <li>Las notificaciones se enviarán automáticamente cuando:
+          <ul>
+            <li>Se registre un pago</li>
+            <li>Un pago esté próximo a vencer (3 días antes)</li>
+            <li>Un pago esté vencido</li>
+            <li>Un contrato esté por vencer</li>
+            <li>Se cree un nuevo contrato (mensaje de bienvenida)</li>
+          </ul>
+        </li>
+        <li>El número del inquilino debe estar registrado correctamente en su perfil.</li>
+        <li>Solo se enviarán mensajes a números registrados en WhatsApp.</li>
+      </ul>
+    </div>
+  </div>
+</div>

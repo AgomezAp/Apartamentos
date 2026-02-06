@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UnitService } from '../../services/unit.service';
 import { PaymentService } from '../../../payments/services/payment.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { Unit } from '../../models/unit.model';
 import { Payment } from '../../../payments/models/payment.model';
 
@@ -24,7 +25,8 @@ export class UnitDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private unitService: UnitService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -89,7 +91,7 @@ export class UnitDetailComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error deleting unit:', error);
-          alert('Error al eliminar la unidad');
+          this.notificationService.showError('Error al eliminar la unidad');
         }
       });
     }

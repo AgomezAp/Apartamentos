@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import PaymentModel from '../models/Payment';
 import { Payment, PaymentTransaction } from '../interfaces';
 import NotificationService from '../services/NotificationService';
+import alertService from '../services/alertService';
 import { PaymentMapper } from '../utils/mappers';
 
 class PaymentController {
@@ -142,6 +143,25 @@ class PaymentController {
       // Normalizar pago creado
       const normalizedPayment = newPayment ? PaymentMapper.toEnhancedDTO(newPayment) : null;
 
+      // 📱 Enviar notificación por WhatsApp al administrador
+      if (newPayment && (payment.payment_status_id === 2 || payment.payment_status_id === 4)) {
+        // Solo notificar si el pago está completado o parcial (no pendientes)
+        try {
+          await alertService.notifyPaymentRegistered({
+            tenantName: (newPayment as any).tenant_name || 'Inquilino',
+            unitNumber: (newPayment as any).unit_number || 'N/A',
+            buildingName: (newPayment as any).building_name || 'N/A',
+            amount: payment.amount_paid || payment.amount_due,
+            paymentMethod: payment.payment_method,
+            periodMonth: payment.period_month,
+            periodYear: payment.period_year,
+          });
+        } catch (whatsappError) {
+          console.error('Error enviando notificación WhatsApp de pago:', whatsappError);
+          // No fallamos el pago si WhatsApp falla
+        }
+      }
+
       return res.status(201).json({
         success: true,
         data: normalizedPayment,
@@ -207,8 +227,40 @@ class PaymentController {
   async addTransaction(req: Request, res: Response): Promise<Response> {
     try {
       const paymentId = parseInt(req.params.id);
+      
+      // Validar ID
+      if (isNaN(paymentId)) {
+        return res.status(400).json({ success: false, error: 'ID de pago inválido' });
+      }
+
+      // Validar que existe el pago
+      const existingPayment = await PaymentModel.findById(paymentId);
+      if (!existingPayment) {
+        return res.status(404).json({ success: false, error: 'Pago no encontrado' });
+      }
+
+      // Usar monthly_rent del contrato como el monto total del arriendo
+      const monthlyRent = parseFloat((existingPayment as any).monthly_rent) || 0;
+      const amountDue = monthlyRent > 0 ? monthlyRent : parseFloat(existingPayment.amount_due.toString());
+      const amountPaid = parseFloat((existingPayment as any).amount_paid) || 0;
+      const balance = amountDue - amountPaid;
+
+      // Validar monto del abono
+      const transactionAmount = parseFloat(req.body.amount);
+      if (isNaN(transactionAmount) || transactionAmount <= 0) {
+        return res.status(400).json({ success: false, error: 'El monto debe ser mayor a 0' });
+      }
+
+      if (transactionAmount > balance) {
+        return res.status(400).json({ 
+          success: false, 
+          error: `El monto ($${transactionAmount.toLocaleString('es-CO')}) excede el saldo pendiente ($${balance.toLocaleString('es-CO')})` 
+        });
+      }
+
       const transaction: PaymentTransaction = {
         ...req.body,
+        amount: transactionAmount,
         payment_id: paymentId,
         created_by: (req as any).user?.id,
       };
@@ -216,13 +268,34 @@ class PaymentController {
       const id = await PaymentModel.addTransaction(transaction);
       const payment = await PaymentModel.findById(paymentId);
 
+      // Determinar si es pago completo o parcial
+      const newAmountPaid = parseFloat((payment as any).amount_paid) || 0;
+      const isCompleted = newAmountPaid >= amountDue;
+
+      // 📱 Enviar notificación WhatsApp al administrador
+      if (payment) {
+        try {
+          await alertService.notifyPaymentRegistered({
+            tenantName: (payment as any).tenant_name || 'Inquilino',
+            unitNumber: (payment as any).unit_number || 'N/A',
+            buildingName: (payment as any).building_name || 'N/A',
+            amount: transactionAmount,
+            paymentMethod: transaction.payment_method,
+            periodMonth: payment.period_month,
+            periodYear: payment.period_year,
+          });
+        } catch (whatsappError) {
+          console.error('Error enviando notificación WhatsApp:', whatsappError);
+        }
+      }
+
       // 🔔 Enviar notificación al inquilino sobre el pago registrado
       if (payment && (payment as any).tenant_email) {
         try {
           await NotificationService.notifyPaymentRegistered({
             tenantEmail: (payment as any).tenant_email,
             tenantName: (payment as any).tenant_name,
-            amount: transaction.amount,
+            amount: transactionAmount,
             paymentDate: transaction.transaction_date?.toString() || new Date().toISOString(),
             paymentMethod: transaction.payment_method || 'No especificado',
             periodMonth: payment.period_month,
@@ -233,14 +306,24 @@ class PaymentController {
           });
         } catch (emailError) {
           console.error('Error enviando notificación de pago:', emailError);
-          // No fallar la transacción si el email falla
         }
       }
 
+      // Normalizar pago para respuesta
+      const normalizedPayment = payment ? PaymentMapper.toEnhancedDTO(payment) : null;
+
       return res.status(201).json({
         success: true,
-        data: { transaction_id: id, payment },
-        message: 'Transacción registrada exitosamente',
+        data: { 
+          transaction_id: id, 
+          payment: normalizedPayment,
+          is_completed: isCompleted,
+          amount_paid: newAmountPaid,
+          balance: amountDue - newAmountPaid
+        },
+        message: isCompleted 
+          ? '✅ Pago completado exitosamente' 
+          : `💰 Abono registrado. Saldo pendiente: $${(amountDue - newAmountPaid).toLocaleString('es-CO')}`,
       });
     } catch (error: any) {
       return res.status(500).json({ success: false, error: error.message });

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ExpenseService } from '../../services/expense.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { Expense } from '../../models/expense.model';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { DateFormatPipe } from '../../../../shared/pipes/date-format.pipe';
@@ -21,7 +22,8 @@ export class ExpenseDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private expenseService: ExpenseService
+    private expenseService: ExpenseService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +70,7 @@ export class ExpenseDetailComponent implements OnInit {
           this.router.navigate(['/expenses']);
         },
         error: (error) => {
-          alert('Error al eliminar el gasto');
+          this.notificationService.showError('Error al eliminar el gasto');
           console.error('Error deleting expense:', error);
         }
       });

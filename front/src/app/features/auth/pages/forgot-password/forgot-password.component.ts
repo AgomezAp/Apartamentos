@@ -17,7 +17,7 @@ export class ForgotPasswordComponent implements OnInit {
   forgotPasswordForm!: FormGroup;
   isLoading = false;
   emailSent = false;
-  private readonly API_URL = environment.apiUrl || 'http://localhost:3010/api';
+  private readonly API_URL = environment.apiUrl;
 
   constructor(
     private fb: FormBuilder,

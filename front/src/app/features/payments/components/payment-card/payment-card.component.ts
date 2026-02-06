@@ -75,6 +75,8 @@ export class PaymentCardComponent {
 
   isOverdue(dueDate: string | undefined, status: string | undefined): boolean {
     if (!status || !dueDate) return false;
+    // Si el pago está completado o cancelado, nunca mostrar como vencido
+    if (status === 'completed' || status === 'cancelled') return false;
     return status === 'overdue' || (status === 'pending' && new Date(dueDate) < new Date());
   }
 }

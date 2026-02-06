@@ -6,6 +6,7 @@ import { UnitService } from '../../services/unit.service';
 import { UnitCardComponent } from '../../components/unit-card/unit-card.component';
 import { Unit, UnitFilter } from '../../models/unit.model';
 import { PaginationData } from '../../../../core/models/api-response.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
@@ -40,7 +41,8 @@ export class UnitListComponent implements OnInit, OnDestroy {
 
   constructor(
     private unitService: UnitService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -125,12 +127,18 @@ export class UnitListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(unitId: number): void {
+    if (!confirm('¿Está seguro que desea eliminar esta unidad?')) {
+      return;
+    }
+    
     this.unitService.deleteUnit(unitId).subscribe({
       next: () => {
+        this.notificationService.showSuccess('Unidad eliminada exitosamente');
         this.loadUnits();
       },
       error: (error) => {
         console.error('Error deleting unit:', error);
+        // El interceptor ya muestra el error
       }
     });
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Payment, Transaction, PaymentMethods } from '../../models/payment.model';
@@ -10,7 +11,7 @@ import { DateFormatPipe } from '../../../../shared/pipes/date-format.pipe';
 
 @Component({
   selector: 'app-payment-detail',
-  imports: [CommonModule, RouterModule, CurrencyFormatPipe, DateFormatPipe],
+  imports: [CommonModule, RouterModule, FormsModule, CurrencyFormatPipe, DateFormatPipe],
   templateUrl: './payment-detail.component.html',
   styleUrl: './payment-detail.component.css'
 })
@@ -21,6 +22,18 @@ export class PaymentDetailComponent implements OnInit {
   loading = false;
   showTransactionForm = false;
   uploadingReceipts = false;
+
+  // Modal de abono
+  showInstallmentModal = false;
+  installmentLoading = false;
+  installmentForm = {
+    amount: 0,
+    payment_method: 'cash',
+    transaction_date: new Date().toISOString().split('T')[0],
+    reference_number: '',
+    notes: ''
+  };
+  paymentMethods = PaymentMethods;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,7 +62,7 @@ export class PaymentDetailComponent implements OnInit {
       error: (error: any) => {
         console.error('Error loading payment:', error);
         this.loading = false;
-        alert('Error al cargar el pago');
+        this.notificationService.showError('Error al cargar el pago');
         this.router.navigate(['/payments']);
       }
     });
@@ -75,7 +88,7 @@ export class PaymentDetailComponent implements OnInit {
         },
         error: (error: any) => {
           console.error('Error deleting payment:', error);
-          alert('Error al eliminar el pago');
+          this.notificationService.showError('Error al eliminar el pago');
         }
       });
     }
@@ -90,18 +103,103 @@ export class PaymentDetailComponent implements OnInit {
   onMarkCompleted(): void {
     if (!this.payment) return;
     
-    this.paymentService.update(this.payment.id || this.payment.payment_id!, { 
-      payment_status_id: 2,  // 2 = Pagado/Completado
-      payment_date: new Date().toISOString().split('T')[0]  // Solo la fecha, sin hora
-    }).subscribe({
-      next: () => {
-        this.loadPayment(this.payment!.id || this.payment!.payment_id!);
+    // Abrir modal de abono en vez de marcar directamente como completado
+    this.openInstallmentModal();
+  }
+
+  // ========== Modal de Abono ==========
+  openInstallmentModal(): void {
+    if (!this.payment) return;
+    
+    // Calcular saldo pendiente
+    const balance = this.getBalance();
+    this.installmentForm = {
+      amount: balance,
+      payment_method: 'cash',
+      transaction_date: new Date().toISOString().split('T')[0],
+      reference_number: '',
+      notes: ''
+    };
+    this.showInstallmentModal = true;
+  }
+
+  closeInstallmentModal(): void {
+    this.showInstallmentModal = false;
+    this.installmentLoading = false;
+  }
+
+  submitInstallment(): void {
+    if (!this.payment || this.installmentLoading) return;
+
+    const balance = this.getBalance();
+    if (this.installmentForm.amount <= 0) {
+      this.notificationService.showError('El monto debe ser mayor a 0');
+      return;
+    }
+    if (this.installmentForm.amount > balance) {
+      this.notificationService.showError(`El monto no puede exceder el saldo pendiente ($${balance.toLocaleString('es-CO')})`);
+      return;
+    }
+
+    this.installmentLoading = true;
+    const paymentId = this.payment.id || this.payment.payment_id!;
+
+    this.paymentService.addInstallment(paymentId, this.installmentForm).subscribe({
+      next: (response: any) => {
+        this.installmentLoading = false;
+        this.closeInstallmentModal();
+        
+        if (response.data?.is_completed) {
+          this.notificationService.showSuccess('✅ ¡Pago completado exitosamente!');
+        } else {
+          this.notificationService.showSuccess(response.message || '💰 Abono registrado');
+        }
+        
+        // Recargar datos
+        this.loadPayment(paymentId);
+        this.loadTransactions(paymentId);
       },
       error: (error: any) => {
-        console.error('Error updating payment:', error);
-        alert('Error al actualizar el pago');
+        this.installmentLoading = false;
+        console.error('Error adding installment:', error);
+        this.notificationService.showError(error.error?.error || 'Error al registrar el abono');
       }
     });
+  }
+
+  getBalance(): number {
+    if (!this.payment) return 0;
+    // Usar monthly_rent del contrato como el monto total del arriendo
+    const amountDue = this.payment.monthly_rent || this.payment.amount_due || this.payment.amount || 0;
+    const amountPaid = this.payment.amount_paid || 0;
+    return Math.max(0, amountDue - amountPaid);
+  }
+
+  getAmountPaid(): number {
+    return this.payment?.amount_paid || 0;
+  }
+
+  getAmountDue(): number {
+    if (!this.payment) return 0;
+    // Usar monthly_rent del contrato como el monto total
+    return this.payment.monthly_rent || this.payment.amount_due || this.payment.amount || 0;
+  }
+
+  getProgressPercentage(): number {
+    if (!this.payment) return 0;
+    const amountDue = this.getAmountDue();
+    const amountPaid = this.payment.amount_paid || 0;
+    if (amountDue <= 0) return 0;
+    return Math.min(100, (amountPaid / amountDue) * 100);
+  }
+
+  canAddInstallment(): boolean {
+    if (!this.payment) return false;
+    const status = this.payment.status || this.payment.status_name?.toLowerCase();
+    return status === 'pending' || status === 'pendiente' || 
+           status === 'partial' || status === 'parcial' ||
+           status === 'overdue' || status === 'vencido' ||
+           this.getBalance() > 0;
   }
 
   onCancel(): void {
@@ -114,7 +212,7 @@ export class PaymentDetailComponent implements OnInit {
         },
         error: (error: any) => {
           console.error('Error cancelling payment:', error);
-          alert('Error al cancelar el pago');
+          this.notificationService.showError('Error al cancelar el pago');
         }
       });
     }
@@ -134,7 +232,7 @@ export class PaymentDetailComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error creating transaction:', error);
-        alert('Error al crear la transacción');
+        this.notificationService.showError('Error al crear la transacción');
       }
     });
   }

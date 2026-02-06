@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TenantFormComponent } from '../../components/tenant-form/tenant-form.component';
 import { TenantsService } from '../../services/tenants.service';
 import { Tenant } from '../../models/tenant.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-tenant-create',
@@ -17,7 +18,8 @@ export class TenantCreateComponent {
 
   constructor(
     private tenantsService: TenantsService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   onFormSubmit(tenantData: Partial<Tenant>): void {
@@ -55,6 +57,10 @@ export class TenantCreateComponent {
       next: (response) => {
         console.log('Inquilino creado exitosamente:', response);
         this.isSubmitting = false;
+        this.notificationService.showSuccess(
+          `El inquilino ${tenantData.full_name} ha sido creado exitosamente.`,
+          'Inquilino Creado'
+        );
         // Navegar a la página de detalles del inquilino creado
         if (response.data?.id || response.data?.tenant_id) {
           this.router.navigate(['/tenants', response.data.id || response.data.tenant_id]);
@@ -65,7 +71,7 @@ export class TenantCreateComponent {
       error: (error) => {
         console.error('Error al crear inquilino:', error);
         this.isSubmitting = false;
-        alert('Error al crear el inquilino. Por favor, intenta nuevamente.');
+        // El interceptor maneja la notificación del error automáticamente
       }
     });
   }

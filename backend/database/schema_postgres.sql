@@ -590,12 +590,13 @@ EXECUTE FUNCTION update_payment_status_on_amount_change();
 -- 13. DATOS INICIALES (SEED)
 -- ============================================
 
--- Estados de pago predeterminados
-INSERT INTO payment_statuses (name, color_code, description) VALUES
-('Pagado', '#28a745', 'Pago completado'),
-('Pendiente', '#ffc107', 'Pago pendiente'),
-('Vencido', '#dc3545', 'Pago vencido'),
-('Parcial', '#17a2b8', 'Pago parcial realizado');
+-- Estados de pago predeterminados (IDs explícitos para consistencia)
+INSERT INTO payment_statuses (id, name, color_code, description) VALUES
+(1, 'Pendiente', '#ffc107', 'Pago pendiente'),
+(2, 'Pagado', '#28a745', 'Pago completado'),
+(3, 'Vencido', '#dc3545', 'Pago vencido'),
+(4, 'Parcial', '#17a2b8', 'Pago parcial realizado')
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, color_code = EXCLUDED.color_code, description = EXCLUDED.description;
 
 -- Tipos de alerta predeterminados
 INSERT INTO alert_types (name, description, priority) VALUES

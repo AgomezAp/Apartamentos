@@ -97,9 +97,13 @@ export class NotificationService {
       id: this.generateId()
     };
 
+    console.log('🔔 NotificationService - Nueva notificación:', newNotification);
+
     // Añadir notificación a la lista
     const currentNotifications = this.notificationsSubject.value;
     this.notificationsSubject.next([...currentNotifications, newNotification]);
+
+    console.log('🔔 NotificationService - Total notificaciones:', this.notificationsSubject.value.length);
 
     // Auto-cerrar después de la duración especificada
     if (notification.duration && notification.duration > 0) {

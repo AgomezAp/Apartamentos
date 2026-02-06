@@ -180,45 +180,10 @@ export const updatePaymentValidators: ValidationChain[] = [
 ];
 
 /**
- * Validaciones para Transacciones de Pago
+ * Validaciones para Transacciones de Pago (Abonos)
  */
 
-// Validar que el payment existe
-const paymentExistsValidator = body('payment_id')
-  .notEmpty().withMessage('El payment_id es requerido')
-  .isInt({ min: 1 }).withMessage('El payment_id debe ser un número entero positivo')
-  .custom(async (paymentId) => {
-    const result: any = await executeQuery(
-      'SELECT id FROM payments WHERE id = $1',
-      [paymentId]
-    );
-    
-    if (result.length === 0) {
-      throw new Error(`El pago con ID ${paymentId} no existe`);
-    }
-    return true;
-  });
-
-// Validar que el método de transacción existe
-const transactionMethodExistsValidator = body('transaction_method_id')
-  .notEmpty().withMessage('El transaction_method_id es requerido')
-  .isInt({ min: 1 }).withMessage('El transaction_method_id debe ser un número entero positivo')
-  .custom(async (methodId) => {
-    const result: any = await executeQuery(
-      'SELECT id FROM transaction_methods WHERE id = $1',
-      [methodId]
-    );
-    
-    if (result.length === 0) {
-      throw new Error(`El método de transacción con ID ${methodId} no existe`);
-    }
-    return true;
-  });
-
 export const createTransactionValidators: ValidationChain[] = [
-  // Payment ID (debe existir)
-  paymentExistsValidator,
-  
   // Monto de la transacción (debe ser positivo, máx $50,000,000)
   body('amount')
     .trim()
@@ -241,32 +206,31 @@ export const createTransactionValidators: ValidationChain[] = [
       return true;
     }),
   
-  // Fecha de la transacción
-  dateValidator('transaction_date', true), // Permite fechas pasadas
+  // Método de pago (string, ej: 'cash', 'transfer', 'card')
+  body('payment_method')
+    .optional()
+    .trim()
+    .isLength({ max: 50 })
+    .withMessage('El método de pago no puede exceder 50 caracteres'),
   
-  // Método de transacción (debe existir)
-  transactionMethodExistsValidator,
+  // Fecha de la transacción (opcional, por defecto fecha actual)
+  body('transaction_date')
+    .optional()
+    .trim()
+    .matches(/^\d{4}-\d{2}-\d{2}$/)
+    .withMessage('La fecha debe estar en formato YYYY-MM-DD'),
   
   // Número de referencia (opcional)
   body('reference_number')
     .optional()
     .trim()
-    .isLength({ min: 1, max: 100 })
-    .withMessage('El número de referencia debe tener entre 1 y 100 caracteres')
-    .escape(),
-  
-  // Ruta del comprobante (opcional)
-  body('receipt_file_path')
-    .optional()
-    .trim()
-    .isLength({ max: 500 })
-    .withMessage('La ruta del comprobante no puede exceder 500 caracteres'),
+    .isLength({ max: 100 })
+    .withMessage('El número de referencia no puede exceder 100 caracteres'),
   
   // Notas (opcional)
   body('notes')
     .optional()
     .trim()
     .isLength({ max: 1000 })
-    .withMessage('Las notas no pueden exceder 1000 caracteres')
-    .escape(),
+    .withMessage('Las notas no pueden exceder 1000 caracteres'),
 ];

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { Payment, PaymentFilter, MonthlyPayment } from '../../models/payment.model';
 import { PaymentHistoryComponent } from '../../components/payment-history/payment-history.component';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
@@ -25,7 +26,10 @@ export class PaymentRegisterComponent implements OnInit {
     end_date: this.getLastDayOfMonth()
   };
 
-  constructor(private paymentService: PaymentService) {}
+  constructor(
+    private paymentService: PaymentService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.loadPayments();
@@ -72,12 +76,12 @@ export class PaymentRegisterComponent implements OnInit {
 
   exportToExcel(): void {
     // TODO: Implement Excel export
-    alert('Funcionalidad de exportación en desarrollo');
+    this.notificationService.showInfo('Funcionalidad de exportación en desarrollo');
   }
 
   exportToPDF(): void {
     // TODO: Implement PDF export
-    alert('Funcionalidad de exportación en desarrollo');
+    this.notificationService.showInfo('Funcionalidad de exportación en desarrollo');
   }
 
   getFirstDayOfMonth(): string {

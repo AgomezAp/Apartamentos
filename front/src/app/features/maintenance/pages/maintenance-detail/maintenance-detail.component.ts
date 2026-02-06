@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MaintenanceService } from '../../services/maintenance.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { MaintenanceRequest } from '../../models/miantenance.model';
 import { MaintenanceTimelineComponent } from '../../components/maintenance-timeline/maintenance-timeline.component';
 import { PriorityBadgeComponent } from '../../components/priority-badge/priority-badge.component';
@@ -24,7 +25,8 @@ export class MaintenanceDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private maintenanceService: MaintenanceService
+    private maintenanceService: MaintenanceService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +48,7 @@ export class MaintenanceDetailComponent implements OnInit {
       error: (error) => {
         console.error('Error loading maintenance request:', error);
         this.loading = false;
-        alert('Error al cargar la solicitud');
+        this.notificationService.showError('Error al cargar la solicitud');
         this.router.navigate(['/maintenance']);
       }
     });
@@ -60,7 +62,7 @@ export class MaintenanceDetailComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error deleting request:', error);
-          alert('Error al eliminar la solicitud');
+          this.notificationService.showError('Error al eliminar la solicitud');
         }
       });
     }
@@ -95,7 +97,7 @@ export class MaintenanceDetailComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error updating scheduled date:', error);
-          alert('Error al actualizar la fecha programada');
+          this.notificationService.showError('Error al actualizar la fecha programada');
         }
       });
     }
@@ -113,7 +115,7 @@ export class MaintenanceDetailComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error clearing scheduled date:', error);
-          alert('Error al quitar la fecha programada');
+          this.notificationService.showError('Error al quitar la fecha programada');
         }
       });
     }

@@ -5,6 +5,7 @@ import { Expense, ExpenseFormData, PaymentMethods } from '../../models/expense.m
 import { Building } from '../../../buildings/models/building.model';
 import { BuildingService } from '../../../buildings/services/building.service';
 import { ExpenseCategoryService, ExpenseCategory } from '../../../expense-categories/services/expense-category.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-expense-form',
@@ -27,7 +28,8 @@ export class ExpenseFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private expenseCategoryService: ExpenseCategoryService,
-    private buildingService: BuildingService
+    private buildingService: BuildingService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -84,7 +86,50 @@ export class ExpenseFormComponent implements OnInit {
       this.submit.emit(this.expenseForm.value);
     } else {
       this.markFormGroupTouched(this.expenseForm);
+      // Mostrar errores específicos al usuario
+      const errorMessages = this.getFormValidationErrors();
+      if (errorMessages.length > 0) {
+        this.notificationService.showError(
+          `Por favor corrige los siguientes errores:\n\n${errorMessages.join('\n')}`,
+          'Formulario incompleto'
+        );
+      }
     }
+  }
+
+  /**
+   * Obtiene los mensajes de error de validación del formulario
+   */
+  private getFormValidationErrors(): string[] {
+    const errors: string[] = [];
+    const fieldLabels: Record<string, string> = {
+      'building_id': 'Edificio',
+      'category_id': 'Categoría',
+      'description': 'Descripción',
+      'amount': 'Monto',
+      'expense_date': 'Fecha del gasto',
+      'payment_method': 'Método de pago',
+      'reference_number': 'Número de referencia',
+      'notes': 'Notas',
+    };
+
+    Object.keys(this.expenseForm.controls).forEach(key => {
+      const control = this.expenseForm.get(key);
+      if (control?.invalid) {
+        const label = fieldLabels[key] || key;
+        if (control.errors?.['required']) {
+          errors.push(`• ${label}: Este campo es requerido`);
+        } else if (control.errors?.['min']) {
+          errors.push(`• ${label}: El valor mínimo es ${control.errors['min'].min}`);
+        } else if (control.errors?.['minlength']) {
+          errors.push(`• ${label}: Mínimo ${control.errors['minlength'].requiredLength} caracteres`);
+        } else {
+          errors.push(`• ${label}: Valor inválido`);
+        }
+      }
+    });
+
+    return errors;
   }
 
   onCancel(): void {

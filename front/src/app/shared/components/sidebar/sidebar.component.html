@@ -45,6 +45,107 @@
       </li>
     </ul>
     
+    <!-- WhatsApp Section -->
+    <div class="whatsapp-section" *ngIf="!collapsed">
+      <button 
+        class="whatsapp-toggle-btn"
+        (click)="toggleWhatsAppPanel()"
+        [class.connected]="whatsappStatus?.isReady"
+        [title]="whatsappStatus?.isReady ? 'WhatsApp Conectado' : 'WhatsApp Desconectado'"
+      >
+        <span class="whatsapp-icon">📱</span>
+        <span class="whatsapp-label">WhatsApp</span>
+        <span 
+          class="whatsapp-status-dot"
+          [class.online]="whatsappStatus?.isReady"
+        ></span>
+        <span class="menu-chevron">{{ showWhatsAppPanel ? '▲' : '▼' }}</span>
+      </button>
+
+      <!-- WhatsApp Panel -->
+      <div class="whatsapp-panel" *ngIf="showWhatsAppPanel">
+        <!-- Estado -->
+        <div class="whatsapp-status-info">
+          <div *ngIf="whatsappStatus?.isReady" class="status-connected">
+            <span class="status-icon">✅</span>
+            <span>Conectado</span>
+          </div>
+          <div *ngIf="!whatsappStatus?.isReady" class="status-disconnected">
+            <span class="status-icon">⚠️</span>
+            <span>Desconectado</span>
+          </div>
+        </div>
+
+        <!-- QR Code (solo mostrar si no está conectado y hay QR) -->
+        <div class="whatsapp-qr-container" *ngIf="whatsappQRImage && !whatsappStatus?.isReady">
+          <p class="qr-instruction">Escanea con tu teléfono:</p>
+          <img [src]="whatsappQRImage" alt="QR Code WhatsApp" class="qr-image">
+        </div>
+
+        <!-- Loading (solo si está conectando Y no está conectado Y no hay QR) -->
+        <div class="whatsapp-loading" *ngIf="connectingWhatsApp && !whatsappQRImage && !whatsappStatus?.isReady">
+          <span class="loading-spinner">⏳</span>
+          <span>Generando QR...</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="whatsapp-actions">
+          <button 
+            *ngIf="!whatsappStatus?.isReady && !connectingWhatsApp"
+            class="whatsapp-btn connect"
+            (click)="connectWhatsApp()"
+          >
+            🔗 Conectar
+          </button>
+          <button 
+            *ngIf="connectingWhatsApp && !whatsappStatus?.isReady"
+            class="whatsapp-btn connect"
+            disabled
+          >
+            ⏳ Esperando...
+          </button>
+          <button 
+            *ngIf="whatsappStatus?.isReady"
+            class="whatsapp-btn test"
+            (click)="sendTestAlert()"
+            [disabled]="sendingTestAlert"
+          >
+            🧪 Probar
+          </button>
+          <button 
+            *ngIf="whatsappStatus?.isReady"
+            class="whatsapp-btn disconnect"
+            (click)="disconnectWhatsApp()"
+          >
+            ❌
+          </button>
+        </div>
+
+        <!-- Mensaje de prueba enviado -->
+        <div class="test-alert-result" *ngIf="testAlertMessage">
+          <span [class.success]="testAlertSuccess" [class.error]="!testAlertSuccess">
+            {{ testAlertMessage }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WhatsApp Collapsed Icon -->
+    <div class="whatsapp-section-collapsed" *ngIf="collapsed">
+      <button 
+        class="whatsapp-toggle-btn-small"
+        (click)="toggleWhatsAppPanel()"
+        [class.connected]="whatsappStatus?.isReady"
+        title="WhatsApp"
+      >
+        <span class="whatsapp-icon">📱</span>
+        <span 
+          class="whatsapp-status-dot"
+          [class.online]="whatsappStatus?.isReady"
+        ></span>
+      </button>
+    </div>
+
     <!-- Logout Button -->
     <div class="logout-section">
       <button class="logout-btn" (click)="onLogout()" title="Cerrar sesión">

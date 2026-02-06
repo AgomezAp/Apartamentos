@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReportService } from '../../services/report.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { ReportFilterComponent } from '../../components/report-filter/report-filter.component';
 import { ChartViewerComponent } from '../../components/chart-viewer/chart-viewer.component';
 import { ReportTableComponent, TableColumn } from '../../components/report-table/report-table.component';
@@ -34,7 +35,8 @@ export class CustomReportComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private notificationService: NotificationService
   ) {
     this.configForm = this.fb.group({
       report_type: ['', Validators.required],
@@ -65,7 +67,7 @@ export class CustomReportComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error generating report:', error);
-        alert('Error al generar el reporte');
+        this.notificationService.showError('Error al generar el reporte');
         this.loading = false;
       }
     });

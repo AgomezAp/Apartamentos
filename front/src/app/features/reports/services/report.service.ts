@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { NotificationService } from '../../../core/services/notification.service';
 import {
   Report,
   ReportFilter,
@@ -16,7 +17,7 @@ import {
 export class ReportService {
   private apiUrl = 'http://localhost:3010/api/reports';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notificationService: NotificationService) {}
 
   // General Reports
   getAll(filter?: ReportFilter): Observable<Report[]> {
@@ -171,19 +172,19 @@ export class ReportService {
   exportToExcel(data: any, filename: string): void {
     // TODO: Implement Excel export using library like xlsx
     console.log('Exporting to Excel:', filename, data);
-    alert('Funcionalidad de exportación a Excel en desarrollo');
+    this.notificationService.showInfo('Funcionalidad de exportación a Excel en desarrollo');
   }
 
   exportToPDF(data: any, filename: string): void {
     // TODO: Implement PDF export using library like jsPDF
     console.log('Exporting to PDF:', filename, data);
-    alert('Funcionalidad de exportación a PDF en desarrollo');
+    this.notificationService.showInfo('Funcionalidad de exportación a PDF en desarrollo');
   }
 
   exportToCSV(data: any, filename: string): void {
     // Basic CSV export implementation
     if (!data || data.length === 0) {
-      alert('No hay datos para exportar');
+      this.notificationService.showWarning('No hay datos para exportar');
       return;
     }
 

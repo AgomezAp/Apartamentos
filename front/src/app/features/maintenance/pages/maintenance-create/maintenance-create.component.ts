@@ -10,6 +10,7 @@ import { TenantsService } from '../../../tenants/services/tenants.service';
 import { Unit } from '../../../units/models/unit.model';
 import { Tenant } from '../../../tenants/models/tenant.model';
 import { Building } from '../../../buildings/models/building.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-maintenance-create',
@@ -30,7 +31,8 @@ export class MaintenanceCreateComponent implements OnInit {
     private buildingService: BuildingService,
     private unitService: UnitService,
     private tenantsService: TenantsService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -101,13 +103,14 @@ export class MaintenanceCreateComponent implements OnInit {
     this.maintenanceService.create(formData).subscribe({
       next: (response) => {
         console.log('Maintenance request created:', response);
+        this.notificationService.showSuccess('Solicitud de mantenimiento creada exitosamente');
         this.router.navigate(['/maintenance']);
       },
-   /*    error: (error) => {
+      error: (error) => {
         console.error('Error creating maintenance request:', error);
-        alert('Error al crear la solicitud de mantenimiento');
         this.loading = false;
-      } */
+        // El interceptor mostrará los errores de validación automáticamente
+      }
     });
   }
 

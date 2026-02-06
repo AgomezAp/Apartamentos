@@ -57,7 +57,7 @@ export class PaymentFormComponent implements OnInit {
       tenant_id_hidden: [this.payment?.tenant_id || '', Validators.required],
       unit_id: [this.payment?.unit_id || '', Validators.required],
       unit_id_hidden: [this.payment?.unit_id || '', Validators.required],
-      amount_due: [this.payment?.amount_due || this.payment?.amount || '', [Validators.required, this.minValidator(50000)]],
+      amount_due: [this.payment?.amount_due || this.payment?.amount || '', [Validators.required, this.minValidator(0)]],
       due_date: [this.payment?.due_date?.split('T')[0] || '', Validators.required],
       payment_status_id: [this.payment?.payment_status_id || 1, Validators.required], // 1 = Pendiente por defecto
       payment_method: [this.payment?.payment_method || ''],
@@ -213,7 +213,54 @@ export class PaymentFormComponent implements OnInit {
     } else {
       console.log('❌ Formulario inválido');
       this.markFormGroupTouched(this.paymentForm);
+      // Mostrar errores específicos al usuario
+      const errorMessages = this.getFormValidationErrors();
+      if (errorMessages.length > 0) {
+        this.notificationService.showError(
+          `Por favor corrige los siguientes errores:\n\n${errorMessages.join('\n')}`,
+          'Formulario incompleto'
+        );
+      }
     }
+  }
+
+  /**
+   * Obtiene los mensajes de error de validación del formulario
+   */
+  private getFormValidationErrors(): string[] {
+    const errors: string[] = [];
+    const fieldLabels: Record<string, string> = {
+      'building_id': 'Edificio',
+      'contract_id': 'Contrato',
+      'tenant_id': 'Inquilino',
+      'unit_id': 'Unidad',
+      'amount_due': 'Monto a pagar',
+      'due_date': 'Fecha de vencimiento',
+      'payment_status_id': 'Estado del pago',
+      'payment_method': 'Método de pago',
+      'notes': 'Notas',
+    };
+
+    Object.keys(this.paymentForm.controls).forEach(key => {
+      // Saltar los campos ocultos
+      if (key.endsWith('_hidden')) return;
+      
+      const control = this.paymentForm.get(key);
+      if (control?.invalid) {
+        const label = fieldLabels[key] || key;
+        if (control.errors?.['required']) {
+          errors.push(`• ${label}: Este campo es requerido`);
+        } else if (control.errors?.['min']) {
+          errors.push(`• ${label}: El valor mínimo es ${control.errors['min'].min?.toLocaleString()}`);
+        } else if (control.errors?.['invalidNumber']) {
+          errors.push(`• ${label}: Debe ser un número válido`);
+        } else {
+          errors.push(`• ${label}: Valor inválido`);
+        }
+      }
+    });
+
+    return errors;
   }
 
   onCancel(): void {

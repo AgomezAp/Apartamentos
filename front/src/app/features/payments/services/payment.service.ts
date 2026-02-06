@@ -58,6 +58,19 @@ export class PaymentService {
     return this.http.post<ApiResponse<any>>(`${this.apiUrl}/transactions`, transaction);
   }
 
+  /**
+   * Agregar un abono/pago parcial
+   */
+  addInstallment(paymentId: number, installment: {
+    amount: number;
+    payment_method: string;
+    transaction_date?: string;
+    reference_number?: string;
+    notes?: string;
+  }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/${paymentId}/transactions`, installment);
+  }
+
   // ========== Comprobantes ==========
   uploadReceipts(paymentId: number, files: File[]): Observable<ApiResponse<any>> {
     const formData = new FormData();

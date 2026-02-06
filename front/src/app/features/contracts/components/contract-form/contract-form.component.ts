@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Contract, ContractFormData } from '../../models/contract.model';
 import { NumberOnlyDirective } from '../../../../shared/directives/number-only.directive';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-contract-form',
@@ -23,7 +24,10 @@ export class ContractFormComponent implements OnInit {
   isEditMode = false;
   filteredUnits: any[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.isEditMode = !!this.contract;
@@ -118,6 +122,9 @@ export class ContractFormComponent implements OnInit {
   }
 
   submit(): void {
+    // Marcar todos los campos como tocados para mostrar errores
+    this.contractForm.markAllAsTouched();
+    
     if (this.contractForm.valid) {
       const formValue = this.contractForm.value;
       // No incluir building_id en el payload, solo unit_id y tenant_id
@@ -136,7 +143,52 @@ export class ContractFormComponent implements OnInit {
         rent_increase_frequency_months: formValue.rent_increase_frequency_months,
       };
       this.onSubmit.emit(payload);
+    } else {
+      // Mostrar errores específicos al usuario
+      const errorMessages = this.getFormValidationErrors();
+      if (errorMessages.length > 0) {
+        this.notificationService.showError(
+          `Por favor corrige los siguientes errores:\n\n${errorMessages.join('\n')}`,
+          'Formulario incompleto'
+        );
+      }
     }
+  }
+
+  /**
+   * Obtiene los mensajes de error de validación del formulario
+   */
+  private getFormValidationErrors(): string[] {
+    const errors: string[] = [];
+    const fieldLabels: Record<string, string> = {
+      'building_id': 'Edificio',
+      'unit_id': 'Unidad',
+      'tenant_id': 'Inquilino',
+      'start_date': 'Fecha de inicio',
+      'end_date': 'Fecha de fin',
+      'monthly_rent': 'Renta mensual',
+      'deposit_amount': 'Depósito',
+      'payment_day': 'Día de pago',
+      'status': 'Estado',
+    };
+
+    Object.keys(this.contractForm.controls).forEach(key => {
+      const control = this.contractForm.get(key);
+      if (control?.invalid) {
+        const label = fieldLabels[key] || key;
+        if (control.errors?.['required']) {
+          errors.push(`• ${label}: Este campo es requerido`);
+        } else if (control.errors?.['min']) {
+          errors.push(`• ${label}: El valor mínimo es ${control.errors['min'].min}`);
+        } else if (control.errors?.['max']) {
+          errors.push(`• ${label}: El valor máximo es ${control.errors['max'].max}`);
+        } else {
+          errors.push(`• ${label}: Valor inválido`);
+        }
+      }
+    });
+
+    return errors;
   }
 
   cancel(): void {

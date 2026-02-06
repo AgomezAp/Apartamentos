@@ -95,6 +95,13 @@ export interface Tenant {
   is_active?: boolean;
   created_at?: Date;
   updated_at?: Date;
+  // Campos adicionales de contratos (vienen del JOIN en findAll)
+  current_contract_id?: number;
+  contract_status?: string;
+  unit_id?: number;
+  unit_number?: string;
+  building_id?: number;
+  building_name?: string;
 }
 
 export interface Contract {
@@ -119,8 +126,10 @@ export interface Contract {
   // Campos relacionados (del JOIN con tenants y units)
   tenant_name?: string;
   tenant_email?: string;
+  tenant_phone?: string;
   unit_number?: string;
   building_name?: string;
+  building_address?: string;
   building_id?: number;
 }
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MaintenanceService } from '../../services/maintenance.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { MaintenanceRequest, MaintenanceFilter, MaintenancePriorities, MaintenanceStatuses } from '../../models/miantenance.model';
 import { MaintenanceCardComponent } from '../../components/maintenance-card/maintenance-card.component';
 import { AssignTechnicianModalComponent } from '../../components/assign-technician-modal/assign-technician-modal.component';
@@ -37,7 +38,8 @@ export class MaintenanceListComponent implements OnInit {
 
   constructor(
     private maintenanceService: MaintenanceService,
-    private expenseCategoryService: ExpenseCategoryService
+    private expenseCategoryService: ExpenseCategoryService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -93,7 +95,7 @@ export class MaintenanceListComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error deleting request:', error);
-          alert('Error al eliminar la solicitud');
+          this.notificationService.showError('Error al eliminar la solicitud');
         }
       });
     }
@@ -129,12 +131,12 @@ export class MaintenanceListComponent implements OnInit {
       this.maintenanceService.update(this.selectedRequestId, technicianData).subscribe({
         next: () => {
           this.loadRequests();
-          alert('Técnico asignado correctamente');
+          this.notificationService.showSuccess('Técnico asignado correctamente');
           this.selectedRequestId = null;
         },
         error: (error) => {
           console.error('Error assigning request:', error);
-          alert('Error al asignar la solicitud');
+          this.notificationService.showError('Error al asignar la solicitud');
           this.selectedRequestId = null;
         }
       });

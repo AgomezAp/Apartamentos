@@ -92,10 +92,10 @@
     <button class="btn btn-view" [routerLink]="['/payments', payment.id || payment.payment_id]">
       👁️ Ver
     </button>
-    <button class="btn btn-complete" (click)="onMarkCompleted()" *ngIf="payment.status === 'pending'">
+    <button class="btn btn-complete" (click)="onMarkCompleted()" *ngIf="payment.status === 'pending' || payment.status === 'partial'">
       ✅ Completar
     </button>
-    <button class="btn btn-delete" (click)="onDelete()" *ngIf="payment.status === 'pending'">
+    <button class="btn btn-delete" (click)="onDelete()">
       🗑️ Eliminar
     </button>
   </div>

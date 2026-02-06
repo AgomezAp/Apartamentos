@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MaintenanceService } from '../../services/maintenance.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { MaintenanceRequest } from '../../models/miantenance.model';
 import { MaintenanceCardComponent } from '../../components/maintenance-card/maintenance-card.component';
 
@@ -15,7 +16,10 @@ export class MaintenancePendingComponent implements OnInit {
   requests: MaintenanceRequest[] = [];
   loading = false;
 
-  constructor(private maintenanceService: MaintenanceService) {}
+  constructor(
+    private maintenanceService: MaintenanceService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.loadPendingRequests();
@@ -43,7 +47,7 @@ export class MaintenancePendingComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error deleting request:', error);
-          alert('Error al eliminar la solicitud');
+          this.notificationService.showError('Error al eliminar la solicitud');
         }
       });
     }
@@ -76,7 +80,7 @@ export class MaintenancePendingComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error assigning request:', error);
-          alert('Error al asignar la solicitud');
+          this.notificationService.showError('Error al asignar la solicitud');
         }
       });
     }

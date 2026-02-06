@@ -19,6 +19,7 @@ import alertRoutes from './alerts';
 import incomeRoutes from './income';
 import unitTypesRoutes from './unitTypes';
 import expenseCategoriesRoutes from './expenseCategories';
+import whatsappRoutes from './whatsapp';
 
 const router = Router();
 
@@ -68,5 +69,8 @@ router.use('/income', incomeRoutes);
 
 // Rutas de configuración
 router.use('/settings', settingsRoutes);
+
+// Rutas de WhatsApp
+router.use('/whatsapp', whatsappRoutes);
 
 export default router;

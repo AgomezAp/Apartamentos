@@ -29,11 +29,27 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Limpiar cualquier dato de autenticación previo al llegar al login
+    // Esto previene problemas con tokens viejos o corruptos
+    this.clearOldAuthData();
+    
     // Inicializar el formulario PRIMERO (siempre, para evitar errores en la plantilla)
     this.initForm();
     
     // Verificar mensajes de redirección
     this.checkRedirectMessage();
+  }
+
+  /**
+   * Limpiar datos de autenticación previos
+   */
+  private clearOldAuthData(): void {
+    // Solo limpiar si no venimos de una sesión expirada (para no mostrar doble mensaje)
+    const params = this.route.snapshot.queryParams;
+    if (!params['sessionExpired']) {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+    }
   }
 
   /**
@@ -75,28 +91,41 @@ export class LoginComponent implements OnInit {
    * Submit del formulario
    */
   onSubmit(): void {
+    console.log('🔵 onSubmit llamado, isLoading:', this.isLoading);
+    
     if (this.loginForm.invalid) {
       this.markFormGroupTouched(this.loginForm);
       return;
     }
 
+    // Prevenir múltiples envíos
+    if (this.isLoading) {
+      console.log('⚠️ Ya hay un login en progreso, ignorando');
+      return;
+    }
+
     this.isLoading = true;
     const credentials: LoginCredentials = this.loginForm.value;
+    console.log('📤 Enviando credenciales para:', credentials.email);
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        this.notificationService.showSuccess(
-          'Bienvenido al sistema',
-          'Login Exitoso'
-        );
-        
-        // Redirigir a la URL guardada o al dashboard
-        this.router.navigate([this.returnUrl]);
+        console.log('✅ Login exitoso, respuesta:', response);
+        if (response.success) {
+          this.notificationService.showSuccess(
+            'Bienvenido al sistema',
+            'Login Exitoso'
+          );
+          
+          // Redirigir a la URL guardada o al dashboard
+          console.log('🚀 Navegando a:', this.returnUrl);
+          this.router.navigate([this.returnUrl]);
+        }
       },
       error: (error) => {
+        console.log('❌ Login error:', error);
         this.isLoading = false;
-        const errorMessage = error.error?.error || 'Error al iniciar sesión';
-        this.notificationService.showError(errorMessage, 'Error de Login');
+        // El interceptor ya maneja el mensaje de error para 401
       },
       complete: () => {
         this.isLoading = false;

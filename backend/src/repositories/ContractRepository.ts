@@ -9,9 +9,9 @@ class ContractRepository {
     const offset = ((pagination.page || 1) - 1) * (pagination.limit || 10);
     let query = `
       SELECT c.*, 
-             u.unit_number, b.name as building_name,
+             u.unit_number, b.name as building_name, b.address as building_address,
              CONCAT(t.first_name, ' ', t.last_name) as tenant_name, 
-             t.email as tenant_email
+             t.email as tenant_email, t.phone as tenant_phone, t.mobile_phone as tenant_mobile_phone
       FROM contracts c
       INNER JOIN units u ON c.unit_id = u.id
       INNER JOIN buildings b ON u.building_id = b.id
@@ -77,9 +77,9 @@ class ContractRepository {
   async findById(id: number): Promise<Contract | null> {
     const query = `
       SELECT c.*, 
-             u.unit_number, b.name as building_name,
+             u.unit_number, b.name as building_name, b.address as building_address,
              CONCAT(t.first_name, ' ', t.last_name) as tenant_name, 
-             t.email as tenant_email
+             t.email as tenant_email, t.phone as tenant_phone, t.mobile_phone as tenant_mobile_phone
       FROM contracts c
       INNER JOIN units u ON c.unit_id = u.id
       INNER JOIN buildings b ON u.building_id = b.id

@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Building, BuildingFormData } from '../../models/building.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-building-form',
@@ -20,7 +21,10 @@ export class BuildingFormComponent implements OnInit, OnChanges {
   isLoading = false;
   currentYear = new Date().getFullYear();
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -84,11 +88,61 @@ export class BuildingFormComponent implements OnInit, OnChanges {
   submitForm(): void {
     if (this.buildingForm.invalid) {
       this.markFormGroupTouched(this.buildingForm);
+      // Mostrar errores específicos al usuario
+      const errorMessages = this.getFormValidationErrors();
+      if (errorMessages.length > 0) {
+        this.notificationService.showError(
+          `Por favor corrige los siguientes errores:\n\n${errorMessages.join('\n')}`,
+          'Formulario incompleto'
+        );
+      }
       return;
     }
 
     const formData: BuildingFormData = this.buildingForm.value;
     this.onSubmit.emit(formData);
+  }
+
+  /**
+   * Obtiene los mensajes de error de validación del formulario
+   */
+  private getFormValidationErrors(): string[] {
+    const errors: string[] = [];
+    const fieldLabels: Record<string, string> = {
+      'name': 'Nombre',
+      'address': 'Dirección',
+      'city': 'Ciudad',
+      'state': 'Departamento',
+      'zip_code': 'Código postal',
+      'country': 'País',
+      'total_units': 'Total de unidades',
+      'year_built': 'Año de construcción',
+      'floors': 'Número de pisos',
+      'description': 'Descripción',
+      'amenities': 'Amenidades',
+    };
+
+    Object.keys(this.buildingForm.controls).forEach(key => {
+      const control = this.buildingForm.get(key);
+      if (control?.invalid) {
+        const label = fieldLabels[key] || key;
+        if (control.errors?.['required']) {
+          errors.push(`• ${label}: Este campo es requerido`);
+        } else if (control.errors?.['minlength']) {
+          errors.push(`• ${label}: Mínimo ${control.errors['minlength'].requiredLength} caracteres`);
+        } else if (control.errors?.['min']) {
+          errors.push(`• ${label}: El valor mínimo es ${control.errors['min'].min}`);
+        } else if (control.errors?.['max']) {
+          errors.push(`• ${label}: El valor máximo es ${control.errors['max'].max}`);
+        } else if (control.errors?.['pattern']) {
+          errors.push(`• ${label}: Formato inválido`);
+        } else {
+          errors.push(`• ${label}: Valor inválido`);
+        }
+      }
+    });
+
+    return errors;
   }
 
   /**

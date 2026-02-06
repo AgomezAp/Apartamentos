@@ -5,6 +5,7 @@ import { TenantsService } from '../../services/tenants.service';
 import { Tenant, TENANT_STATUS } from '../../models/tenant.model';
 import { TenantContractsComponent } from '../../components/tenant-contracts/tenant-contracts.component';
 import { DateFormatPipe } from '../../../../shared/pipes/date-format.pipe';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-tenant-detail',
@@ -26,7 +27,8 @@ export class TenantDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private tenantsService: TenantsService
+    private tenantsService: TenantsService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +48,7 @@ export class TenantDetailComponent implements OnInit {
       error: (error) => {
         console.error('Error al cargar inquilino:', error);
         this.isLoading = false;
-        alert('Error al cargar el inquilino');
+        this.notificationService.showError('Error al cargar el inquilino');
         this.router.navigate(['/tenants']);
       },
     });
@@ -88,14 +90,26 @@ export class TenantDetailComponent implements OnInit {
         .deleteTenant(this.tenant.id || this.tenant.tenant_id!)
         .subscribe({
           next: () => {
-            console.log('Inquilino eliminado exitosamente');
+            this.notificationService.showSuccess('Inquilino eliminado exitosamente');
             this.router.navigate(['/tenants']);
           },
           error: (error) => {
             console.error('Error al eliminar inquilino:', error);
-            alert(
-              'Error al eliminar el inquilino. Puede tener contratos activos.'
-            );
+            
+            // Manejar error específico de contratos activos
+            if (error.error?.details?.contracts) {
+              const contracts = error.error.details.contracts;
+              const contractsInfo = contracts.map((c: any) => 
+                `${c.contract_number} (${c.status === 'active' ? 'Activo' : 'Pendiente'})`
+              ).join(', ');
+              
+              this.notificationService.showError(
+                `Este inquilino tiene contratos que debe finalizar primero: ${contractsInfo}`,
+                'No se puede eliminar',
+                10000
+              );
+            }
+            // El interceptor maneja otros errores
           },
         });
     }

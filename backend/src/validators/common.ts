@@ -90,19 +90,26 @@ export const documentTypeValidator = (field: string = 'document_type'): Validati
 
 /**
  * Validar monto monetario (entre $50,000 y $50,000,000 COP)
+ * Si required=false, permite valores vacíos, null, 0 o sin el campo
  */
 export const moneyAmountValidator = (field: string = 'amount', required: boolean = true): ValidationChain => {
   const validator = body(field)
     .trim()
     .custom((value) => {
+      // Si el campo es opcional y no tiene valor válido, permitirlo
+      if (!required && (value === '' || value === null || value === undefined || value === '0' || value === 0)) {
+        return true;
+      }
+      
       const amount = parseFloat(value);
       
       if (isNaN(amount)) {
         throw new Error('El monto debe ser un número válido');
       }
       
-      if (amount < 50000) {
-        throw new Error('El monto mínimo es $50,000 COP');
+      // Permitir monto 0 para casos especiales (contratos sin depósito, rentas gratuitas, etc.)
+      if (amount < 0) {
+        throw new Error('El monto no puede ser negativo');
       }
       
       if (amount > 50000000) {

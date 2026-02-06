@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ExpenseService } from '../../services/expense.service';
 import { CatalogService } from '../../../catalogs/service/catalog.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import {
   Expense,
   ExpenseFilter,
@@ -48,7 +49,8 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   constructor(
     private expenseService: ExpenseService,
-    private catalogService: CatalogService
+    private catalogService: CatalogService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -233,7 +235,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
         this.loadExpenses();
       },
       error: (error) => {
-        alert('Error al eliminar el gasto');
+        this.notificationService.showError('Error al eliminar el gasto');
         console.error('Error deleting expense:', error);
       },
     });

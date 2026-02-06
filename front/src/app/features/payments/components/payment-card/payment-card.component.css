@@ -367,6 +367,17 @@
   color: var(--color-white);
 }
 
+.btn-edit {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-edit:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
 /* =====================================================
    RESPONSIVE DESIGN
    ===================================================== */

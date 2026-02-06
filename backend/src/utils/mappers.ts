@@ -175,6 +175,13 @@ export class TenantMapper {
       is_active: dbTenant.is_active !== false,
       created_at: dbTenant.created_at,
       updated_at: dbTenant.updated_at,
+      // Campos adicionales de contratos (vienen del JOIN en findAll)
+      current_contract_id: dbTenant.current_contract_id,
+      contract_status: dbTenant.contract_status,
+      unit_id: dbTenant.unit_id,
+      unit_number: dbTenant.unit_number,
+      building_id: dbTenant.building_id,
+      building_name: dbTenant.building_name,
     };
   }
 
@@ -210,8 +217,10 @@ export class ContractMapper {
       // Campos relacionados que vienen del JOIN
       tenant_name: dbContract.tenant_name,
       tenant_email: dbContract.tenant_email,
+      tenant_phone: dbContract.tenant_phone || dbContract.tenant_mobile_phone,
       unit_number: dbContract.unit_number,
       building_name: dbContract.building_name,
+      building_address: dbContract.building_address,
     };
   }
 
@@ -272,11 +281,18 @@ export class PaymentMapper {
     
     const mappedStatus = statusMap[dbPayment.status_name || dbPayment.status] || 'pending';
     
+    // Usar monthly_rent del contrato como el monto real del arriendo
+    const monthlyRent = parseFloat(dbPayment.monthly_rent) || 0;
+    const amountDue = parseFloat(dbPayment.amount_due || dbPayment.amount || 0);
+    const realAmount = monthlyRent > 0 ? monthlyRent : amountDue;
+    
     return {
       ...base,
       id: base.id || dbPayment.id,
       payment_id: base.id, // Alias
-      amount: parseFloat(dbPayment.amount_due || dbPayment.amount || 0), // Asegurar que amount se mapee correctamente
+      amount: realAmount, // Usar monthly_rent como el monto del arriendo
+      amount_due: realAmount, // Monto debido = monthly_rent del contrato
+      monthly_rent: monthlyRent, // Incluir el monthly_rent del contrato
       status: mappedStatus, // Mapear el status al enum del frontend
       status_name: dbPayment.status_name || this.getStatusFromId(dbPayment.payment_status_id),
       tenant_name: dbPayment.tenant_name || 'Desconocido',
