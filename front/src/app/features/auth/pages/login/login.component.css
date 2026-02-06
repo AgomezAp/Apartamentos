@@ -575,6 +575,105 @@
 }
 
 /* =====================================================
+   ALERT ERROR - MENSAJES DE ERROR VISIBLES
+   ===================================================== */
+
+.alert-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  animation: slideDown 0.3s ease-out;
+}
+
+.alert-error.error-credentials {
+  background-color: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.alert-error.error-network {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.alert-error.error-server {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.alert-error > i {
+  flex-shrink: 0;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.alert-error.error-credentials > i {
+  color: #ea580c;
+}
+
+.alert-error.error-network > i {
+  color: #6b7280;
+}
+
+.alert-error.error-server > i {
+  color: #dc2626;
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-content strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #1f2937;
+}
+
+.alert-content p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.alert-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 2px;
+  font-size: 16px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.alert-close:hover {
+  color: #4b5563;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================
    RESPONSIVE
    ===================================================== */
 

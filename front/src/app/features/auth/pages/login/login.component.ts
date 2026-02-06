@@ -19,6 +19,8 @@ export class LoginComponent implements OnInit {
   showPassword = false;
   redirectMessage: string | null = null;
   returnUrl: string = '/dashboard';
+  errorMessage: string | null = null;
+  errorType: 'credentials' | 'server' | 'network' | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -85,6 +87,19 @@ export class LoginComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       rememberMe: [false]
     });
+
+    // Limpiar error al escribir
+    this.loginForm.valueChanges.subscribe(() => {
+      this.clearError();
+    });
+  }
+
+  /**
+   * Limpiar mensaje de error
+   */
+  private clearError(): void {
+    this.errorMessage = null;
+    this.errorType = null;
   }
 
   /**
@@ -125,7 +140,31 @@ export class LoginComponent implements OnInit {
       error: (error) => {
         console.log('❌ Login error:', error);
         this.isLoading = false;
-        // El interceptor ya maneja el mensaje de error para 401
+        
+        // Determinar tipo de error y mostrar mensaje apropiado
+        if (error.status === 0) {
+          // Error de red/servidor no responde
+          this.errorType = 'network';
+          this.errorMessage = 'No se puede conectar al servidor. Verifica tu conexión a internet o contacta al administrador.';
+        } else if (error.status === 401 || error.status === 400) {
+          // Credenciales incorrectas
+          this.errorType = 'credentials';
+          this.errorMessage = error.error?.message || 'Correo o contraseña incorrectos. Por favor verifica tus datos.';
+        } else if (error.status >= 500) {
+          // Error del servidor
+          this.errorType = 'server';
+          this.errorMessage = 'Error en el servidor. Por favor intenta nuevamente en unos momentos.';
+        } else {
+          // Otros errores
+          this.errorType = 'server';
+          this.errorMessage = error.error?.message || 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
+        }
+        
+        // También mostrar notificación
+        this.notificationService.showError(
+          this.errorMessage ?? 'Error de autenticación',
+          'Error de Login'
+        );
       },
       complete: () => {
         this.isLoading = false;

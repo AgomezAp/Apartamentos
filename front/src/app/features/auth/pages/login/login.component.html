@@ -15,6 +15,18 @@
 
     <!-- Formulario -->
     <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Mensaje de Error -->
+      <div class="alert-error" *ngIf="errorMessage" [class.error-credentials]="errorType === 'credentials'" [class.error-network]="errorType === 'network'" [class.error-server]="errorType === 'server'">
+        <i class="fas" [class.fa-exclamation-triangle]="errorType === 'credentials'" [class.fa-wifi]="errorType === 'network'" [class.fa-server]="errorType === 'server'"></i>
+        <div class="alert-content">
+          <strong>{{ errorType === 'credentials' ? 'Credenciales incorrectas' : errorType === 'network' ? 'Error de conexión' : 'Error del servidor' }}</strong>
+          <p>{{ errorMessage }}</p>
+        </div>
+        <button type="button" class="alert-close" (click)="errorMessage = null">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
       <!-- Email -->
       <div class="form-group">
         <label>
