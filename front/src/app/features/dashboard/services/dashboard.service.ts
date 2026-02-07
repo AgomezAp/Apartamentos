@@ -36,6 +36,13 @@ export class DashboardService {
     return this.http.get<ApiResponse<RevenueData[]>>(`${this.API_URL}/revenue`, { params });
   }
 
+  getRevenueByPeriod(startDate: string, endDate: string): Observable<ApiResponse<RevenueData[]>> {
+    const params = new HttpParams()
+      .set('start_date', startDate)
+      .set('end_date', endDate);
+    return this.http.get<ApiResponse<RevenueData[]>>(`${this.API_URL}/revenue-period`, { params });
+  }
+
   getTopTenants(limit: number = 10): Observable<ApiResponse<TopTenant[]>> {
     const params = new HttpParams().set('limit', limit.toString());
     return this.http.get<ApiResponse<TopTenant[]>>(`${this.API_URL}/top-tenants`, { params });

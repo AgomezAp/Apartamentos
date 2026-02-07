@@ -82,6 +82,39 @@ class DashboardController {
   }
 
   /**
+   * GET /api/dashboard/revenue-period
+   * Obtener ingresos filtrados por período de fechas
+   */
+  async getRevenueByPeriod(req: Request, res: Response): Promise<void> {
+    try {
+      const startDate = req.query.start_date as string;
+      const endDate = req.query.end_date as string;
+
+      if (!startDate || !endDate) {
+        res.status(400).json({
+          success: false,
+          error: 'Se requieren start_date y end_date en formato YYYY-MM-DD',
+        });
+        return;
+      }
+
+      const revenue = await DashboardRepository.getRevenueByPeriod(startDate, endDate);
+
+      res.json({
+        success: true,
+        data: revenue,
+      });
+    } catch (error: any) {
+      console.error('Error obteniendo ingresos por período:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error obteniendo datos de ingresos por período',
+        details: error.message,
+      });
+    }
+  }
+
+  /**
    * GET /api/dashboard/top-tenants
    * Obtener top inquilinos por puntualidad de pago
    */

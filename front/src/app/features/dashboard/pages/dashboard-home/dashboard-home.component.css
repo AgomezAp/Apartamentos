@@ -246,14 +246,14 @@
 
 /* ----- WIDGETS LAYOUT ----- */
 
-/* Revenue Chart - Ocupa 8 columnas */
+/* Revenue Chart - Ocupa 7 columnas */
 .widget-revenue {
-  grid-column: span 8;
+  grid-column: span 7;
 }
 
-/* Expense Trends - Ocupa 4 columnas */
+/* Expense Trends - Ocupa 5 columnas */
 .widget-trends {
-  grid-column: span 4;
+  grid-column: span 5;
 }
 
 /* Ocupación - 4 columnas */

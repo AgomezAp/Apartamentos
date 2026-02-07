@@ -49,16 +49,17 @@ class DashboardRepository {
         []
       );
 
-      // Total de ingresos esperados este mes
+      // Total de ingresos esperados este mes (usar monthly_rent del contrato)
       const currentMonth = new Date();
       const year = currentMonth.getFullYear();
       const month = currentMonth.getMonth() + 1;
 
       const expectedRevenueResult: any = await executeQuery(
-        `SELECT COALESCE(SUM(amount_due), 0) as total
-         FROM payments
-         WHERE EXTRACT(YEAR FROM due_date) = $1
-         AND EXTRACT(MONTH FROM due_date) = $2`,
+        `SELECT COALESCE(SUM(CASE WHEN c.monthly_rent > 0 THEN c.monthly_rent ELSE p.amount_due END), 0) as total
+         FROM payments p
+         LEFT JOIN contracts c ON p.contract_id = c.id
+         WHERE EXTRACT(YEAR FROM p.due_date) = $1
+         AND EXTRACT(MONTH FROM p.due_date) = $2`,
         [year, month]
       );
 
@@ -172,15 +173,16 @@ class DashboardRepository {
     try {
       const result: any = await executeQuery(
         `SELECT 
-          TO_CHAR(due_date, 'YYYY-MM') as month,
-          EXTRACT(YEAR FROM due_date) as year,
-          EXTRACT(MONTH FROM due_date) as month_number,
-          COALESCE(SUM(amount_due), 0) as expected,
-          COALESCE(SUM(amount_paid), 0) as received,
+          TO_CHAR(p.due_date, 'YYYY-MM') as month,
+          EXTRACT(YEAR FROM p.due_date) as year,
+          EXTRACT(MONTH FROM p.due_date) as month_number,
+          COALESCE(SUM(CASE WHEN c.monthly_rent > 0 THEN c.monthly_rent ELSE p.amount_due END), 0) as expected,
+          COALESCE(SUM(p.amount_paid), 0) as received,
           COUNT(*) as total_payments
-        FROM payments
-        WHERE due_date >= CURRENT_DATE - INTERVAL '${months} months'
-        GROUP BY TO_CHAR(due_date, 'YYYY-MM'), EXTRACT(YEAR FROM due_date), EXTRACT(MONTH FROM due_date)
+        FROM payments p
+        LEFT JOIN contracts c ON p.contract_id = c.id
+        WHERE p.due_date >= CURRENT_DATE - INTERVAL '${months} months'
+        GROUP BY TO_CHAR(p.due_date, 'YYYY-MM'), EXTRACT(YEAR FROM p.due_date), EXTRACT(MONTH FROM p.due_date)
         ORDER BY year DESC, month_number DESC
         LIMIT $1`,
         [months]
@@ -196,6 +198,41 @@ class DashboardRepository {
       }));
     } catch (error) {
       console.error('Error obteniendo ingresos por mes:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtener ingresos filtrados por período de fechas
+   */
+  async getRevenueByPeriod(startDate: string, endDate: string): Promise<any[]> {
+    try {
+      const result: any = await executeQuery(
+        `SELECT 
+          TO_CHAR(p.due_date, 'YYYY-MM') as month,
+          EXTRACT(YEAR FROM p.due_date) as year,
+          EXTRACT(MONTH FROM p.due_date) as month_number,
+          COALESCE(SUM(CASE WHEN c.monthly_rent > 0 THEN c.monthly_rent ELSE p.amount_due END), 0) as expected,
+          COALESCE(SUM(p.amount_paid), 0) as received,
+          COUNT(*) as total_payments
+        FROM payments p
+        LEFT JOIN contracts c ON p.contract_id = c.id
+        WHERE p.due_date >= $1 AND p.due_date <= $2
+        GROUP BY TO_CHAR(p.due_date, 'YYYY-MM'), EXTRACT(YEAR FROM p.due_date), EXTRACT(MONTH FROM p.due_date)
+        ORDER BY year ASC, month_number ASC`,
+        [startDate, endDate]
+      );
+
+      return result.map((row: any) => ({
+        month: row.month,
+        year: parseInt(row.year),
+        expected_revenue: parseFloat(row.expected || 0),
+        collected_revenue: parseFloat(row.received || 0),
+        pending_revenue: parseFloat(row.expected || 0) - parseFloat(row.received || 0),
+        collection_rate: row.expected > 0 ? parseFloat(((row.received / row.expected) * 100).toFixed(2)) : 0,
+      }));
+    } catch (error) {
+      console.error('Error obteniendo ingresos por período:', error);
       throw error;
     }
   }

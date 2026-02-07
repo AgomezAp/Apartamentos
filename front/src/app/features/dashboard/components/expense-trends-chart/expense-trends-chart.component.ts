@@ -1,13 +1,13 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, LineController, Title, Tooltip, Legend, ChartConfiguration } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, LineController, BarElement, BarController, Title, Tooltip, Legend, ChartConfiguration } from 'chart.js';
 import { ReportService } from '../../../reports/services/report.service';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, LineController, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, LineController, BarElement, BarController, Title, Tooltip, Legend);
 
 interface TrendData {
-  month: string;
+  month: number | string;
   income: number;
   expenses: number;
 }
@@ -105,7 +105,21 @@ export class ExpenseTrendsChartComponent implements OnInit, OnChanges {
   }
 
   generateChart(): void {
-    const labels = this.trendData.map(d => d.month);
+    const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const labels = this.trendData.map(d => {
+      // month puede ser número (2) o string ("2026-02")
+      if (typeof d.month === 'number') {
+        return monthNames[d.month - 1] || `Mes ${d.month}`;
+      }
+      const monthStr = String(d.month);
+      if (monthStr.includes('-')) {
+        const parts = monthStr.split('-');
+        const monthIndex = parseInt(parts[1]) - 1;
+        return monthNames[monthIndex] || monthStr;
+      }
+      const idx = parseInt(monthStr) - 1;
+      return monthNames[idx] || monthStr;
+    });
     const incomeData = this.trendData.map(d => d.income);
     const expenseData = this.trendData.map(d => d.expenses);
 
@@ -115,30 +129,22 @@ export class ExpenseTrendsChartComponent implements OnInit, OnChanges {
         {
           label: 'Ingresos',
           data: incomeData,
+          backgroundColor: 'rgba(16, 185, 129, 0.8)',
           borderColor: '#10B981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          fill: true,
-          tension: 0.4,
-          borderWidth: 3,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          pointBackgroundColor: '#10B981',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2
+          borderWidth: 2,
+          borderRadius: 4,
+          barPercentage: 0.4,
+          categoryPercentage: 0.8,
         },
         {
           label: 'Gastos',
           data: expenseData,
+          backgroundColor: 'rgba(239, 68, 68, 0.8)',
           borderColor: '#EF4444',
-          backgroundColor: 'rgba(239, 68, 68, 0.1)',
-          fill: true,
-          tension: 0.4,
-          borderWidth: 3,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          pointBackgroundColor: '#EF4444',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2
+          borderWidth: 2,
+          borderRadius: 4,
+          barPercentage: 0.4,
+          categoryPercentage: 0.8,
         }
       ]
     };

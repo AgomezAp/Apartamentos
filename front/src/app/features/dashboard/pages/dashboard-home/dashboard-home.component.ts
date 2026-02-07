@@ -11,6 +11,7 @@ import { RevenueChartComponent } from '../../components/revenue-chart/revenue-ch
 import { ExpenseTrendsChartComponent } from '../../components/expense-trends-chart/expense-trends-chart.component';
 import { PaymentHistoryComponent } from '../../../payments/components/payment-history/payment-history.component';
 import { OverduePaymentsComponent } from '../../../payments/components/overdue-payments/overdue-payments.component';
+import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -25,7 +26,8 @@ import { OverduePaymentsComponent } from '../../../payments/components/overdue-p
     RevenueChartComponent,
     ExpenseTrendsChartComponent,
     PaymentHistoryComponent,
-    OverduePaymentsComponent
+    OverduePaymentsComponent,
+    CurrencyFormatPipe
   ],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css'

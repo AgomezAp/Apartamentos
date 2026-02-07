@@ -14,7 +14,7 @@
   </div>
 
   <div *ngIf="!loading && !error && trendData.length > 0" class="chart-container">
-    <canvas baseChart [data]="chartData" type="line" [options]="chartOptions"></canvas>
+    <canvas baseChart [data]="chartData" type="bar" [options]="chartOptions"></canvas>
   </div>
 
   <div *ngIf="!loading && !error && trendData.length === 0" class="no-data">

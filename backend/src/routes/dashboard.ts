@@ -24,6 +24,15 @@ router.get('/buildings', DashboardController.getStatsByBuilding);
 router.get('/revenue', DashboardController.getRevenueByMonth);
 
 /**
+ * GET /api/dashboard/revenue-period
+ * Obtener ingresos filtrados por período de fechas
+ * Query params:
+ *   - start_date: fecha inicio (YYYY-MM-DD)
+ *   - end_date: fecha fin (YYYY-MM-DD)
+ */
+router.get('/revenue-period', DashboardController.getRevenueByPeriod);
+
+/**
  * GET /api/dashboard/top-tenants
  * Obtener top inquilinos por puntualidad en pagos
  * Query params:

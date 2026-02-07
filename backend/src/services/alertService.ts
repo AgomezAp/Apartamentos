@@ -304,7 +304,7 @@ class AlertService {
         const existingAlert: any = await executeQuery(
           `SELECT id FROM alerts 
            WHERE unit_id = $1 AND alert_type_id = $2 
-           AND created_at > NOW() - INTERVAL '7 days'
+           AND created_at > NOW() - INTERVAL '30 days'
            LIMIT 1`,
           [(unit as any).id, alertTypeId]
         );

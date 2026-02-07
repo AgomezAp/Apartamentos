@@ -80,7 +80,7 @@
 
       <app-stats-card
         title="Ingresos del Mes"
-        [value]="stats.collected_this_month || 0"
+        [value]="(stats.collected_this_month || 0) | currencyFormat"
         icon="💰"
         color="green"
         [trend]="stats.revenue_growth_rate"
@@ -95,7 +95,7 @@
         color="red"
         [subtitle]="
           'Total: ' +
-          (stats.pending_amount | currency : 'USD' : 'symbol' : '1.0-0')
+          ((stats.pending_amount || 0) | currencyFormat)
         "
       ></app-stats-card>
     </section>

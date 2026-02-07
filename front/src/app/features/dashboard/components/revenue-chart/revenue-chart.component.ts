@@ -61,12 +61,10 @@ export class RevenueChartComponent implements OnInit, OnChanges {
   }
 
   loadRevenueByPeriod(): void {
-    // Este método necesitaría un nuevo endpoint en el backend
-    // Por ahora, usamos el de meses pero en el futuro debería filtrar por período
-    this.dashboardService.getRevenueByMonth(this.months).subscribe({
+    this.dashboardService.getRevenueByPeriod(this.startDate, this.endDate).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.revenueData = response.data.reverse();
+          this.revenueData = response.data;
         }
         this.loading = false;
       },
@@ -108,8 +106,9 @@ export class RevenueChartComponent implements OnInit, OnChanges {
   }
 
   getAverageCollectionRate(): number {
-    if (this.revenueData.length === 0) return 0;
-    const sum = this.revenueData.reduce((total, d) => total + d.collection_rate, 0);
-    return sum / this.revenueData.length;
+    const totalExpected = this.getTotalExpected();
+    const totalCollected = this.getTotalCollected();
+    if (totalExpected === 0) return 0;
+    return parseFloat(((totalCollected / totalExpected) * 100).toFixed(1));
   }
 }

@@ -113,12 +113,15 @@ export class PaymentFormComponent implements OnInit {
           // Actualizar automáticamente los campos del formulario incluyendo el monto
           const monthlyRent = selectedContract.monthly_rent || 0;
           
+          // Formatear el monto con puntos de miles (920000 -> 920.000)
+          const formattedRent = Math.round(monthlyRent).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+          
           this.paymentForm.patchValue({
             tenant_id: tenantDisplay,
             tenant_id_hidden: selectedContract.tenant_id,
             unit_id: unitDisplay,
             unit_id_hidden: selectedContract.unit_id,
-            amount_due: monthlyRent.toString(),
+            amount_due: formattedRent,
             payment_status_id: 1 // Pendiente por defecto (se actualizará automáticamente según fecha)
           }, { emitEvent: false });
           
