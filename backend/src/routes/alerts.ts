@@ -1,7 +1,54 @@
 import { Router } from 'express';
 import { executeQuery } from '../config/database';
+import alertService from '../services/alertService';
 
 const router = Router();
+
+/**
+ * POST /api/alerts/test-check
+ * Ejecutar verificación de alertas manualmente (solo para pruebas)
+ */
+router.post('/test-check', async (_req, res) => {
+  try {
+    console.log('🧪 Ejecutando verificación de alertas manualmente...');
+    await alertService.checkAllAlerts();
+    
+    res.json({
+      success: true,
+      message: 'Verificación de alertas ejecutada. Ver logs del servidor para detalles.',
+    });
+  } catch (error: any) {
+    console.error('Error ejecutando verificación de alertas:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al ejecutar verificación de alertas',
+      details: error.message,
+    });
+  }
+});
+
+/**
+ * POST /api/alerts/test-vacancy
+ * Ejecutar verificación de desocupación prolongada manualmente
+ */
+router.post('/test-vacancy', async (_req, res) => {
+  try {
+    console.log('🧪 Ejecutando verificación de desocupación prolongada...');
+    await alertService.checkProlongedVacancy();
+    
+    res.json({
+      success: true,
+      message: 'Verificación de desocupación ejecutada. Ver logs del servidor para detalles.',
+    });
+  } catch (error: any) {
+    console.error('Error ejecutando verificación:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al ejecutar verificación',
+      details: error.message,
+    });
+  }
+});
 
 /**
  * GET /api/alerts

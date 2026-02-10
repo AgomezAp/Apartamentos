@@ -23,8 +23,8 @@ class AlertService {
 
     console.log('🔔 Iniciando servicio de alertas automáticas...');
 
-    // Ejecutar diariamente a las 8:00 AM
-    cron.schedule('0 8 * * *', async () => {
+    // Ejecutar diariamente a las 11:17 AM (TEMPORAL PARA PRUEBA - cambiar a '0 8 * * *' en producción)
+    cron.schedule('49 11 * * *', async () => {
       console.log('🔍 Verificando condiciones para alertas...');
       await this.checkAllAlerts();
     });
@@ -55,15 +55,24 @@ class AlertService {
    */
   async checkAllAlerts(): Promise<void> {
     try {
-      await Promise.all([
-        this.checkExpiringContracts(),
-        this.checkOverduePayments(),
-        this.checkVacantUnits(),
-        this.checkBuildingCapacity(),
-        this.checkProlongedVacancy(),
-      ]);
+      console.log('📋 Iniciando checkExpiringContracts...');
+      await this.checkExpiringContracts();
+      
+      console.log('📋 Iniciando checkOverduePayments...');
+      await this.checkOverduePayments();
+      
+      console.log('📋 Iniciando checkVacantUnits...');
+      await this.checkVacantUnits();
+      
+      console.log('📋 Iniciando checkBuildingCapacity...');
+      await this.checkBuildingCapacity();
+      
+      console.log('📋 Iniciando checkProlongedVacancy...');
+      await this.checkProlongedVacancy();
+      
+      console.log('✅ Todas las verificaciones completadas');
     } catch (error) {
-      console.error('Error verificando alertas:', error);
+      console.error('❌ Error verificando alertas:', error);
     }
   }
 
@@ -286,19 +295,49 @@ class AlertService {
     try {
       // Usar 15 días desde env o default
       const thresholdDays = parseInt(process.env.VACANT_UNIT_ALERT_DAYS || '15');
+      console.log(`   📍 Umbral de días: ${thresholdDays}`);
 
       const prolongedVacantUnits = await UnitModel.getVacantReport();
+      console.log(`   📍 Unidades desocupadas encontradas: ${prolongedVacantUnits.length}`);
+      
       const criticalUnits = prolongedVacantUnits.filter(
         (unit: any) => unit.days_vacant >= thresholdDays
       );
+      console.log(`   📍 Unidades con >${thresholdDays} días: ${criticalUnits.length}`);
 
       const alertTypeResult: any = await executeQuery(
         "SELECT id FROM alert_types WHERE name = 'Unidad Desocupada Prolongada' LIMIT 1",
         []
       );
       const alertTypeId = alertTypeResult[0]?.id;
+      console.log(`   📍 Alert type ID: ${alertTypeId || 'NO ENCONTRADO'}`);
 
-      if (!alertTypeId) return;
+      if (!alertTypeId) {
+        console.log('   ⚠️ No existe el tipo de alerta "Unidad Desocupada Prolongada" en la BD');
+        // Intentar crear el tipo de alerta si no existe
+        console.log('   📍 Creando tipo de alerta...');
+        await executeQuery(`
+          INSERT INTO alert_types (name, description, is_active, created_at, updated_at)
+          VALUES ('Unidad Desocupada Prolongada', 'Alerta cuando una unidad lleva más de X días sin inquilino', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+          ON CONFLICT (name) DO NOTHING
+        `, []);
+        
+        // Obtener el ID recién creado
+        const newAlertTypeResult: any = await executeQuery(
+          "SELECT id FROM alert_types WHERE name = 'Unidad Desocupada Prolongada' LIMIT 1",
+          []
+        );
+        const newAlertTypeId = newAlertTypeResult[0]?.id;
+        console.log(`   📍 Tipo de alerta creado con ID: ${newAlertTypeId}`);
+        
+        // Enviar alertas por WhatsApp directamente
+        for (const unit of criticalUnits) {
+          console.log(`   📱 Enviando alerta WhatsApp para unidad ${unit.unit_number} (${unit.days_vacant} días)`);
+          await this.sendVacantUnitWhatsAppAlert(unit, thresholdDays);
+        }
+        console.log(`✅ Verificadas ${criticalUnits.length} unidades con desocupación prolongada (>=${thresholdDays} días)`);
+        return;
+      }
 
       for (const unit of criticalUnits) {
         const existingAlert: any = await executeQuery(
@@ -308,8 +347,11 @@ class AlertService {
            LIMIT 1`,
           [(unit as any).id, alertTypeId]
         );
+        
+        console.log(`   📍 Unidad ${unit.unit_number}: alertas existentes = ${existingAlert.length}`);
 
         if (existingAlert.length === 0) {
+          console.log(`   📍 Creando alerta para unidad ${unit.unit_number}...`);
           // Crear alerta en BD
           await AlertModel.create({
             alert_type_id: alertTypeId,
@@ -325,11 +367,14 @@ class AlertService {
           });
 
           // 📱 Enviar alerta por WhatsApp al administrador
-          await this.sendVacantUnitWhatsAppAlert(unit);
+          console.log(`   📱 Enviando alerta WhatsApp para unidad ${unit.unit_number}...`);
+          await this.sendVacantUnitWhatsAppAlert(unit, thresholdDays);
+        } else {
+          console.log(`   ⏭️ Alerta ya enviada en los últimos 30 días para unidad ${unit.unit_number}`);
         }
       }
 
-      console.log(`✅ Verificadas ${criticalUnits.length} unidades con desocupación prolongada (>${thresholdDays} días)`);
+      console.log(`✅ Verificadas ${criticalUnits.length} unidades con desocupación prolongada (>=${thresholdDays} días)`);
     } catch (error) {
       console.error('Error verificando desocupación prolongada:', error);
     }
@@ -338,14 +383,14 @@ class AlertService {
   /**
    * 📱 Enviar alerta de unidad desocupada por WhatsApp
    */
-  private async sendVacantUnitWhatsAppAlert(unit: any): Promise<void> {
+  private async sendVacantUnitWhatsAppAlert(unit: any, thresholdDays: number = 15): Promise<void> {
     try {
       const message = `🏠 *ALERTA DE DESOCUPACIÓN*\n\n` +
         `📍 *Edificio:* ${unit.building_name}\n` +
         `🚪 *Unidad:* ${unit.unit_number}\n` +
         `📅 *Días desocupada:* ${unit.days_vacant} días\n` +
         `💰 *Canon mensual:* $${unit.rental_price?.toLocaleString('es-CO') || 'N/A'}\n\n` +
-        `⚠️ Esta unidad lleva más de 15 días sin inquilino.\n` +
+        `⚠️ Esta unidad lleva ${unit.days_vacant} días sin inquilino (umbral: ${thresholdDays} días).\n` +
         `_Se recomienda revisar la disponibilidad y promocionarla._`;
 
       const sent = await whatsappService.sendMessage(this.adminPhone, message);
