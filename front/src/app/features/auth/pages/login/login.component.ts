@@ -31,27 +31,17 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Limpiar cualquier dato de autenticación previo al llegar al login
-    // Esto previene problemas con tokens viejos o corruptos
-    this.clearOldAuthData();
+    // Si ya está autenticado, redirigir al dashboard directamente
+    if (this.authService.isAuthenticated()) {
+      this.router.navigateByUrl('/dashboard');
+      return;
+    }
     
     // Inicializar el formulario PRIMERO (siempre, para evitar errores en la plantilla)
     this.initForm();
     
     // Verificar mensajes de redirección
     this.checkRedirectMessage();
-  }
-
-  /**
-   * Limpiar datos de autenticación previos
-   */
-  private clearOldAuthData(): void {
-    // Solo limpiar si no venimos de una sesión expirada (para no mostrar doble mensaje)
-    const params = this.route.snapshot.queryParams;
-    if (!params['sessionExpired']) {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('auth_user');
-    }
   }
 
   /**
@@ -133,8 +123,20 @@ export class LoginComponent implements OnInit {
           );
           
           // Redirigir a la URL guardada o al dashboard
-          console.log('🚀 Navegando a:', this.returnUrl);
-          this.router.navigate([this.returnUrl]);
+          const targetUrl = this.returnUrl || '/dashboard';
+          console.log('🚀 Navegando a:', targetUrl);
+          
+          // Usar navigateByUrl para navegación confiable y esperar resultado
+          this.router.navigateByUrl(targetUrl).then(success => {
+            console.log('📍 Navegación resultado:', success);
+            if (!success) {
+              console.log('⚠️ Navegación falló, intentando /dashboard');
+              this.router.navigateByUrl('/dashboard');
+            }
+          }).catch(err => {
+            console.error('❌ Error en navegación:', err);
+            this.router.navigateByUrl('/dashboard');
+          });
         }
       },
       error: (error) => {

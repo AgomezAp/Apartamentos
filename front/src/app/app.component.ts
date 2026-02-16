@@ -16,21 +16,21 @@ import { ToastComponent } from './shared/components/toast/toast.component';
 export class AppComponent implements OnInit {
   title = 'front';
   sidebarCollapsed = false;
-  showNavigation = true;
+  showNavigation = false; // Empieza en false para evitar flash del sidebar en login
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
+    // Verificar la ruta actual INMEDIATAMENTE al inicializar
+    this.showNavigation = !this.router.url.includes('/auth');
+
     // Escuchar cambios de ruta para mostrar/ocultar sidebar y header
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         // Ocultar sidebar y header en rutas de autenticación
-        this.showNavigation = !event.url.includes('/auth');
+        this.showNavigation = !event.urlAfterRedirects.includes('/auth');
       });
-
-    // Verificar la ruta actual al inicializar
-    this.showNavigation = !this.router.url.includes('/auth');
   }
 
   onToggleSidebar() {
