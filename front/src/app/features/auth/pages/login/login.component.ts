@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
           'Inicio de Sesión Requerido'
         );
       }
-      if (params['returnUrl']) {
+      if (params['returnUrl'] && !params['returnUrl'].includes('/auth')) {
         this.returnUrl = params['returnUrl'];
       }
       if (params['sessionExpired']) {
