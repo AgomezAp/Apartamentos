@@ -16,7 +16,6 @@ import { ChartData, DEFAULT_CHART_COLORS, ReportTypes } from '../../models';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ReportFilterComponent,
     ChartViewerComponent,
     ReportTableComponent,
     ExportButtonsComponent
