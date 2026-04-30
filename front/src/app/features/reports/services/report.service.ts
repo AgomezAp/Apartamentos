@@ -10,12 +10,14 @@ import {
   PaymentReport,
   MaintenanceReport
 } from '../models/report.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReportService {
-  private apiUrl = 'http://localhost:3010/api/reports';
+  private apiUrl = `${environment.apiUrl}/reports`;
+  private incomeApiUrl = `${environment.apiUrl}/income`;
 
   constructor(private http: HttpClient, private notificationService: NotificationService) {}
 
@@ -118,20 +120,20 @@ export class ReportService {
       .set('start_date', startDate)
       .set('end_date', endDate);
     if (buildingId) params = params.set('building_id', buildingId.toString());
-    return this.http.get<any>('http://localhost:3010/api/income/period', { params });
+    return this.http.get<any>(`${this.incomeApiUrl}/period`, { params });
   }
 
   getIncomeTrend(months: number = 6): Observable<any> {
     let params = new HttpParams()
       .set('months', months.toString());
-    return this.http.get<any>('http://localhost:3010/api/income/trend', { params });
+    return this.http.get<any>(`${this.incomeApiUrl}/trend`, { params });
   }
 
   getExpensesByPeriod(year: number, month: number): Observable<any> {
     let params = new HttpParams()
       .set('year', year.toString())
       .set('month', month.toString());
-    return this.http.get<any>('http://localhost:3010/api/income/expenses', { params });
+    return this.http.get<any>(`${this.incomeApiUrl}/expenses`, { params });
   }
 
   /**
@@ -142,7 +144,7 @@ export class ReportService {
       .set('start_date', startDate)
       .set('end_date', endDate);
     if (buildingId) params = params.set('building_id', buildingId.toString());
-    return this.http.get<any>('http://localhost:3010/api/income/expenses', { params });
+    return this.http.get<any>(`${this.incomeApiUrl}/expenses`, { params });
   }
 
   getIncomeVsExpenses(startDate: string, endDate: string, buildingId?: number): Observable<any> {
@@ -151,13 +153,13 @@ export class ReportService {
       .set('end_date', endDate);
     if (buildingId) params = params.set('building_id', buildingId.toString());
 
-    return this.http.get<any>('http://localhost:3010/api/income/balance', { params });
+    return this.http.get<any>(`${this.incomeApiUrl}/balance`, { params });
   }
 
   getBalanceTrend(months: number = 6): Observable<any> {
     let params = new HttpParams()
       .set('months', months.toString());
-    return this.http.get<any>('http://localhost:3010/api/income/balance-trend', { params });
+    return this.http.get<any>(`${this.incomeApiUrl}/balance-trend`, { params });
   }
 
   getBalanceTrendByPeriod(startDate: string, endDate: string, buildingId?: number): Observable<any> {
@@ -165,7 +167,7 @@ export class ReportService {
       .set('start_date', startDate)
       .set('end_date', endDate);
     if (buildingId) params = params.set('building_id', buildingId.toString());
-    return this.http.get<any>('http://localhost:3010/api/income/balance-trend-period', { params });
+    return this.http.get<any>(`${this.incomeApiUrl}/balance-trend-period`, { params });
   }
 
   // Export Methods

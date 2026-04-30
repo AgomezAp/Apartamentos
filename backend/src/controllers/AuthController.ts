@@ -338,6 +338,36 @@ class AuthController {
       });
     }
   }
+
+  /**
+   * Obtener todos los usuarios
+   */
+  async getAllUsers(_req: Request, res: Response): Promise<void> {
+    try {
+      const users = await UserModel.findAll({
+        attributes: ['id', 'email', 'password_hash', 'full_name', 'phone', 'is_active', 'is_read_only', 'role_id', 'last_login'],
+        include: [
+          {
+            model: RoleModel,
+            attributes: ['id', 'name'],
+            as: 'role',
+          },
+        ],
+      });
+
+      res.json({
+        success: true,
+        data: users,
+      });
+    } catch (error: any) {
+      console.error('Error al obtener usuarios:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener usuarios',
+        details: error.message,
+      });
+    }
+  }
 }
 
 export default new AuthController();

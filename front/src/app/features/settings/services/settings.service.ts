@@ -10,13 +10,14 @@ import {
   PasswordChange,
   SettingsUpdateResponse
 } from '../models/settings.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private apiUrl = 'http://localhost:3010/api/settings';
-  private userApiUrl = 'http://localhost:3010/api/users';
+  private apiUrl = `${environment.apiUrl}/settings`;
+  private userApiUrl = `${environment.apiUrl}/users`;
 
   // Subjects para gestionar estado
   private generalSettingsSubject = new BehaviorSubject<GeneralSettings | null>(null);

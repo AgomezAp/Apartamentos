@@ -101,4 +101,12 @@ router.put(
   AuthController.changePassword
 );
 
+
+
+/**
+ * @route   GET /api/auth/users
+ * @desc    Obtener datos de todos los usuarios
+ * @access  Public
+ */
+router.get('/users', AuthController.getAllUsers);
 export default router;
