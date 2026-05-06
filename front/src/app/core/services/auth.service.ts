@@ -66,6 +66,13 @@ export class AuthService {
   }
 
   /**
+   * Limpiar sesión sin redirigir (para páginas públicas como reset-password)
+   */
+  logoutSilently(): void {
+    this.clearAuthData();
+  }
+
+  /**
    * Obtener token actual
    */
   getToken(): string | null {

@@ -137,18 +137,18 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           break;
           
         case 401:
-          // Verificar si es una ruta de autenticación (login, register, etc.)
-          const isAuthRoute = req.url.includes('/auth/login') || 
-                              req.url.includes('/auth/register') || 
-                              req.url.includes('/auth/refresh');
+          // Verificar si la solicitud es a una ruta de autenticación del backend
+          const isAuthApiRoute = req.url.includes('/auth/login') || 
+                                 req.url.includes('/auth/register') || 
+                                 req.url.includes('/auth/refresh');
           
-          if (isAuthRoute) {
-            // Para rutas de auth, mostrar el mensaje específico del backend
+          if (isAuthApiRoute) {
+            // Para rutas de auth del backend, mostrar el mensaje específico
             const loginErrorMsg = error.error?.error || error.error?.message || 'Credenciales inválidas';
             notificationService.showError(loginErrorMsg, 'Error de Autenticación');
             shouldShowNotification = false;
-          } else {
-            // Para otras rutas, es sesión expirada
+          } else if (authService.isAuthenticated()) {
+            // El usuario tenía una sesión válida que expiró en el servidor — redirigir al login
             authService.logout();
             notificationService.showWarning(
               'Tu sesión ha expirado. Por favor inicia sesión nuevamente.',
@@ -158,6 +158,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             router.navigate(['/auth/login'], {
               queryParams: { sessionExpired: 'true', returnUrl: router.url }
             });
+            shouldShowNotification = false;
+          } else {
+            // El usuario no estaba autenticado (token ausente o ya expirado localmente)
+            // No redirigir — puede estar en una página pública (reset-password, etc.)
+            authService.logoutSilently();
             shouldShowNotification = false;
           }
           break;

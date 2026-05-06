@@ -11,6 +11,8 @@ class UserModel extends Model {
   public is_read_only!: boolean;
   public role_id?: number;
   public last_login!: Date;
+  public reset_token?: string | null;
+  public reset_token_expires?: Date | null;
 }
 
 UserModel.init(
@@ -50,6 +52,14 @@ UserModel.init(
     },
     last_login: {
       type: DataTypes.DATE,
+    },
+    reset_token: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    reset_token_expires: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

@@ -109,4 +109,41 @@ router.put(
  * @access  Public
  */
 router.get('/users', AuthController.getAllUsers);
+
+/**
+ * @route   POST /api/auth/forgot-password
+ * @desc    Solicitar enlace de recuperación de contraseña
+ * @access  Public
+ */
+router.post(
+  '/forgot-password',
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Email inválido')
+      .normalizeEmail(),
+    handleValidationErrors,
+  ],
+  AuthController.forgotPassword
+);
+
+/**
+ * @route   POST /api/auth/reset-password
+ * @desc    Restablecer contraseña con token
+ * @access  Public
+ */
+router.post(
+  '/reset-password',
+  [
+    body('token')
+      .notEmpty()
+      .withMessage('Token requerido'),
+    body('new_password')
+      .isLength({ min: 6 })
+      .withMessage('La contraseña debe tener al menos 6 caracteres'),
+    handleValidationErrors,
+  ],
+  AuthController.resetPassword
+);
+
 export default router;

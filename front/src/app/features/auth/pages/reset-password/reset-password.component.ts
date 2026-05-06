@@ -84,8 +84,7 @@ export class ResetPasswordComponent implements OnInit {
     this.isLoading = true;
     const data = {
       token: this.token,
-      password: this.resetPasswordForm.value.password,
-      confirmPassword: this.resetPasswordForm.value.confirmPassword
+      new_password: this.resetPasswordForm.value.password
     };
 
     this.http.post(`${this.API_URL}/auth/reset-password`, data).subscribe({

@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import UserModel from '../models/UserModel';
 import RoleModel from '../models/RoleModel';
+import { sendMail } from '../config/email';
 
 /**
  * Controlador de autenticación
@@ -335,6 +337,90 @@ class AuthController {
         success: false,
         error: 'Error al cambiar contraseña',
         details: error.message,
+      });
+    }
+  }
+
+  /**
+   * Solicitar recuperación de contraseña
+   */
+  async forgotPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { email } = req.body;
+
+      const user = await UserModel.findOne({ where: { email } });
+
+      // Siempre responder éxito para no revelar si el email existe
+      if (user) {
+        const token = crypto.randomBytes(32).toString('hex');
+        const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+
+        await user.update({
+          reset_token: token,
+          reset_token_expires: expires,
+        });
+
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4200';
+        const resetLink = `${frontendUrl}/auth/reset-password?token=${token}`;
+
+        const emailBody =
+          `Hola ${user.full_name},\n\n` +
+          `Recibimos una solicitud para restablecer la contraseña de tu cuenta.\n\n` +
+          `Haz clic en el siguiente enlace para crear una nueva contraseña:\n${resetLink}\n\n` +
+          `Este enlace expirará en 1 hora.\n\n` +
+          `Si no solicitaste restablecer tu contraseña, puedes ignorar este mensaje.\n\n` +
+          `Saludos,\nEl equipo de gestión de apartamentos`;
+
+        await sendMail([user.email], 'Recuperación de contraseña', emailBody);
+      }
+
+      res.json({
+        success: true,
+        message: 'Si el correo está registrado, recibirás un enlace de recuperación.',
+      });
+    } catch (error: any) {
+      console.error('Error en forgot-password:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al procesar la solicitud',
+      });
+    }
+  }
+
+  /**
+   * Restablecer contraseña con token
+   */
+  async resetPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { token, new_password } = req.body;
+
+      const user = await UserModel.findOne({ where: { reset_token: token } });
+
+      if (!user || !user.reset_token_expires || new Date() > user.reset_token_expires) {
+        res.status(400).json({
+          success: false,
+          error: 'El enlace de recuperación es inválido o ha expirado.',
+        });
+        return;
+      }
+
+      const password_hash = await bcrypt.hash(new_password, 10);
+
+      await user.update({
+        password_hash,
+        reset_token: null,
+        reset_token_expires: null,
+      });
+
+      res.json({
+        success: true,
+        message: 'Contraseña restablecida exitosamente. Ya puedes iniciar sesión.',
+      });
+    } catch (error: any) {
+      console.error('Error en reset-password:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al restablecer la contraseña',
       });
     }
   }
